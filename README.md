@@ -1,6 +1,9 @@
 # Musiko
 
-A lightweight, translucent MP3 player for Windows.
+A lightweight, translucent MP3 player for Windows
+Open-Source Project with zero ads.
+
+Musiko for Princess
 
 ## Install on Windows
 
