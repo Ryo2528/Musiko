@@ -22,7 +22,7 @@ foreach ($shortcutPath in @((Join-Path $desktop 'Musiko.lnk'), (Join-Path $progr
     $shortcut.Arguments = '"' + $launcher + '"'
     $shortcut.WorkingDirectory = $PSScriptRoot
     $shortcut.Description = 'Open the Musiko music player'
-    $shortcut.IconLocation = "$edge,0"
+    $shortcut.IconLocation = (Join-Path $PSScriptRoot 'Musiko.ico')
     $shortcut.Save()
 }
 Write-Host 'Musiko shortcuts created on your Desktop and in the Start Menu.'
