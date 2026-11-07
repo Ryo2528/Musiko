@@ -7853,6 +7853,15 @@
     .library-page { --lib-accent: var(--accent, #ff5368); display: block; padding: 4px 0 24px }
     .library-page[hidden], .lib-backbar[hidden] { display: none }
     .lib-backbar { margin: 0 0 12px }
+    #backToAlbums { display: none !important }
+    .header-back { flex: none; align-self: center; padding: 0 16px; font-size: 13px; font-weight: 650 }
+    .header-back[hidden] { display: none }
+    /* phones: back button replaces the title in the header; desktop keeps the title and uses the bar below it */
+    @media (max-width: 760px) {
+      html.back-in-header main > .top .crumb { display: none }
+      html.back-in-header #libraryBack { display: none }
+    }
+    @media (min-width: 761px) { #headerBackBtn { display: none !important } }
     html.in-library .mobile-nav { display: none !important }
 
     .lib-list { display: flex; flex-direction: column; margin: 0 0 30px }
@@ -8356,6 +8365,44 @@
       text-shadow: none
     }
   </style>
+  <style id="listening-stats-v2">
+    .stat-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 0 14px }
+    .stat-tile { display: grid; gap: 5px; min-width: 0; padding: 14px 16px 15px; border: 1px solid var(--hair); border-radius: var(--r-md); background: var(--fill-1) }
+    .stat-label { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted) }
+    .stat-value { font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--white) }
+    .stat-sub { font-size: 12.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+
+    html body .top-song-row {
+      width: 100%; gap: 14px; padding: 12px 18px;
+      border: 0; border-bottom: 1px solid var(--hair); background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+      transition: background-color .14s var(--ease)
+    }
+    html body .top-song-row:last-child { border-bottom: 0 }
+    html body .top-song-row:hover { background: var(--fill-1) }
+    html body .top-song-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px }
+    html body .top-song-rank { width: 22px; font-size: 13px; font-weight: 600 }
+    html body .top-song-row.is-first .top-song-rank { color: var(--accent); font-weight: 800 }
+    html body .stats-cover { width: 46px; height: 46px; border-radius: 8px }
+    html body .top-song-copy { gap: 3px }
+    html body .top-song-copy strong { font-size: 14px; font-weight: 650; color: var(--white) }
+    html body .top-song-copy small { font-size: 12.5px }
+    .top-song-meter { display: block; height: 4px; margin-top: 7px; border-radius: 2px; overflow: hidden; background: var(--fill-2) }
+    .top-song-meter i { display: block; height: 100%; border-radius: 2px; background: color-mix(in srgb, var(--accent) 50%, transparent); transition: width .5s var(--ease) }
+    .top-song-row.is-first .top-song-meter i { background: var(--accent) }
+    .top-song-plays { display: grid; gap: 3px; flex: none; text-align: right }
+    .top-song-plays strong { font-size: 13px; font-weight: 650; color: var(--white); font-variant-numeric: tabular-nums }
+    .top-song-plays small { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums }
+
+    @media (max-width: 560px) {
+      .stat-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px }
+      .stat-tile.is-wide { grid-column: 1 / -1 }
+      .stat-tile { padding: 12px 14px 13px }
+      .stat-value { font-size: 18px }
+      html body .top-song-row { padding: 11px 12px; gap: 10px }
+      html body .stats-cover { width: 42px; height: 42px }
+      html body .top-song-rank { width: 16px; font-size: 12px }
+    }
+  </style>
 </head>
 
 <body>
@@ -8395,6 +8442,7 @@
     </aside>
     <main>
       <div class="top">
+        <button type="button" class="glass-btn header-back" id="headerBackBtn" hidden>← Library</button>
         <div class="crumb"><span id="viewKicker">MUSIKO</span><b id="viewTitle">Home</b></div>
         <div class="top-actions"><label class="searchbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="1.8">
@@ -8452,8 +8500,8 @@
             <div class="section-kicker">YOUR LISTENING</div>
             <h2>Listening stats</h2>
           </div>
-          <div class="listening-total"><span>Total listening</span><strong id="listeningTime">0 min</strong></div>
         </div>
+        <div class="stat-tiles" id="statTiles"></div>
         <div class="top-songs-card">
           <div class="top-songs-title"><strong>Top songs</strong><span>By plays</span></div>
           <div id="topSongsList" class="top-songs-list"></div>
@@ -8974,14 +9022,35 @@
     function renderRecent() { const section = document.querySelector('#recentSection'), grid = document.querySelector('#recentGrid'); section.hidden = true; document.documentElement.classList.toggle('lib-empty', !tracks.length); return; const recent = tracks.slice(-5).reverse(); grid.innerHTML = recent.map((t, i) => `<div class="recent-card" data-recent="${tracks.length - 1 - i}"><div class="recent-art">♫</div><div class="recent-track">${escapeHtml(t.name)}</div><div class="recent-artist">${escapeHtml(t.artist)}</div></div>`).join(''); grid.querySelectorAll('.recent-card').forEach(el => { const i = +el.dataset.recent; setCover(el.querySelector('.recent-art'), tracks[i]); el.onclick = () => playTrack(i) }) }
     function updateAmbient(t) { if (!t?.art) { document.documentElement.style.setProperty('--ambient-a', '#33405f'); document.documentElement.style.setProperty('--ambient-b', '#633c57'); return } const img = new Image(); img.onload = () => { if (current < 0 || tracks[current]?.id !== t.id) return; try { const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d', { willReadFrequently: true }); canvas.width = 24; canvas.height = 24; ctx.drawImage(img, 0, 0, 24, 24); const pixels = ctx.getImageData(0, 0, 24, 24).data, bins = new Map(); for (let i = 0; i < pixels.length; i += 4) { const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3]; if (a < 160 || (r > 242 && g > 242 && b > 242) || (r < 18 && g < 18 && b < 18)) continue; const key = [r >> 5, g >> 5, b >> 5].join(','), bin = bins.get(key) || { count: 0, r: 0, g: 0, b: 0 }; bin.count++; bin.r += r; bin.g += g; bin.b += b; bins.set(key, bin) } const top = [...bins.values()].sort((a, b) => b.count - a.count).slice(0, 2); if (!top.length) return; const color = x => `rgb(${Math.round(x.r / x.count)}, ${Math.round(x.g / x.count)}, ${Math.round(x.b / x.count)})`; document.documentElement.style.setProperty('--ambient-a', color(top[0])); document.documentElement.style.setProperty('--ambient-b', color(top[1] || top[0])) } catch { } }; img.onerror = () => { }; img.src = t.art } function syncHero(t) { updateAmbient(t); document.querySelector('#heroEyebrow').textContent = t ? 'NOW PLAYING' : 'YOUR MUSIC, YOUR WAY'; document.querySelector('#heroTitle').textContent = t ? t.name : 'A soundtrack that’s yours.'; document.querySelector('#heroSubtitle').textContent = t ? `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}` : 'Bring your favorite songs together in one place.'; setCover(document.querySelector('#heroArt'), t) }
     function saveListeningStats(force = false) { const now = Date.now(); if (!force && now - lastStatsSavedAt < 5000) return; lastStatsSavedAt = now; try { localStorage.setItem('musiko-listening-stats', JSON.stringify(listeningStats)) } catch { } }
-    function renderListeningStats() { const section = document.querySelector('#listeningStats'); if (!section) return; section.hidden = activeView !== 'Home' || !tracks.length; const total = Math.floor(listeningStats.totalSeconds), hours = Math.floor(total / 3600), minutes = Math.floor(total % 3600 / 60); document.querySelector('#listeningTime').textContent = hours ? `${hours} hr ${minutes} min` : `${minutes} min`; const ranked = tracks.map(t => ({ t, stats: listeningStats.tracks[t.id] || { plays: 0, seconds: 0 } })).filter(item => item.stats.plays > 0).sort((a, b) => b.stats.plays - a.stats.plays || b.stats.seconds - a.stats.seconds).slice(0, 5), list = document.querySelector('#topSongsList'); list.innerHTML = ranked.length ? ranked.map(({ t, stats }, i) => `<div class="top-song-row"><span class="top-song-rank">${i + 1}</span><span class="stats-cover">♫</span><span class="top-song-copy"><strong>${escapeHtml(t.name)}</strong><small>${escapeHtml(t.artist)}</small></span><span class="top-song-plays">${stats.plays} ${stats.plays === 1 ? 'play' : 'plays'}</span></div>`).join('') : '<div class="stats-empty">Play songs from your library to see your top tracks.</div>'; list.querySelectorAll('.stats-cover').forEach((cover, i) => setCover(cover, ranked[i]?.t)) }
+    function renderListeningStats() {
+      const section = document.querySelector('#listeningStats'); if (!section) return;
+      section.hidden = activeView !== 'Home' || !tracks.length; if (section.hidden) return;
+      const dur = secs => { secs = Math.floor(secs); const hr = Math.floor(secs / 3600), mn = Math.floor(secs % 3600 / 60); return hr ? `${hr} hr ${mn} min` : mn ? `${mn} min` : secs > 0 ? '<1 min' : '0 min' };
+      const items = tracks.map((t, i) => ({ t, i, stats: listeningStats.tracks[t.id] || { plays: 0, seconds: 0 } })).filter(x => x.stats.plays > 0).sort((a, b) => b.stats.plays - a.stats.plays || b.stats.seconds - a.stats.seconds);
+      const ranked = items.slice(0, 5), max = ranked.length ? ranked[0].stats.plays : 1, totalPlays = items.reduce((n, x) => n + x.stats.plays, 0), byArtist = new Map();
+      items.forEach(x => { const a = (x.t.artist || '').trim(); if (!a || a === 'Local audio' || a === 'Unknown Artist') return; byArtist.set(a, (byArtist.get(a) || 0) + x.stats.plays) });
+      const topArtist = [...byArtist].sort((a, b) => b[1] - a[1])[0];
+      const tiles = [
+        ['Total listening', dur(listeningStats.totalSeconds), `${items.length} of ${tracks.length} ${tracks.length === 1 ? 'song' : 'songs'} played`],
+        ['Total plays', totalPlays.toLocaleString(), items.length ? `${(totalPlays / items.length).toFixed(1)} per song` : 'Start listening'],
+        ['Top artist', topArtist ? topArtist[0] : '—', topArtist ? `${topArtist[1]} ${topArtist[1] === 1 ? 'play' : 'plays'}` : 'No artist data yet']
+      ];
+      const tilesHtml = tiles.map(([label, value, sub], n) => `<div class="stat-tile${n === 2 ? ' is-wide' : ''}"><span class="stat-label">${label}</span><strong class="stat-value">${escapeHtml(String(value))}</strong><span class="stat-sub">${escapeHtml(sub)}</span></div>`).join('');
+      const rowsHtml = ranked.length ? ranked.map(({ t, i, stats }, n) => `<button type="button" class="top-song-row${n === 0 ? ' is-first' : ''}" data-i="${i}" title="Play ${escapeHtml(t.name)}"><span class="top-song-rank">${n + 1}</span><span class="stats-cover">♫</span><span class="top-song-copy"><strong>${escapeHtml(t.name)}</strong><small>${escapeHtml(t.artist)}</small><span class="top-song-meter"><i style="width:${Math.max(4, Math.round(stats.plays / max * 100))}%"></i></span></span><span class="top-song-plays"><strong>${stats.plays} ${stats.plays === 1 ? 'play' : 'plays'}</strong><small>${dur(stats.seconds)}</small></span></button>`).join('') : '<div class="stats-empty">Play songs from your library to see your top tracks.</div>';
+      const sig = tilesHtml + rowsHtml + ranked.map(x => x.t.art ? 1 : 0).join('');
+      if (section._sig === sig) return; section._sig = sig;
+      const list = document.querySelector('#topSongsList');
+      document.querySelector('#statTiles').innerHTML = tilesHtml; list.innerHTML = rowsHtml;
+      list.querySelectorAll('.stats-cover').forEach((cover, i) => setCover(cover, ranked[i]?.t));
+      if (!list._bound) { list._bound = true; list.addEventListener('click', e => { const row = e.target.closest('[data-i]'); if (row) playTrack(+row.dataset.i) }) }
+    }
     function recordPlayStart(track) { if (!track) return; const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.plays++; item.lastPlayed = Date.now(); lastListenTrackId = track.id; lastListenPosition = 0; saveListeningStats(true); renderListeningStats() }
     function recordListenTime(deck) { if (deck !== audio || deck.paused || current < 0 || !tracks[current]) return; const position = deck.currentTime, track = tracks[current]; if (lastListenTrackId !== track.id) { lastListenTrackId = track.id; lastListenPosition = position; return } if (lastListenPosition !== null) { const delta = position - lastListenPosition; if (delta > 0 && delta <= 5) { const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.seconds += delta; listeningStats.totalSeconds += delta; const now = Date.now(); saveListeningStats(); if (now - lastStatsRenderedAt >= 1000) { lastStatsRenderedAt = now; renderListeningStats() } } } lastListenPosition = position } function syncMobileTrackEdit() { const button = document.querySelector("#editCurrentTrack"), status = document.querySelector("#mobileTrackEditStatus"); if (!button || !status) return; const track = current >= 0 ? tracks[current] : null; button.disabled = !track; status.textContent = track ? `${track.name} · ${track.artist}` : "Play a song to edit its details." } function render() { syncMobileTrackEdit(); renderRecent(); renderListeningStats(); renderAlbums(); const shown = visibleTracks(); document.querySelector('#count').textContent = `${shown.length} ${shown.length === 1 ? 'song' : 'songs'}`; const az = isAzView(); document.querySelector('#azBadge').hidden = !az; let lastLetter = ''; renderAzRail(az ? shown : []); if (!shown.length) { const message = searchTerm ? 'Try a different title, artist, or album.' : activeView === 'Favorites' ? 'Tap the ♡ beside a song to save it here.' : activePlaylistId ? 'Add songs to this playlist with the + button.' : 'Add MP3s or other audio files to start listening.'; list.innerHTML = `<div class="empty"><strong>${tracks.length ? 'No tracks here yet' : 'Your library is waiting'}</strong>${escapeHtml(message)}</div>`; return } list.innerHTML = shown.map(({ t, i }, n) => { const L = az ? azLetter(t.name) : '', head = az && L !== lastLetter ? `<div class="az-divider" data-letter="${escapeHtml(L)}">${escapeHtml(L)}</div>` : ''; lastLetter = L; return head + `<div class="track ${i === current ? 'current' : ''}" data-i="${i}"><div class="track-no">${i === current && !audio.paused ? '♫' : String(n + 1).padStart(2, '0')}</div><div class="cover" data-cover="${i}">♫</div><div class="track-copy"><div class="track-copy-line"><div class="track-name">${escapeHtml(t.name)}</div><button type="button" class="metadata-edit" data-edit-track="${escapeHtml(t.id)}" title="Edit song, artist, and album details" aria-label="Edit details for ${escapeHtml(t.name)}">✎</button></div><div class="track-artist">${escapeHtml(t.artist)}</div></div><div class="track-album">${escapeHtml(t.album)}</div><div class="track-length">${fmt(t.duration)}</div><button class="track-action ${t.favorite ? 'favorite-on' : ''}" data-favorite="${i}" title="${t.favorite ? 'Remove from' : 'Add to'} favorites">${t.favorite ? '♥' : '♡'}</button><button class="track-action queue-add" data-queue="${i}" title="Add to Up Next" aria-label="Add to Up Next">⇥</button><button class="track-action" data-add="${i}" title="Add to playlist">＋</button></div>` }).join(''); list.querySelectorAll('[data-cover]').forEach(el => setCover(el, tracks[+el.dataset.cover])); list.querySelectorAll('[data-edit-track]').forEach(el => el.onclick = e => { e.stopPropagation(); openTrackMetadata(el.dataset.editTrack) }); list.querySelectorAll('.track').forEach(el => el.addEventListener('click', e => { if (e.target.closest('button')) return; playTrack(+el.dataset.i) })); list.querySelectorAll('[data-favorite]').forEach(el => el.onclick = e => { e.stopPropagation(); toggleFavorite(+el.dataset.favorite) }); list.querySelectorAll('[data-queue]').forEach(el => el.onclick = e => { e.stopPropagation(); enqueueTrack(+el.dataset.queue) }); list.querySelectorAll('[data-add]').forEach(el => el.onclick = e => { e.stopPropagation(); addToPlaylist(+el.dataset.add) }); }
     function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) }
     function playlistTint(p) { const allowed = ['#ff5368', '#8b70ff', '#328fe8', '#20a77a', '#e6a33a']; return allowed.includes(p?.color) ? p.color : allowed[0] }
     function renderPlaylists() { const nav = document.querySelector('#playlistNav'); nav.innerHTML = playlists.map(p => `<button class="playlist-nav-item ${activePlaylistId === p.id ? 'active' : ''}" data-pid="${escapeHtml(p.id)}" style="--playlist-color:${playlistTint(p)}"><span class="playlist-dot"></span><span class="playlist-nav-name">${escapeHtml(p.name)}</span><span class="playlist-edit" data-edit-playlist="${escapeHtml(p.id)}" title="Edit playlist" aria-label="Edit ${escapeHtml(p.name)}">✎</span><span class="playlist-delete" data-delete-playlist="${escapeHtml(p.id)}" title="Delete playlist" aria-label="Delete ${escapeHtml(p.name)}">×</span></button>`).join(''); nav.querySelectorAll('[data-pid]').forEach(el => el.onclick = e => { if (e.target.closest('[data-delete-playlist],[data-edit-playlist]')) return; selectView(playlists.find(p => p.id === el.dataset.pid)?.name || el.dataset.pid, el.dataset.pid) }); nav.querySelectorAll('[data-delete-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); deletePlaylist(el.dataset.deletePlaylist) }); nav.querySelectorAll('[data-edit-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); openPlaylistDialog(el.dataset.editPlaylist) }); renderMobileNav() }
     function renderMobileNav() { const nav = document.querySelector('#mobileNav'); if (!nav) return; const navView = activeView === 'Album' ? 'Albums' : activeView; renderMobileTabs(navView); const views = ['Recently added']; nav.innerHTML = views.map(name => `<button data-name=\"${name}\" class=\"${navView === name && !activePlaylistId ? 'active' : ''}\">${name}</button>`).join('') + playlists.map(p => `<button data-name=\"${escapeHtml(p.id)}\" class=\"${activePlaylistId === p.id ? 'active' : ''}\">${escapeHtml(p.name)}</button>`).join('') + '<button class=\"mobile-auto-mix\" data-auto-mix>♫ Auto Mix</button><button class=\"mobile-new-playlist\" data-new-playlist>＋ New playlist</button>'; nav.querySelectorAll('button').forEach(b => b.onclick = () => { if (b.hasAttribute('data-auto-mix')) { startAutoMix(); return } if (b.hasAttribute('data-new-playlist')) { openPlaylistDialog(); return } const p = playlists.find(x => x.id === b.dataset.name); selectView(p ? p.name : b.dataset.name, p?.id || null) }) }
-    function renderMobileTabs(navView) { const tabs = document.querySelector('#mobileTabs'); if (!tabs) return; const searching = document.activeElement === document.querySelector('#search') || (!!searchTerm && activeView !== 'Home'); const items = [['Home', 'Home', '<path d="m3 10.5 9-7.2 9 7.2V20a1 1 0 0 1-1 1h-4.5v-6.5h-7V21H4a1 1 0 0 1-1-1z"/>'], ['Library', 'Library', '<rect x="4" y="3.5" width="16" height="17" rx="3.2"/><path d="M10 16V8.6l5-1V14"/><circle cx="8.6" cy="16" r="1.4"/><circle cx="13.6" cy="14" r="1.4"/>'], ['Favorites', 'Favorites', '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>'], ['__search', 'Search', '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>']]; tabs.innerHTML = items.map(([view, label, icon]) => { const isSearch = view === '__search', on = isSearch ? searching : view === 'Library' ? (!searching && (['Library', 'All tracks', 'Albums', 'Recently added'].includes(navView) || !!activePlaylistId)) : (!searching && navView === view && !activePlaylistId); return `<button type="button" data-tab="${view}" class="tab-${label.toLowerCase()}${on ? ' active' : ''}" aria-label="${label}"${on ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true">${icon}</svg><span>${label}</span></button>` }).join(''); tabs.querySelectorAll('button').forEach(b => b.onclick = () => { const m = document.querySelector('main'); if (b.dataset.tab === '__search') { if (m) m.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelector('#search').focus(); return } const same = b.classList.contains('active') && (b.dataset.tab !== 'Library' || (window.musikoLibraryAtRoot && window.musikoLibraryAtRoot())); document.querySelector('#search').blur(); if (!same || searchTerm) { if (searchTerm) { searchTerm = ''; document.querySelector('#search').value = '' } selectView(b.dataset.tab) } if (m) m.scrollTo({ top: 0, behavior: same ? 'smooth' : 'auto' }) }) }
+    function renderMobileTabs(navView) { const tabs = document.querySelector('#mobileTabs'); if (!tabs) return; const searching = document.activeElement === document.querySelector('#search') || (!!searchTerm && activeView !== 'Home'); const items = [['Home', 'Home', '<path d="m3 10.5 9-7.2 9 7.2V20a1 1 0 0 1-1 1h-4.5v-6.5h-7V21H4a1 1 0 0 1-1-1z"/>'], ['Library', 'Library', '<rect x="4" y="3.5" width="16" height="17" rx="3.2"/><path d="M10 16V8.6l5-1V14"/><circle cx="8.6" cy="16" r="1.4"/><circle cx="13.6" cy="14" r="1.4"/>'], ['__search', 'Search', '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>']]; tabs.innerHTML = items.map(([view, label, icon]) => { const isSearch = view === '__search', on = isSearch ? searching : view === 'Library' ? (!searching && (['Library', 'All tracks', 'Albums', 'Recently added', 'Favorites'].includes(navView) || !!activePlaylistId)) : (!searching && navView === view && !activePlaylistId); return `<button type="button" data-tab="${view}" class="tab-${label.toLowerCase()}${on ? ' active' : ''}" aria-label="${label}"${on ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true">${icon}</svg><span>${label}</span></button>` }).join(''); tabs.querySelectorAll('button').forEach(b => b.onclick = () => { const m = document.querySelector('main'); if (b.dataset.tab === '__search') { if (m) m.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelector('#search').focus(); return } const same = b.classList.contains('active') && (b.dataset.tab !== 'Library' || (window.musikoLibraryAtRoot && window.musikoLibraryAtRoot())); document.querySelector('#search').blur(); if (!same || searchTerm) { if (searchTerm) { searchTerm = ''; document.querySelector('#search').value = '' } selectView(b.dataset.tab) } if (m) m.scrollTo({ top: 0, behavior: same ? 'smooth' : 'auto' }) }) }
     (() => { const root = document.documentElement, field = () => document.querySelector('#search'); const typing = el => el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') && el.type !== 'checkbox' && el.type !== 'range' && el.type !== 'file'; document.addEventListener('focusin', e => { if (typing(e.target)) root.classList.add('kb-open'); if (e.target === field()) renderMobileNav() }); document.addEventListener('focusout', e => { if (typing(e.target)) setTimeout(() => { if (!typing(document.activeElement)) root.classList.remove('kb-open') }, 60); if (e.target === field()) setTimeout(renderMobileNav, 80) }) })();
     function selectView(name, playlistId = null) { const playlist = playlistId ? playlists.find(p => p.id === playlistId) : null; if (playlist) name = playlist.name; activeView = name; activePlaylistId = playlistId; activeAlbumKey = null; const isHome = name === 'Home' && !playlistId, isAlbums = name === 'Albums' && !playlistId; document.querySelector('.hero').hidden = !isHome; document.querySelector('#albumsSection').hidden = !isAlbums; document.querySelector('.track-section-head').hidden = isHome || isAlbums; document.querySelector('#tracklist').hidden = isHome || isAlbums; document.querySelector('#backToAlbums').hidden = true; document.querySelector('#viewKicker').textContent = isHome ? 'MUSIKO' : playlistId ? 'PLAYLISTS' : 'LIBRARY'; document.querySelector('#viewTitle').textContent = name; document.querySelector('#listTitle').textContent = playlistId ? name : name === 'All tracks' ? 'Your tracks' : name; document.querySelector('#playlistDescription').textContent = playlistId ? (playlists.find(p => p.id === playlistId)?.description || '') : ''; document.querySelector('#playlistDescription').hidden = !playlistId || !playlists.find(p => p.id === playlistId)?.description; document.querySelector('#editActivePlaylist').hidden = !playlistId; document.querySelector('#listKicker').textContent = playlistId ? 'PLAYLIST' : name === 'Favorites' ? 'YOUR FAVORITES' : 'YOUR COLLECTION'; document.querySelectorAll('.nav button[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === name)); renderPlaylists(); render(); preloadedTrackIndex = -1; prepareNextTrack() }
     async function createPlaylist(name, description = '', color = '#ff5368', rule = 'manual', ruleValue = '') { name = (name || '').trim(); if (!name) return null; const p = { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, name, description: description.trim(), color: playlistTint({ color }), trackIds: [], rule, ruleValue: ruleValue.trim() }; playlists.push(p); try { await dbRequest('playlists', 'put', p) } catch { playlists = playlists.filter(x => x.id !== p.id); toast('Could not save playlist'); return null } renderPlaylists(); return p }
@@ -9106,11 +9175,12 @@
     // Library page: Playlists / Artists / Albums / Songs / Downloaded + Recently Added
     (() => {
       const $ = q => document.querySelector(q);
-      const sec = $('#librarySection'), backBar = $('#libraryBack'), backBtn = $('#libraryBackBtn');
+      const sec = $('#librarySection'), backBar = $('#libraryBack'), backBtn = $('#libraryBackBtn'), headBtn = $('#headerBackBtn');
       if (!sec) return;
       const origSelect = window.selectView, origRender = window.render, origVisible = window.visibleTracks,
         origAlbum = window.openAlbumView, origPlaylists = window.renderPlaylists;
-      let mode = null, artist = null;
+      let mode = null, artist = null, backTo = null;
+      const BACK_VIEWS = ['All tracks', 'Albums', 'Recently added', 'Favorites'];
       window.musikoLibraryAtRoot = () => mode === 'root';
       const LIB_MODES = ['root', 'playlists', 'artists'];
       const chev = '<svg class="lib-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
@@ -9119,6 +9189,7 @@
         artists: '<circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20c.6-3.7 3.6-5.7 7.2-5.7s6.6 2 7.2 5.7"/>',
         albums: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.6"/><path d="M12 3.5v3"/>',
         songs: '<path d="M14 4v11.2"/><path d="M14 4c1.2 2.6 3.6 3.1 5 3.4"/><circle cx="10.8" cy="16.2" r="3.2"/>',
+        favorites: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>',
         downloaded: ''
       };
       const esc = v => escapeHtml(String(v ?? ''));
@@ -9131,12 +9202,18 @@
         $('#viewKicker').textContent = kicker; $('#viewTitle').textContent = title;
         document.documentElement.classList.toggle('in-library', LIB_MODES.includes(mode));
       }
-      function showBack(label) { backBar.hidden = !label; if (label) backBtn.textContent = '← ' + label }
+      function showBack(label, inHeader) {
+        const useHeader = !!label && !!inHeader;
+        backBar.hidden = !label;
+        headBtn.hidden = !useHeader;
+        document.documentElement.classList.toggle('back-in-header', useHeader);
+        if (label) { backBtn.textContent = '← ' + label; headBtn.textContent = '← ' + label }
+      }
 
       function renderRoot() {
         const albums = getAlbumGroups();
         const recent = albums.map(g => ({ g, last: Math.max(...g.indices) })).sort((a, b) => b.last - a.last).slice(0, 12).map(x => x.g);
-        sec.innerHTML = `<div class="lib-list">${row('playlists', icons.playlists, 'Playlists', playlists.length)}${row('artists', icons.artists, 'Artists', artistGroups().length)}${row('albums', icons.albums, 'Albums', albums.length)}${row('songs', icons.songs, 'Songs', tracks.length)}</div>`
+        sec.innerHTML = `<div class="lib-list">${row('playlists', icons.playlists, 'Playlists', playlists.length)}${row('artists', icons.artists, 'Artists', artistGroups().length)}${row('albums', icons.albums, 'Albums', albums.length)}${row('songs', icons.songs, 'Songs', tracks.length)}${row('favorites', icons.favorites, 'Favorites', tracks.filter(t => t.favorite).length)}</div>`
           + `<div class="lib-head"><h2>Recently Added</h2>${recent.length ? '<button type="button" data-go="recent">See all</button>' : ''}</div>`
           + (recent.length ? `<div class="lib-grid">${recent.map((g, i) => `<button type="button" class="lib-card" data-album="${i}"><span class="lib-art">♫</span><span class="lib-name">${esc(g.album)}</span><span class="lib-sub">${esc(g.artist)}</span></button>`).join('')}</div>`
             : '<div class="lib-empty"><strong>Nothing here yet</strong>Add music and your newest albums will show up here.<br><button type="button" class="glass-btn" data-go="add">＋ Add music</button></div>');
@@ -9161,25 +9238,32 @@
           const title = next === 'artist' ? arg : 'Downloaded';
           setChrome(next === 'artist' ? 'ARTIST' : 'LIBRARY', title);
           $('#listTitle').textContent = title; $('#listKicker').textContent = next === 'artist' ? 'ARTIST' : 'ON THIS DEVICE';
-          showBack(next === 'artist' ? 'Artists' : 'Library');
+          showBack(next === 'artist' ? 'Artists' : 'Library', true);
           return;
         }
         origSelect('Library', null);
         $('.track-section-head').hidden = true; $('#tracklist').hidden = true; $('#backToAlbums').hidden = true;
         sec.hidden = false; updateAzActive();
         setChrome('LIBRARY', next === 'root' ? 'Library' : next === 'playlists' ? 'Playlists' : 'Artists');
-        showBack(next === 'root' ? '' : 'Library');
+        showBack(next === 'root' ? '' : 'Library', true);
         paint();
         const m = $('main'); if (m) m.scrollTo({ top: 0 });
       }
-      function leave() { mode = null; artist = null; sec.hidden = true; backBar.hidden = true; document.documentElement.classList.remove('in-library') }
+      function leave() { mode = null; artist = null; backTo = null; sec.hidden = true; backBar.hidden = true; headBtn.hidden = true; document.documentElement.classList.remove('back-in-header'); document.documentElement.classList.remove('in-library') }
 
       window.selectView = function (name, playlistId = null) {
         if (!playlistId && name === 'Library') return enter('root');
         leave();
-        return origSelect(name, playlistId);
+        const out = origSelect(name, playlistId);
+        if (!playlistId && BACK_VIEWS.includes(name)) { backTo = 'library'; showBack('Library', true) }
+        return out;
       };
-      window.openAlbumView = function (key) { leave(); return origAlbum(key) };
+      window.openAlbumView = function (key) {
+        leave();
+        const out = origAlbum(key);
+        backTo = 'albums'; showBack('Albums', true);
+        return out;
+      };
       window.visibleTracks = function () { const r = origVisible(); return artist ? r.filter(x => artistName(x.t) === artist) : r };
       window.render = function () {
         const out = origRender.apply(this, arguments);
@@ -9198,12 +9282,14 @@
           case 'artists': return enter('artists');
           case 'albums': return window.selectView('Albums');
           case 'songs': return window.selectView('All tracks');
+          case 'favorites': return window.selectView('Favorites');
           case 'recent': return window.selectView('Recently added');
           case 'add': return $('#openBtn').click();
           case 'newplaylist': return openPlaylistDialog();
         }
       });
-      backBtn.addEventListener('click', () => { if (mode === 'artist') enter('artists'); else window.selectView('Library') });
+      const goBack = () => { if (mode === 'artist') enter('artists'); else if (backTo === 'albums') window.selectView('Albums'); else window.selectView('Library') };
+      backBtn.addEventListener('click', goBack); headBtn.addEventListener('click', goBack);
     })();
   </script>
   <script>
