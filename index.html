@@ -7856,12 +7856,12 @@
     #backToAlbums { display: none !important }
     .header-back { flex: none; align-self: center; padding: 0 16px; font-size: 13px; font-weight: 650 }
     .header-back[hidden] { display: none }
-    /* phones: back button replaces the title in the header; desktop keeps the title and uses the bar below it */
+    /* phones: back button replaces the title in the header; desktop keeps the title and has no back button */
     @media (max-width: 760px) {
       html.back-in-header main > .top .crumb { display: none }
       html.back-in-header #libraryBack { display: none }
     }
-    @media (min-width: 761px) { #headerBackBtn { display: none !important } }
+    @media (min-width: 761px) { #headerBackBtn, #libraryBack { display: none !important } }
     html.in-library .mobile-nav { display: none !important }
 
     .lib-list { display: flex; flex-direction: column; margin: 0 0 30px }
@@ -9101,7 +9101,7 @@
     document.querySelector('#next').onclick = playNext; document.querySelector('#prev').onclick = () => { if (audio.currentTime > 3) { audio.currentTime = 0; return } const shown = visibleTracks(); if (shown.length) { const at = shown.findIndex(x => x.i === current); playTrack(shown[(at - 1 + shown.length) % shown.length].i) } };
     document.querySelector('#shuffle').onclick = () => { shuffle = !shuffle; preloadedTrackIndex = -1; prepareNextTrack(); syncPlaybackModeButtons(); toast(shuffle ? 'Shuffle on' : 'Shuffle off') }; document.querySelector('#repeat').onclick = () => { repeat = !repeat; audioDecks.forEach(deck => deck.loop = repeat); syncPlaybackModeButtons(); toast(repeat ? 'Repeat on' : 'Repeat off') }; syncPlaybackModeButtons(); document.querySelector('#volume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#fullVolume').value = e.target.value }; document.querySelector('#fullVolume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#volume').value = e.target.value }; audioDecks.forEach(deck => { deck.volume = .8; deck.playbackRate = window.MusikoAppearance.value.playbackRate; deck.loop = repeat }); document.querySelector('#playbackRate').value = String(audio.playbackRate); document.querySelector('#playbackRate').onchange = e => { const rate = Number(e.target.value); audioDecks.forEach(deck => deck.playbackRate = rate); window.MusikoAppearance.value.playbackRate = rate; window.MusikoAppearance.save(); toast('Playback speed ' + rate + '×') }; document.querySelector('#crossfadeDuration').value = String(window.MusikoAppearance.value.crossfadeSeconds); document.querySelector('#crossfadeDuration').onchange = e => { window.MusikoAppearance.value.crossfadeSeconds = Number(e.target.value); window.MusikoAppearance.save(); toast(window.MusikoAppearance.value.crossfadeSeconds ? 'Crossfade set to ' + e.target.value + ' seconds' : 'Crossfade off') }; document.querySelector('#gaplessPlayback').checked = window.MusikoAppearance.value.gapless; document.querySelector('#glassEffect').checked = window.MusikoAppearance.value.glassy; document.querySelector('#searchAnimation').checked = window.MusikoAppearance.value.searchAnimation; document.querySelector('#largerMobileControls').checked = window.MusikoAppearance.value.largerMobileControls; document.querySelector('#trimSilence').checked = window.MusikoAppearance.value.trimSilence; document.querySelector('#lowEndMode').checked = window.MusikoAppearance.value.lowEnd; document.querySelector('#crossfadeDuration').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#gaplessPlayback').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#lowEndMode').onchange = e => { const settings = window.MusikoAppearance; settings.value.lowEnd = e.target.checked; document.querySelector('#crossfadeDuration').disabled = e.target.checked; document.querySelector('#gaplessPlayback').disabled = e.target.checked; if (e.target.checked) { if (isCrossfading) cancelCrossfade(); audioDecks.forEach(deck => { if (deck !== audio) { deck.pause(); deck.preload = 'none' } }); preloadedTrackIndex = -1 } else prepareNextTrack(); saveAppearance(); toast(e.target.checked ? 'Ultra low-end mode on' : 'Ultra low-end mode off') }; document.querySelector('#trimSilence').onchange = e => { window.MusikoAppearance.value.trimSilence = e.target.checked; window.MusikoAppearance.save(); silentSince = 0; if (e.target.checked) startSilenceMonitor(); else { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } toast(e.target.checked ? 'Silence skipping on' : 'Silence skipping off') }; document.querySelector('#largerMobileControls').onchange = e => { window.MusikoAppearance.value.largerMobileControls = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Larger mobile player buttons on' : 'Larger mobile player buttons off') }; document.querySelector('#searchAnimation').onchange = e => { window.MusikoAppearance.value.searchAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Search animation on' : 'Search animation off') }; document.querySelector('#glassEffect').onchange = e => { window.MusikoAppearance.value.glassy = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Glass effect on' : 'Glass effect off') }; document.querySelector('#gaplessPlayback').onchange = e => { window.MusikoAppearance.value.gapless = e.target.checked; window.MusikoAppearance.save(); preloadedTrackIndex = -1; prepareNextTrack(); toast(e.target.checked ? 'Gapless playback on' : 'Gapless playback off') }; document.querySelector('#sleepTimerSelect').onchange = e => setSleepTimer(e.target.value);
     function startSilenceMonitor() { if (!window.MusikoAppearance.value.trimSilence || silenceCheckTimer) return; try { const AudioContextClass = window.AudioContext || window.webkitAudioContext; if (!AudioContextClass) return; silenceAudioContext = silenceAudioContext || new AudioContextClass(); for (const deck of audioDecks) { if (!silenceAnalyzers.has(deck)) { ensureVolumeGraph(); const analyser = silenceAudioContext.createAnalyser(); analyser.fftSize = 1024; deckGains.get(deck).connect(analyser); silenceAnalyzers.set(deck, { analyser, data: new Uint8Array(analyser.fftSize) }) } } silenceAudioContext.resume().catch(() => { }); silenceCheckTimer = setInterval(() => { if (!window.MusikoAppearance.value.trimSilence || audio.paused || !Number.isFinite(audio.duration) || audio.duration <= 0 || isCrossfading) { silentSince = 0; return } const meter = silenceAnalyzers.get(audio); if (!meter) return; meter.analyser.getByteTimeDomainData(meter.data); let sum = 0; for (const sample of meter.data) { const value = (sample - 128) / 128; sum += value * value } const rms = Math.sqrt(sum / meter.data.length); if (rms < .006) { if (!silentSince) silentSince = performance.now(); if (performance.now() - silentSince > 1100 && performance.now() - lastSilenceSeek > 500) { audio.currentTime = Math.min(audio.duration - .05, audio.currentTime + 1.25); lastSilenceSeek = performance.now() } } else silentSince = 0 }, 250) } catch { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } } function updatePlayIcons() { const path = audio.paused ? '<path d="m8 5 12 7-12 7z"/>' : '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'; document.querySelector('#playIcon').innerHTML = path; document.querySelector('#fullPlayIcon').innerHTML = path }
-    function syncPlaybackModeButtons() { [['#shuffle', '#fullShuffle', shuffle], ['#repeat', '#fullRepeat', repeat]].forEach(([main, full, active]) => [document.querySelector(main), document.querySelector(full)].forEach(button => { button.style.color = active ? 'var(--accent)' : ''; button.setAttribute('aria-pressed', String(active)) })) } function bindAudioDeck(deck) { deck.onplay = () => { if (deck !== audio) return; if (window.MusikoAppearance.value.trimSilence) startSilenceMonitor(); sleepPauseTriggered = false; updatePlayIcons(); render() }; deck.onpause = () => { if (deck !== audio) return; saveListeningStats(true); if (isCrossfading) cancelCrossfade(); updatePlayIcons(); render() }; deck.ontimeupdate = () => { if (deck !== audio) return; recordListenTime(deck); const ratio = audio.duration ? audio.currentTime / audio.duration * 100 : 0; document.querySelector('#elapsed').textContent = fmt(audio.currentTime); document.querySelector('#progress').style.width = ratio + '%'; document.querySelector('#fullElapsed').textContent = fmt(audio.currentTime); document.querySelector('#fullProgress').style.width = ratio + '%'; updateLyricHighlight(); if (sleepAtTrackEnd && audio.duration && audio.currentTime >= audio.duration - .3) { stopForSleepTimer(); return } if (!isIOSDevice && !repeat && !sleepAtTrackEnd && !isCrossfading && !window.MusikoAppearance.value.lowEnd && window.MusikoAppearance.value.crossfadeSeconds > 0 && (audio.duration - audio.currentTime) / audio.playbackRate <= window.MusikoAppearance.value.crossfadeSeconds) playNext() }; deck.onloadedmetadata = () => { if (deck !== audio || current < 0) return; const prevDuration = tracks[current].duration; tracks[current].duration = audio.duration; if (!prevDuration || Math.abs(prevDuration - audio.duration) > .5) saveTrack(tracks[current]); lookupLyrics(tracks[current]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration); render(); prepareNextTrack() }; deck.onended = () => { if (deck !== audio) return; if (sleepPauseTriggered) { sleepPauseTriggered = false; return } if (sleepAtTrackEnd) { stopForSleepTimer(); return } if (!repeat && (queue.length || visibleTracks().length)) playNext() } }
+    function syncPlaybackModeButtons() { [['#shuffle', '#fullShuffle', shuffle], ['#repeat', '#fullRepeat', repeat]].forEach(([main, full, active]) => [document.querySelector(main), document.querySelector(full)].forEach(button => { button.style.color = active ? 'var(--accent)' : ''; button.setAttribute('aria-pressed', String(active)) })) } function bindAudioDeck(deck) { deck.onplay = () => { if (deck !== audio) return; if (window.MusikoAppearance.value.trimSilence) startSilenceMonitor(); sleepPauseTriggered = false; updatePlayIcons(); render() }; deck.onpause = () => { if (deck !== audio) return; saveListeningStats(true); if (isCrossfading) cancelCrossfade(); updatePlayIcons(); render() }; deck.ontimeupdate = () => { if (deck !== audio) return; recordListenTime(deck); if (window.musikoScrubbing) return; const ratio = audio.duration ? audio.currentTime / audio.duration * 100 : 0; document.querySelector('#elapsed').textContent = fmt(audio.currentTime); document.querySelector('#progress').style.width = ratio + '%'; document.querySelector('#fullElapsed').textContent = fmt(audio.currentTime); document.querySelector('#fullProgress').style.width = ratio + '%'; updateLyricHighlight(); if (sleepAtTrackEnd && audio.duration && audio.currentTime >= audio.duration - .3) { stopForSleepTimer(); return } if (!isIOSDevice && !repeat && !sleepAtTrackEnd && !isCrossfading && !window.MusikoAppearance.value.lowEnd && window.MusikoAppearance.value.crossfadeSeconds > 0 && (audio.duration - audio.currentTime) / audio.playbackRate <= window.MusikoAppearance.value.crossfadeSeconds) playNext() }; deck.onloadedmetadata = () => { if (deck !== audio || current < 0) return; const prevDuration = tracks[current].duration; tracks[current].duration = audio.duration; if (!prevDuration || Math.abs(prevDuration - audio.duration) > .5) saveTrack(tracks[current]); lookupLyrics(tracks[current]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration); render(); prepareNextTrack() }; deck.onended = () => { if (deck !== audio) return; if (sleepPauseTriggered) { sleepPauseTriggered = false; return } if (sleepAtTrackEnd) { stopForSleepTimer(); return } if (!repeat && (queue.length || visibleTracks().length)) playNext() } }
     audioDecks.forEach(bindAudioDeck); audioDecks.forEach(deck => { deck.setAttribute('playsinline', ''); deck.addEventListener('error', () => { if (deck !== audio || current < 0 || !audio.getAttribute('src')) return; if (!reloadCurrentTrack()) toast('This song could not be loaded') }) });
     document.querySelector('#seek').onclick = e => { if (audio.duration) { const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration } };
     document.querySelector('#fullSeek').onclick = e => { if (audio.duration) { const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration } };
@@ -9884,6 +9884,135 @@
       setInterval(() => { if (activeView === 'Home') renderLyric() }, 400);
       setInterval(() => { if (partOf() !== (mix && mix.part)) refresh() }, 60000);
       refresh();
+    })();
+  </script>
+  <style id="musiko-mobile-search">
+    /* ===== Search button: clear button, tidy native UI, "has query" state ===== */
+    .searchbox input::-webkit-search-cancel-button, .searchbox input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none }
+    .search-clear { flex: none; display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .16); color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent }
+    .search-clear[hidden] { display: none }
+    .search-clear svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round }
+    .search-cancel { display: none }
+    html[data-theme="light"] .search-clear { background: rgba(40, 32, 44, .14) }
+    .searchbox.has-query { border-color: color-mix(in srgb, var(--accent, #ff5368) 70%, transparent); color: var(--accent, #ff5368) }
+    @media (min-width: 761px) { .searchbox .search-clear { margin-left: -4px } }
+
+    /* ===== Phones: tapping search opens a full-width search bar over the header ===== */
+    @media (max-width: 760px) {
+      html.search-open body main > .top { z-index: 20 }
+      html.search-open body main > .top .crumb,
+      html.search-open body main > .top .header-back,
+      html.search-open body main > .top .top-actions > :not(.searchbox):not(.search-cancel) { display: none !important }
+      html.search-open body main > .top .top-actions { width: 100%; margin: 0; gap: 12px; align-items: center; flex-wrap: nowrap }
+      html.search-open body main > .top .searchbox {
+        position: static; flex: 1 1 auto; width: auto; min-width: 0; height: 44px; padding: 0 12px; gap: 10px; border-radius: 999px;
+        background: rgba(255, 255, 255, .09); color: inherit; animation: musikoSearchIn .18s ease-out
+      }
+      html.search-open body main > .top .searchbox svg { width: 18px; height: 18px }
+      html.search-open body main > .top .searchbox input { width: 100%; min-width: 0; flex: 1; color: inherit }
+      html.search-open body main > .top .searchbox input::placeholder { opacity: .7 }
+      html.search-open body main > .top .search-cancel {
+        display: block; flex: none; background: none; border: 0; padding: 10px 2px; color: var(--accent, #ff5368);
+        font: 600 15px 'DM Sans', system-ui, sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent
+      }
+      html[data-theme="light"].search-open body main > .top .searchbox { background: rgba(40, 32, 44, .07) }
+      @keyframes musikoSearchIn { from { opacity: .4; transform: scaleX(.92); transform-origin: right center } to { opacity: 1; transform: none } }
+    }
+    @media (prefers-reduced-motion: reduce) { html.search-open body main > .top .searchbox { animation: none } }
+  </style>
+  <script>
+    // Mobile search button: full-width bar, clear (×), Cancel, and a highlighted state while a query is active
+    (() => {
+      const input = document.querySelector('#search'); if (!input) return;
+      const box = input.closest('.searchbox'), actions = document.querySelector('.top-actions'), root = document.documentElement;
+      if (!box || !actions) return;
+      input.setAttribute('enterkeyhint', 'search'); input.setAttribute('aria-label', 'Search songs, artists, albums');
+      const clear = document.createElement('button');
+      clear.type = 'button'; clear.className = 'search-clear'; clear.hidden = true; clear.setAttribute('aria-label', 'Clear search');
+      clear.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>';
+      box.appendChild(clear);
+      const cancel = document.createElement('button');
+      cancel.type = 'button'; cancel.className = 'search-cancel'; cancel.textContent = 'Cancel';
+      actions.appendChild(cancel);
+
+      const sync = () => { const has = input.value.trim() !== ''; clear.hidden = !has; box.classList.toggle('has-query', has && !root.classList.contains('search-open')) };
+      const fire = () => input.dispatchEvent(new Event('input', { bubbles: true }));
+      const keepFocus = e => e.preventDefault();   // taps on × / Cancel must not blur the field first
+      clear.addEventListener('pointerdown', keepFocus); cancel.addEventListener('pointerdown', keepFocus);
+      clear.addEventListener('click', () => { input.value = ''; fire(); sync(); input.focus() });
+      cancel.addEventListener('click', () => { input.value = ''; fire(); root.classList.remove('search-open'); input.blur(); sync() });
+
+      input.addEventListener('focus', () => { root.classList.add('search-open'); sync() });
+      input.addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== input) { root.classList.remove('search-open'); sync() } }, 0));
+      input.addEventListener('input', sync);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === 'Escape') { if (e.key === 'Escape' && input.value) { input.value = ''; fire(); sync() } input.blur() } });
+      sync();
+    })();
+  </script>
+  <style id="musiko-scrub">
+    /* ===== Draggable seek bars (full player + mini player) ===== */
+    #seek, #fullSeek { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; outline: none }
+    #seek::before, #fullSeek::before { content: ""; position: absolute; left: -6px; right: -6px; top: -14px; bottom: -14px }   /* bigger touch target */
+    #fullSeek { height: 6px; transition: height .14s ease }
+    #fullSeek .fill, #seek .fill { transition: none }
+    #fullSeek .fill:after, #seek .fill:after { transition: transform .14s ease, box-shadow .14s ease }
+    #fullSeek .fill:after { width: 12px; height: 12px; right: -6px; top: -3px }
+    #fullSeek.scrubbing { height: 10px }
+    #fullSeek.scrubbing .fill:after { transform: scale(1.35); box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent, #ff5368) 28%, transparent) }
+    #seek.scrubbing .fill:after { transform: scale(1.5); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent, #ff5368) 28%, transparent) }
+    #seek:focus-visible, #fullSeek:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #ff5368) 45%, transparent) }
+    .scrub-time { font-variant-numeric: tabular-nums }
+  </style>
+  <script>
+    // Drag (or tap) the progress bar to seek. Releasing commits the new position.
+    (() => {
+      const bars = [document.querySelector('#seek'), document.querySelector('#fullSeek')].filter(Boolean);
+      if (!bars.length) return;
+      const fills = [document.querySelector('#progress'), document.querySelector('#fullProgress')].filter(Boolean);
+      const times = [document.querySelector('#elapsed'), document.querySelector('#fullElapsed')].filter(Boolean);
+      const ready = () => Number.isFinite(audio.duration) && audio.duration > 0;
+      const ratioAt = (bar, x) => { const r = bar.getBoundingClientRect(); return r.width ? Math.max(0, Math.min(1, (x - r.left) / r.width)) : 0 };
+      const paint = ratio => {
+        fills.forEach(f => f.style.width = (ratio * 100) + '%');
+        times.forEach(t => t.textContent = fmt(ratio * audio.duration));
+        bars.forEach(b => b.setAttribute('aria-valuenow', String(Math.round(ratio * audio.duration))));
+      };
+      const commit = ratio => { audio.currentTime = ratio * audio.duration; paint(ratio) };
+
+      bars.forEach(bar => {
+        bar.onclick = null;                      // replaces the old click-only seeking
+        bar.setAttribute('role', 'slider'); bar.setAttribute('tabindex', '0'); bar.setAttribute('aria-label', 'Seek'); bar.setAttribute('aria-valuemin', '0');
+        let dragging = false, last = 0;
+        bar.addEventListener('pointerdown', e => {
+          if (e.button !== undefined && e.button > 0) return;
+          if (!ready()) return;
+          dragging = true; window.musikoScrubbing = true; bar.classList.add('scrubbing');
+          try { bar.setPointerCapture(e.pointerId) } catch (err) { }
+          last = ratioAt(bar, e.clientX); paint(last); e.preventDefault();
+        });
+        bar.addEventListener('pointermove', e => { if (!dragging) return; last = ratioAt(bar, e.clientX); paint(last) });
+        const finish = (e, apply) => {
+          if (!dragging) return;
+          dragging = false; bar.classList.remove('scrubbing');
+          try { bar.releasePointerCapture(e.pointerId) } catch (err) { }
+          if (apply && ready()) commit(last);
+          window.musikoScrubbing = false;
+        };
+        bar.addEventListener('pointerup', e => finish(e, true));
+        bar.addEventListener('pointercancel', e => finish(e, false));
+        bar.addEventListener('lostpointercapture', e => finish(e, false));
+        bar.addEventListener('keydown', e => {
+          if (!ready()) return;
+          const step = e.shiftKey ? 15 : 5; let t = null;
+          if (e.key === 'ArrowRight' || e.key === 'ArrowUp') t = audio.currentTime + step;
+          else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') t = audio.currentTime - step;
+          else if (e.key === 'Home') t = 0; else if (e.key === 'End') t = audio.duration - .5;
+          if (t === null) return;
+          e.preventDefault(); commit(Math.max(0, Math.min(audio.duration, t)) / audio.duration);
+        });
+        const setMax = () => bar.setAttribute('aria-valuemax', String(Math.round(audio.duration || 0)));
+        document.addEventListener('loadedmetadata', setMax, true);
+      });
     })();
   </script>
 </body>
