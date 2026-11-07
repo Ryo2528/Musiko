@@ -7901,6 +7901,92 @@
     html[data-theme="light"] .lib-row:hover { background: rgba(40, 32, 44, .05) }
     html[data-theme="light"] .lib-art { background-color: rgba(40, 32, 44, .08); color: rgba(40, 32, 44, .35) }
   </style>
+  <style id="musiko-playlist-dialog">
+    /* ===== Playlist dialog: cleaner, with live preview ===== */
+    html body .playlist-modal-card { --pl-color: #ff5368; width: min(460px, 100%); padding: 24px; border-radius: 24px; background: #1d1d27; border-color: rgba(255, 255, 255, .1); max-height: calc(100dvh - 36px); overflow-y: auto; scrollbar-width: thin }
+    html body .playlist-modal-card header { margin-bottom: 16px }
+    html body .playlist-modal-card .playlist-modal-kicker { color: var(--pl-color); letter-spacing: .16em }
+    html body .playlist-field[hidden] { display: none }
+    html body .playlist-field { margin: 16px 0; gap: 8px; font-size: 12.5px; color: #e4e2ea }
+    html body .playlist-field input, html body .playlist-field textarea, html body .playlist-field select {
+      border-radius: 12px; border: 1px solid rgba(255, 255, 255, .12); background-color: rgba(255, 255, 255, .05); padding: 12px 14px; transition: border-color .15s, box-shadow .15s, background-color .15s
+    }
+    html body .playlist-field textarea { min-height: 74px; resize: none; line-height: 1.45 }
+    html body .playlist-field input:hover, html body .playlist-field textarea:hover, html body .playlist-field select:hover { background-color: rgba(255, 255, 255, .075) }
+    html body .playlist-field input:focus, html body .playlist-field textarea:focus, html body .playlist-field select:focus {
+      border-color: var(--pl-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--pl-color) 22%, transparent); outline: none
+    }
+    html body .playlist-field > span .pl-count { font-variant-numeric: tabular-nums; color: #8d8a97; font-weight: 500 }
+
+    /* custom select (was the stark native black box) */
+    html body .playlist-rule-select {
+      -webkit-appearance: none; appearance: none; width: 100%; min-height: 46px; color: #f5f4f7; font: 500 14px 'DM Sans', system-ui, sans-serif; cursor: pointer;
+      background-color: rgba(255, 255, 255, .05);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a9a6b3' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center; padding-right: 38px !important
+    }
+    html body .playlist-rule-select option { background: #23232e; color: #f5f4f7 }
+    .pl-hint { margin: -2px 0 0; color: #9a97a4; font-size: 12px; font-weight: 400; line-height: 1.45 }
+
+    /* live preview */
+    .pl-preview { display: flex; align-items: center; gap: 14px; padding: 12px; margin: 0 0 6px; border-radius: 16px; background: linear-gradient(135deg, color-mix(in srgb, var(--pl-color) 22%, transparent), rgba(255, 255, 255, .03) 70%); border: 1px solid color-mix(in srgb, var(--pl-color) 28%, rgba(255, 255, 255, .06)) }
+    .pl-tile { flex: none; width: 54px; height: 54px; border-radius: 14px; display: grid; place-items: center; color: #fff; background: linear-gradient(145deg, color-mix(in srgb, var(--pl-color) 100%, #fff 18%), color-mix(in srgb, var(--pl-color) 78%, #000)); box-shadow: 0 8px 20px color-mix(in srgb, var(--pl-color) 38%, transparent) }
+    .pl-tile svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round }
+    .pl-preview-copy { min-width: 0 }
+    .pl-preview-name { font: 600 16px/1.25 'Outfit', 'DM Sans', system-ui, sans-serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+    .pl-preview-name.is-empty { opacity: .5 }
+    .pl-preview-sub { margin-top: 3px; color: #b3b0bd; font-size: 12.5px }
+
+    /* colors */
+    html body .playlist-colors { gap: 12px }
+    html body .playlist-colors button { position: relative; width: 34px; height: 34px; border: 0; transition: transform .14s ease, box-shadow .14s ease }
+    html body .playlist-colors button:hover { transform: scale(1.08) }
+    html body .playlist-colors button:focus-visible { outline: 2px solid #fff; outline-offset: 3px }
+    html body .playlist-colors button.active { outline: 0; box-shadow: 0 0 0 3px #1d1d27, 0 0 0 5px var(--swatch) }
+    html body .playlist-colors button.active::after { content: ""; position: absolute; inset: 0; margin: auto; width: 14px; height: 8px; border-left: 2.5px solid #fff; border-bottom: 2.5px solid #fff; transform: translateY(-1px) rotate(-45deg) scale(.9) }
+
+    /* footer */
+    html body .playlist-modal-card footer { align-items: center; gap: 10px; margin-top: 8px; padding-top: 6px }
+    .pl-delete { margin-right: auto; background: none; border: 0; color: #ff7b8b; font: 600 13px 'DM Sans', system-ui, sans-serif; padding: 9px 4px; cursor: pointer; border-radius: 8px }
+    .pl-delete:hover { text-decoration: underline }
+    .pl-delete:focus-visible { outline: 2px solid #ff7b8b; outline-offset: 2px }
+    .pl-delete[hidden] { display: none }
+    html body .playlist-modal-card #savePlaylistButton { background: var(--pl-color); border-color: transparent; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .25) }
+    html body .playlist-form-error { min-height: 16px; font-size: 12px }
+
+    html[data-theme="light"] body .playlist-modal-card { background: #fff }
+    html[data-theme="light"] body .pl-preview-sub, html[data-theme="light"] body .pl-hint { color: #6a6472 }
+    html[data-theme="light"] body .playlist-colors button.active { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--swatch) }
+    html[data-theme="light"] body .playlist-rule-select option { background: #fff; color: #211d23 }
+    html[data-theme="light"] body .playlist-rule-select { color: #211d23 }
+    @media (max-width: 760px) { html body .playlist-modal-card { padding: 20px; border-radius: 22px } }
+  </style>
+  <style id="musiko-playlist-dialog-2">
+    /* type picker: segmented control + rule tiles */
+    .pl-seg { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; gap: 4px; border-radius: 14px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .08) }
+    .pl-seg button { height: 38px; border: 0; border-radius: 10px; background: transparent; color: #b8b5c2; font: 600 13.5px 'DM Sans', system-ui, sans-serif; cursor: pointer; transition: background .16s, color .16s, box-shadow .16s }
+    .pl-seg button:hover { color: #fff }
+    .pl-seg button[aria-pressed="true"] { background: color-mix(in srgb, var(--pl-color) 88%, #000); color: #fff; box-shadow: 0 4px 14px color-mix(in srgb, var(--pl-color) 35%, transparent) }
+    .pl-seg button:focus-visible, .pl-tiles button:focus-visible { outline: 2px solid var(--pl-color); outline-offset: 2px }
+    .pl-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px }
+    .pl-tiles[hidden] { display: none }
+    .pl-tiles button { display: grid; grid-template-columns: 30px 1fr; grid-template-rows: auto auto; column-gap: 10px; align-items: center; text-align: left; padding: 10px 12px; border-radius: 14px; cursor: pointer; color: #e4e2ea; background: rgba(255, 255, 255, .045); border: 1px solid rgba(255, 255, 255, .09); transition: background .15s, border-color .15s, transform .12s }
+    .pl-tiles button:hover { background: rgba(255, 255, 255, .08) }
+    .pl-tiles button:active { transform: scale(.98) }
+    .pl-tiles button svg { grid-row: 1 / 3; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; color: var(--pl-color) }
+    .pl-tiles button b { font: 600 13px/1.2 'DM Sans', system-ui, sans-serif }
+    .pl-tiles button small { font-size: 11.5px; font-weight: 400; color: #9a97a4; margin-top: 2px }
+    .pl-tiles button[aria-pressed="true"] { border-color: var(--pl-color); background: color-mix(in srgb, var(--pl-color) 16%, transparent) }
+    .pl-tiles button:last-child:nth-child(odd) { grid-column: 1 / -1 }
+    html[data-theme="light"] .pl-seg { background: rgba(40, 32, 44, .06); border-color: rgba(40, 32, 44, .08) }
+    html[data-theme="light"] .pl-seg button { color: #5a525c }
+    html[data-theme="light"] .pl-tiles button { color: #211d23; background: rgba(40, 32, 44, .04); border-color: rgba(40, 32, 44, .1) }
+    html[data-theme="light"] .pl-tiles button small { color: #6a6472 }
+    /* sticky footer so Save never scrolls away */
+    html body .playlist-modal-card footer { position: sticky; bottom: -24px; margin: 8px -24px -24px; padding: 14px 24px 20px; background: linear-gradient(180deg, transparent, #1d1d27 28%); border-radius: 0 0 24px 24px }
+    html[data-theme="light"] body .playlist-modal-card footer { background: linear-gradient(180deg, transparent, #fff 28%) }
+    @media (max-width: 760px) { html body .playlist-modal-card footer { bottom: -20px; margin: 8px -20px -20px; padding: 14px 20px 18px } }
+  </style>
   <style id="musiko-miniplayer-glass">
     /* ===== Mini player: Apple-Music-style transparent glass ===== */
     html:not([data-glass="off"]):not([data-performance="low"]) body .player {
@@ -7998,25 +8084,13 @@
       <div class="nav"><button class="active" data-view="Home"><svg viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="1.7">
             <path d="m3 10 9-7 9 7v10h-6v-6H9v6H3z" />
-          </svg>Home</button></div>
-      <div class="nav-label">LIBRARY</div>
-      <div class="nav"><button data-view="All tracks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          </svg>Home</button><button data-view="Library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.7">
-            <path d="M4 6h16M4 12h16M4 18h16" />
-          </svg>All tracks</button><button data-view="Recently added"><svg viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="1.7">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 7v5l3 2" />
-          </svg>Recently added</button><button data-view="Favorites"><svg viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="1.7">
-            <path
-              d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
-          </svg>Favorites</button><button data-view="Albums"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="1.7">
-            <circle cx="12" cy="12" r="9" />
-            <circle cx="12" cy="12" r="3" />
-            <path d="M12 3v6" />
-          </svg>Albums</button></div>
+            <rect x="4" y="3.5" width="16" height="17" rx="3.2" />
+            <path d="M10 16V8.6l5-1V14" />
+            <circle cx="8.6" cy="16" r="1.4" />
+            <circle cx="13.6" cy="14" r="1.4" />
+          </svg>Library</button></div>
       <div class="nav-label playlist-label"><span>PLAYLISTS</span><button id="autoMix" title="Build an Auto Mix">Auto
           Mix</button><button id="newPlaylist" title="Create playlist">＋</button></div>
       <div class="nav" id="playlistNav"></div>
@@ -8398,10 +8472,22 @@
           <div class="playlist-modal-kicker">YOUR COLLECTION</div>
           <h2 id="playlistDialogTitle">Create playlist</h2>
         </div><button type="button" class="lyrics-close" data-close-playlist-dialog aria-label="Close">×</button>
-      </header><label class="playlist-field">Playlist name<input id="playlistNameInput" maxlength="40"
+      </header>
+      <div class="pl-preview" id="plPreview" aria-live="polite">
+        <div class="pl-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 6.5h11M3.5 11.5h11M3.5 16.5h6"/><path d="M19 5v10.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></div>
+        <div class="pl-preview-copy"><div class="pl-preview-name" id="plPreviewName">Untitled playlist</div><div class="pl-preview-sub" id="plPreviewSub">0 songs · Regular playlist</div></div>
+      </div><label class="playlist-field"><span>Playlist name <span class="pl-count" id="plNameCount">0/40</span></span><input id="playlistNameInput" maxlength="40"
           placeholder="e.g. Late night drive" required autocomplete="off"></label><label
-        class="playlist-field"><span>Description <span>optional</span></span><textarea id="playlistDescriptionInput"
-          maxlength="140" rows="2" placeholder="What belongs in this mix?"></textarea></label><label
+        class="playlist-field"><span>Description <span class="pl-count" id="plDescCount">optional</span></span><textarea id="playlistDescriptionInput"
+          maxlength="140" rows="2" placeholder="What belongs in this mix?"></textarea></label><div class="playlist-field" id="plTypeBlock"><span>Playlist type</span>
+        <div class="pl-seg" role="group" aria-label="Playlist kind"><button type="button" data-kind="manual">Regular</button><button type="button" data-kind="smart">Smart</button></div>
+        <div class="pl-tiles" id="plTiles" role="group" aria-label="Smart playlist rule" hidden>
+          <button type="button" data-rule="favorites"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg><b>Favorites</b><small>Songs you heart</small></button>
+          <button type="button" data-rule="top"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><b>Most played</b><small>Top 25 songs</small></button>
+          <button type="button" data-rule="recent"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><b>Recently added</b><small>Latest 25 songs</small></button>
+          <button type="button" data-rule="artist"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20c.6-3.7 3.6-5.7 7.2-5.7s6.6 2 7.2 5.7"/></svg><b>Artist</b><small>One artist</small></button>
+          <button type="button" data-rule="album"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.6"/></svg><b>Album</b><small>One album</small></button>
+        </div></div><label id="plRuleLabel" hidden
         class="playlist-field">Playlist type<select id="playlistRule" class="playlist-rule-select"
           aria-label="Playlist type">
           <option value="manual">Regular playlist</option>
@@ -8410,8 +8496,8 @@
           <option value="album">Smart · Album</option>
           <option value="top">Smart · Most played</option>
           <option value="recent">Smart · Recently added</option>
-        </select></label><label class="playlist-field" id="playlistRuleValueField" hidden>Match<input
-          id="playlistRuleValue" maxlength="160" placeholder="Artist or album name"></label><input type="hidden"
+        </select><small class="pl-hint" id="plHint"></small></label><label class="playlist-field" id="playlistRuleValueField" hidden>Match<input
+          id="playlistRuleValue" maxlength="160" placeholder="Artist or album name" list="plMatchList" autocomplete="off"><datalist id="plMatchList"></datalist></label><input type="hidden"
         id="playlistColorValue" value="#ff5368">
       <div class="playlist-field"><span>Choose a color</span>
         <div class="playlist-colors" role="group" aria-label="Playlist color"><button type="button"
@@ -8422,7 +8508,7 @@
         </div>
       </div>
       <div class="playlist-form-error" id="playlistFormError" role="alert"></div>
-      <footer><button type="button" class="glass-btn" data-close-playlist-dialog>Cancel</button><button type="submit"
+      <footer><button type="button" class="pl-delete" id="plDelete" hidden>Delete playlist</button><button type="button" class="glass-btn" data-close-playlist-dialog>Cancel</button><button type="submit"
           class="glass-btn add-btn" id="savePlaylistButton">Create playlist</button></footer>
     </form>
   </section>
@@ -8821,6 +8907,66 @@
         }
       });
       backBtn.addEventListener('click', () => { if (mode === 'artist') enter('artists'); else window.selectView('Library') });
+    })();
+  </script>
+  <script>
+    // Playlist dialog: live preview, counters, hints, autocomplete, delete
+    (() => {
+      const $ = q => document.querySelector(q);
+      const card = $('#playlistForm'); if (!card) return;
+      const name = $('#playlistNameInput'), desc = $('#playlistDescriptionInput'), rule = $('#playlistRule'), val = $('#playlistRuleValue'),
+        colorIn = $('#playlistColorValue'), hint = $('#plHint'), valField = $('#playlistRuleValueField'), list = $('#plMatchList'),
+        pvName = $('#plPreviewName'), pvSub = $('#plPreviewSub'), nameCount = $('#plNameCount'), descCount = $('#plDescCount'), del = $('#plDelete');
+      const HINTS = {
+        manual: 'You choose the songs. Add them with the + button on any track.',
+        favorites: 'Fills itself with every song you heart.',
+        artist: 'Every song by one artist, kept up to date automatically.',
+        album: 'Every song from one album, kept up to date automatically.',
+        top: 'Your 25 most played songs.',
+        recent: 'Your 25 most recently added songs.'
+      };
+      const LABELS = { manual: 'Regular playlist', favorites: 'Favorites', artist: 'Artist', album: 'Album', top: 'Most played', recent: 'Recently added' };
+      const norm = v => String(v || '').trim().toLowerCase();
+      function count() {
+        const r = rule.value, v = norm(val.value);
+        if (r === 'manual') { const p = editingPlaylistId ? playlists.find(x => x.id === editingPlaylistId) : null; return p && (p.rule || 'manual') === 'manual' ? (p.trackIds || []).length : 0 }
+        if (r === 'favorites') return tracks.filter(t => t.favorite).length;
+        if (r === 'artist') return v ? tracks.filter(t => norm(t.artist) === v).length : 0;
+        if (r === 'album') return v ? tracks.filter(t => norm(t.album) === v).length : 0;
+        return Math.min(25, tracks.length);
+      }
+      function fillSuggestions() {
+        const r = rule.value; if (r !== 'artist' && r !== 'album') { list.innerHTML = ''; return }
+        const set = new Set(tracks.map(t => (r === 'artist' ? t.artist : t.album) || '').filter(Boolean));
+        list.innerHTML = [...set].sort((a, b) => a.localeCompare(b)).map(x => `<option value="${escapeHtml(x)}">`).join('');
+      }
+      let refresh = function () {
+        card.style.setProperty('--pl-color', colorIn.value || '#ff5368');
+        const n = name.value.trim();
+        pvName.textContent = n || 'Untitled playlist'; pvName.classList.toggle('is-empty', !n);
+        const c = count(); pvSub.textContent = `${c} ${c === 1 ? 'song' : 'songs'} · ${rule.value === 'manual' ? 'Regular playlist' : 'Smart · ' + LABELS[rule.value]}`;
+        nameCount.textContent = `${name.value.length}/${name.maxLength}`;
+        descCount.textContent = desc.value ? `${desc.value.length}/${desc.maxLength}` : 'optional';
+        hint.textContent = HINTS[rule.value] || '';
+        const r = rule.value; valField.firstChild.textContent = r === 'artist' ? 'Artist' : r === 'album' ? 'Album' : 'Match';
+        val.placeholder = r === 'artist' ? 'Start typing an artist…' : 'Start typing an album…';
+        fillSuggestions();
+        del.hidden = !editingPlaylistId;
+      }
+      const typeBlock = $('#plTypeBlock'), seg = typeBlock.querySelectorAll('[data-kind]'), tiles = $('#plTiles'), tileBtns = tiles.querySelectorAll('[data-rule]');
+      typeBlock.appendChild(hint);
+      const setRule = v => { rule.value = v; rule.dispatchEvent(new Event('change', { bubbles: true })) };
+      seg.forEach(b => b.addEventListener('click', () => { if (b.dataset.kind === 'manual') setRule('manual'); else if (rule.value === 'manual') setRule('favorites') }));
+      tileBtns.forEach(b => b.addEventListener('click', () => setRule(b.dataset.rule)));
+      const syncPicker = () => { const smart = rule.value !== 'manual'; seg.forEach(b => b.setAttribute('aria-pressed', String((b.dataset.kind === 'smart') === smart))); tiles.hidden = !smart; tileBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.rule === rule.value))) };
+      const baseRefresh = refresh;
+      refresh = function () { baseRefresh(); syncPicker() };
+      ['input', 'change'].forEach(ev => card.addEventListener(ev, refresh));
+      document.querySelectorAll('[data-playlist-color]').forEach(b => b.addEventListener('click', () => setTimeout(refresh, 0)));
+      const origOpen = window.openPlaylistDialog;
+      window.openPlaylistDialog = function () { const out = origOpen.apply(this, arguments); refresh(); return out };
+      del.addEventListener('click', () => { const id = editingPlaylistId; if (!id) return; closePlaylistDialog(); deletePlaylist(id) });
+      refresh();
     })();
   </script>
 </body>
