@@ -10021,6 +10021,62 @@
     html body input, html body textarea, html body [contenteditable="true"], html body [contenteditable=""] { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default }
     html body img, html body svg { -webkit-user-drag: none; user-drag: none }
   </style>
+  <style id="musiko-glass-panels">
+    /* ===== Liquid-glass surfaces: Settings, Up Next, Create playlist =====
+       very translucent, heavily blurred and saturated so the colour behind shows through,
+       bright hairline edge + top highlight */
+    :root {
+      --lg-tint: color-mix(in srgb, var(--skin-player, #1e1c23) 34%, transparent);
+      --lg-sheen: linear-gradient(180deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .04) 46%, rgba(255, 255, 255, .02));
+      --lg-edge: rgba(255, 255, 255, .24);
+      --lg-shadow: 0 14px 44px rgba(0, 0, 0, .38), 0 2px 8px rgba(0, 0, 0, .18);
+      --lg-blur: blur(38px) saturate(190%)
+    }
+    html[data-theme="light"] {
+      --lg-tint: rgba(255, 255, 255, .5);
+      --lg-sheen: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, .18) 55%);
+      --lg-edge: rgba(255, 255, 255, .85);
+      --lg-shadow: 0 14px 40px rgba(52, 40, 56, .16), 0 2px 8px rgba(52, 40, 56, .08)
+    }
+    html body .settings-card,
+    html body .queue-drawer,
+    html body .playlist-modal-card {
+      border: 1px solid var(--lg-edge);
+      box-shadow: var(--lg-shadow), inset 0 1px 0 rgba(255, 255, 255, .3), inset 0 -1px 0 rgba(255, 255, 255, .05)
+    }
+    html[data-theme="dark"]:not([data-glass="off"]) body .settings-card,
+    html[data-theme="dark"]:not([data-glass="off"]) body .queue-drawer,
+    html[data-theme="dark"]:not([data-glass="off"]) body .playlist-modal-card,
+    html[data-theme="light"]:not([data-glass="off"]) body .settings-card,
+    html[data-theme="light"]:not([data-glass="off"]) body .queue-drawer,
+    html[data-theme="light"]:not([data-glass="off"]) body .playlist-modal-card {
+      background: var(--lg-sheen), var(--lg-tint)
+    }
+    html[data-theme="dark"] body .settings-card, html[data-theme="dark"] body .queue-drawer, html[data-theme="dark"] body .playlist-modal-card { color: #f5f4f7 }
+    html[data-theme="light"] body .settings-card, html[data-theme="light"] body .queue-drawer, html[data-theme="light"] body .playlist-modal-card { color: #29242c }
+    html:not([data-performance="low"]):not([data-glass="off"]) body .settings-card,
+    html:not([data-performance="low"]):not([data-glass="off"]) body .queue-drawer,
+    html:not([data-performance="low"]):not([data-glass="off"]) body .playlist-modal-card {
+      -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur)
+    }
+    /* shapes: generous radius on cards */
+    html body .settings-card, html body .queue-drawer, html body .playlist-modal-card { border-radius: 28px }
+    @media (max-width: 760px) { html body .settings-card, html body .queue-drawer, html body .playlist-modal-card { border-radius: 24px } }
+
+    /* soft blurred scrim behind the dialogs */
+    html:not([data-performance="low"]) body .queue-backdrop,
+    html:not([data-performance="low"]) body .settings-panel,
+    html:not([data-performance="low"]) body .playlist-modal {
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px)
+    }
+    /* inner surfaces: hairline dividers + translucent fields */
+    html[data-theme="dark"] body .playlist-modal-card .playlist-field input,
+    html[data-theme="dark"] body .playlist-modal-card .playlist-field textarea,
+    html[data-theme="dark"] body .playlist-modal-card .playlist-rule-select { background-color: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .16) }
+    html[data-theme="dark"] body .queue-header, html[data-theme="dark"] body .queue-now { border-color: rgba(255, 255, 255, .12) }
+    html body .playlist-modal-card footer button:not(.pl-delete),
+    html body .queue-header-actions button { border-radius: 999px }
+  </style>
 </body>
 
 </html>
