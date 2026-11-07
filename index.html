@@ -8974,7 +8974,7 @@
     function renderRecent() { const section = document.querySelector('#recentSection'), grid = document.querySelector('#recentGrid'); section.hidden = true; document.documentElement.classList.toggle('lib-empty', !tracks.length); return; const recent = tracks.slice(-5).reverse(); grid.innerHTML = recent.map((t, i) => `<div class="recent-card" data-recent="${tracks.length - 1 - i}"><div class="recent-art">♫</div><div class="recent-track">${escapeHtml(t.name)}</div><div class="recent-artist">${escapeHtml(t.artist)}</div></div>`).join(''); grid.querySelectorAll('.recent-card').forEach(el => { const i = +el.dataset.recent; setCover(el.querySelector('.recent-art'), tracks[i]); el.onclick = () => playTrack(i) }) }
     function updateAmbient(t) { if (!t?.art) { document.documentElement.style.setProperty('--ambient-a', '#33405f'); document.documentElement.style.setProperty('--ambient-b', '#633c57'); return } const img = new Image(); img.onload = () => { if (current < 0 || tracks[current]?.id !== t.id) return; try { const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d', { willReadFrequently: true }); canvas.width = 24; canvas.height = 24; ctx.drawImage(img, 0, 0, 24, 24); const pixels = ctx.getImageData(0, 0, 24, 24).data, bins = new Map(); for (let i = 0; i < pixels.length; i += 4) { const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3]; if (a < 160 || (r > 242 && g > 242 && b > 242) || (r < 18 && g < 18 && b < 18)) continue; const key = [r >> 5, g >> 5, b >> 5].join(','), bin = bins.get(key) || { count: 0, r: 0, g: 0, b: 0 }; bin.count++; bin.r += r; bin.g += g; bin.b += b; bins.set(key, bin) } const top = [...bins.values()].sort((a, b) => b.count - a.count).slice(0, 2); if (!top.length) return; const color = x => `rgb(${Math.round(x.r / x.count)}, ${Math.round(x.g / x.count)}, ${Math.round(x.b / x.count)})`; document.documentElement.style.setProperty('--ambient-a', color(top[0])); document.documentElement.style.setProperty('--ambient-b', color(top[1] || top[0])) } catch { } }; img.onerror = () => { }; img.src = t.art } function syncHero(t) { updateAmbient(t); document.querySelector('#heroEyebrow').textContent = t ? 'NOW PLAYING' : 'YOUR MUSIC, YOUR WAY'; document.querySelector('#heroTitle').textContent = t ? t.name : 'A soundtrack that’s yours.'; document.querySelector('#heroSubtitle').textContent = t ? `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}` : 'Bring your favorite songs together in one place.'; setCover(document.querySelector('#heroArt'), t) }
     function saveListeningStats(force = false) { const now = Date.now(); if (!force && now - lastStatsSavedAt < 5000) return; lastStatsSavedAt = now; try { localStorage.setItem('musiko-listening-stats', JSON.stringify(listeningStats)) } catch { } }
-    function renderListeningStats() { const section = document.querySelector('#listeningStats'); if (!section) return; section.hidden = activeView !== 'Home' || !tracks.length; const total = Math.floor(listeningStats.totalSeconds), hours = Math.floor(total / 3600), minutes = Math.floor(total % 3600 / 60); document.querySelector('#listeningTime').textContent = hours ? `${hours} hr ${minutes} min` : `${minutes} min`; const ranked = tracks.map(t => ({ t, stats: listeningStats.tracks[t.id] || { plays: 0, seconds: 0 } })).filter(item => item.stats.plays > 0).sort((a, b) => b.stats.plays - a.stats.plays || b.stats.seconds - a.stats.seconds).slice(0, 5), list = document.querySelector('#topSongsList'); const statsHtml = ranked.length ? ranked.map(({ t, stats }, i) => `<div class="top-song-row"><span class="top-song-rank">${i + 1}</span><span class="stats-cover">♫</span><span class="top-song-copy"><strong>${escapeHtml(t.name)}</strong><small>${escapeHtml(t.artist)}</small></span><span class="top-song-plays">${stats.plays} ${stats.plays === 1 ? 'play' : 'plays'}</span></div>`).join('') : '<div class="stats-empty">Play songs from your library to see your top tracks.</div>', statsSig = statsHtml + ranked.map(x => x.t.art ? 1 : 0).join(''); if (list._sig !== statsSig) { list._sig = statsSig; list.innerHTML = statsHtml; list.querySelectorAll('.stats-cover').forEach((cover, i) => setCover(cover, ranked[i]?.t)) } }
+    function renderListeningStats() { const section = document.querySelector('#listeningStats'); if (!section) return; section.hidden = activeView !== 'Home' || !tracks.length; const total = Math.floor(listeningStats.totalSeconds), hours = Math.floor(total / 3600), minutes = Math.floor(total % 3600 / 60); document.querySelector('#listeningTime').textContent = hours ? `${hours} hr ${minutes} min` : `${minutes} min`; const ranked = tracks.map(t => ({ t, stats: listeningStats.tracks[t.id] || { plays: 0, seconds: 0 } })).filter(item => item.stats.plays > 0).sort((a, b) => b.stats.plays - a.stats.plays || b.stats.seconds - a.stats.seconds).slice(0, 5), list = document.querySelector('#topSongsList'); list.innerHTML = ranked.length ? ranked.map(({ t, stats }, i) => `<div class="top-song-row"><span class="top-song-rank">${i + 1}</span><span class="stats-cover">♫</span><span class="top-song-copy"><strong>${escapeHtml(t.name)}</strong><small>${escapeHtml(t.artist)}</small></span><span class="top-song-plays">${stats.plays} ${stats.plays === 1 ? 'play' : 'plays'}</span></div>`).join('') : '<div class="stats-empty">Play songs from your library to see your top tracks.</div>'; list.querySelectorAll('.stats-cover').forEach((cover, i) => setCover(cover, ranked[i]?.t)) }
     function recordPlayStart(track) { if (!track) return; const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.plays++; item.lastPlayed = Date.now(); lastListenTrackId = track.id; lastListenPosition = 0; saveListeningStats(true); renderListeningStats() }
     function recordListenTime(deck) { if (deck !== audio || deck.paused || current < 0 || !tracks[current]) return; const position = deck.currentTime, track = tracks[current]; if (lastListenTrackId !== track.id) { lastListenTrackId = track.id; lastListenPosition = position; return } if (lastListenPosition !== null) { const delta = position - lastListenPosition; if (delta > 0 && delta <= 5) { const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.seconds += delta; listeningStats.totalSeconds += delta; const now = Date.now(); saveListeningStats(); if (now - lastStatsRenderedAt >= 1000) { lastStatsRenderedAt = now; renderListeningStats() } } } lastListenPosition = position } function syncMobileTrackEdit() { const button = document.querySelector("#editCurrentTrack"), status = document.querySelector("#mobileTrackEditStatus"); if (!button || !status) return; const track = current >= 0 ? tracks[current] : null; button.disabled = !track; status.textContent = track ? `${track.name} · ${track.artist}` : "Play a song to edit its details." } function render() { syncMobileTrackEdit(); renderRecent(); renderListeningStats(); renderAlbums(); const shown = visibleTracks(); document.querySelector('#count').textContent = `${shown.length} ${shown.length === 1 ? 'song' : 'songs'}`; const az = isAzView(); document.querySelector('#azBadge').hidden = !az; let lastLetter = ''; renderAzRail(az ? shown : []); if (!shown.length) { const message = searchTerm ? 'Try a different title, artist, or album.' : activeView === 'Favorites' ? 'Tap the ♡ beside a song to save it here.' : activePlaylistId ? 'Add songs to this playlist with the + button.' : 'Add MP3s or other audio files to start listening.'; list.innerHTML = `<div class="empty"><strong>${tracks.length ? 'No tracks here yet' : 'Your library is waiting'}</strong>${escapeHtml(message)}</div>`; return } list.innerHTML = shown.map(({ t, i }, n) => { const L = az ? azLetter(t.name) : '', head = az && L !== lastLetter ? `<div class="az-divider" data-letter="${escapeHtml(L)}">${escapeHtml(L)}</div>` : ''; lastLetter = L; return head + `<div class="track ${i === current ? 'current' : ''}" data-i="${i}"><div class="track-no">${i === current && !audio.paused ? '♫' : String(n + 1).padStart(2, '0')}</div><div class="cover" data-cover="${i}">♫</div><div class="track-copy"><div class="track-copy-line"><div class="track-name">${escapeHtml(t.name)}</div><button type="button" class="metadata-edit" data-edit-track="${escapeHtml(t.id)}" title="Edit song, artist, and album details" aria-label="Edit details for ${escapeHtml(t.name)}">✎</button></div><div class="track-artist">${escapeHtml(t.artist)}</div></div><div class="track-album">${escapeHtml(t.album)}</div><div class="track-length">${fmt(t.duration)}</div><button class="track-action ${t.favorite ? 'favorite-on' : ''}" data-favorite="${i}" title="${t.favorite ? 'Remove from' : 'Add to'} favorites">${t.favorite ? '♥' : '♡'}</button><button class="track-action queue-add" data-queue="${i}" title="Add to Up Next" aria-label="Add to Up Next">⇥</button><button class="track-action" data-add="${i}" title="Add to playlist">＋</button></div>` }).join(''); list.querySelectorAll('[data-cover]').forEach(el => setCover(el, tracks[+el.dataset.cover])); list.querySelectorAll('[data-edit-track]').forEach(el => el.onclick = e => { e.stopPropagation(); openTrackMetadata(el.dataset.editTrack) }); list.querySelectorAll('.track').forEach(el => el.addEventListener('click', e => { if (e.target.closest('button')) return; playTrack(+el.dataset.i) })); list.querySelectorAll('[data-favorite]').forEach(el => el.onclick = e => { e.stopPropagation(); toggleFavorite(+el.dataset.favorite) }); list.querySelectorAll('[data-queue]').forEach(el => el.onclick = e => { e.stopPropagation(); enqueueTrack(+el.dataset.queue) }); list.querySelectorAll('[data-add]').forEach(el => el.onclick = e => { e.stopPropagation(); addToPlaylist(+el.dataset.add) }); }
     function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) }
@@ -9408,7 +9408,17 @@
       const lastPlayedIndex = () => { let best = -1, at = 0; tracks.forEach((t, i) => { const s = listeningStats.tracks[t.id]; if (s && s.lastPlayed > at) { at = s.lastPlayed; best = i } }); return best };
       const resumePos = i => { const t = tracks[i]; if (!t) return 0; const live = current === i, saved = savedResume(); let pos = live ? audio.currentTime : (saved && saved.id === t.id ? saved.t : 0); const dur = (live && Number.isFinite(audio.duration) ? audio.duration : t.duration) || 0; if (!Number.isFinite(pos) || (dur && pos > dur - 3)) pos = 0; return { pos, dur } };
 
+      window.musikoResume = {
+        index: () => lastPlayedIndex(),
+        pos: i => resumePos(i),
+        start(i) {
+          if (current === i && audio.src) { if (audio.paused) $('#play').click() }
+          else { const start = resumePos(i).pos; playTrack(i); if (start > 1) audio.addEventListener('loadedmetadata', () => { try { audio.currentTime = start } catch { } }, { once: true }) }
+          setTimeout(refresh, 200)
+        }
+      };
       function renderContinue() {
+        cont.hidden = true; return;
         const i = lastPlayedIndex(), show = activeView === 'Home' && i >= 0 && !!tracks[i];
         cont.hidden = !show; if (!show) return;
         const t = tracks[i], { pos, dur } = resumePos(i), playing = current === i && !audio.paused;
@@ -9533,28 +9543,35 @@
     html body .hero-art.has-art { background-size: cover; background-position: center }
     #heroPlay { display: none; margin-right: 12px }
     html body .hero.is-playing #heroAdd { display: none }
-    html body .hero.is-playing #heroPlay,
-    html body .hero.is-playing #autoMixHero { display: none }
+    html body .hero.is-playing #autoMixHero,
+    html body .hero.is-continue #autoMixHero,
+    html body .hero.is-continue #heroAdd { display: none }
+    html body .hero.is-paused #heroPlay,
+    html body .hero.is-continue #heroPlay { display: inline-flex; align-items: center; justify-content: center; min-width: 108px }
     .hero-time { display: none; margin-left: 14px; font-size: 12px; color: #e0d8dd; font-variant-numeric: tabular-nums; opacity: .8; vertical-align: middle }
-    html body .hero.is-playing .hero-time:not(:empty) { display: inline-block }
+    html body .hero.is-playing .hero-time:not(:empty),
+    html body .hero.is-continue .hero-time:not(:empty) { display: inline-block }
     html[data-theme="light"] .hero-time { color: #625963 }
 
-    html body .hero.is-playing .hero-glow {
+    html body .hero.is-playing .hero-glow,
+    html body .hero.is-continue .hero-glow {
       width: 72%;
       background: radial-gradient(ellipse at 76% 48%, color-mix(in srgb, var(--ambient-a) 58%, transparent), transparent 62%),
                   radial-gradient(ellipse at 92% 90%, color-mix(in srgb, var(--ambient-b) 40%, transparent), transparent 55%);
       transition: opacity .6s ease
     }
-    html body .hero.is-playing .hero-art {
+    html body .hero.is-playing .hero-art,
+    html body .hero.is-continue .hero-art {
       cursor: pointer;
       box-shadow: 0 22px 56px color-mix(in srgb, var(--ambient-a) 45%, rgba(0, 0, 0, .5)), 0 0 0 1px #ffffff26;
       transition: transform .25s var(--ease), box-shadow .4s ease
     }
-    @media (hover:hover) { html body .hero.is-playing .hero-art:hover { transform: scale(1.025) } }
+    @media (hover:hover) { html body .hero.is-playing .hero-art:hover, html body .hero.is-continue .hero-art:hover { transform: scale(1.025) } }
 
     .hero-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 3; background: color-mix(in srgb, var(--white) 10%, transparent); opacity: 0; transition: opacity .3s }
     .hero-progress i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 0 2px 2px 0; transition: width .25s linear }
-    html body .hero.is-playing .hero-progress { opacity: 1 }
+    html body .hero.is-playing .hero-progress,
+    html body .hero.is-continue .hero-progress { opacity: 1 }
 
     /* ===== Lyric highlight: a proper card, dim previous line → bright current → dim next ===== */
     .home-lyric { margin: 0 0 32px }
@@ -9616,6 +9633,8 @@
       html body .hero-copy > .hero-cta { height: 42px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center }
       html body .hero.is-playing #heroPlay { min-width: 104px }
       html body .hero-copy > .hero-time { flex: 0 0 100%; text-align: left; margin: 0 }
+      html body .hero.is-continue .hero-copy > .hero-time,
+      html body .hero.is-paused .hero-copy > .hero-time { flex: 0 1 auto; margin: 0 0 0 4px }
     }
     @media (max-width: 380px) {
       html body .hero-copy > .hero-cta { padding: 0 13px }
@@ -9665,7 +9684,49 @@
         renderQueue(); playTrack(m.picked[0].i);
         toast(`${PARTS[m.part].label[0].toUpperCase() + PARTS[m.part].label.slice(1)} mix · ${m.picked.length} songs`)
       }
+      let tintTok = 0;
+      function tint(src) {
+        const tok = ++tintTok, root = document.documentElement.style;
+        if (!src) { root.setProperty('--ambient-a', '#33405f'); root.setProperty('--ambient-b', '#633c57'); return }
+        const img = new Image();
+        img.onload = () => {
+          if (tok !== tintTok || current >= 0) return;
+          try {
+            const c = document.createElement('canvas'), x = c.getContext('2d', { willReadFrequently: true }); c.width = c.height = 24; x.drawImage(img, 0, 0, 24, 24);
+            const px = x.getImageData(0, 0, 24, 24).data, bins = new Map();
+            for (let i = 0; i < px.length; i += 4) { const r = px[i], g = px[i + 1], b = px[i + 2], a = px[i + 3]; if (a < 160 || (r > 242 && g > 242 && b > 242) || (r < 18 && g < 18 && b < 18)) continue; const k = [r >> 5, g >> 5, b >> 5].join(','), o = bins.get(k) || { n: 0, r: 0, g: 0, b: 0 }; o.n++; o.r += r; o.g += g; o.b += b; bins.set(k, o) }
+            const top = [...bins.values()].sort((a, b) => b.n - a.n).slice(0, 2); if (!top.length) return;
+            const col = o => `rgb(${Math.round(o.r / o.n)}, ${Math.round(o.g / o.n)}, ${Math.round(o.b / o.n)})`;
+            root.setProperty('--ambient-a', col(top[0])); root.setProperty('--ambient-b', col(top[1] || top[0]))
+          } catch { }
+        };
+        img.src = src
+      }
+      // nothing playing but there is listening history: the hero becomes "Continue listening"
+      function applyContinue() {
+        const R = window.musikoResume, i = R ? R.index() : -1, t = i >= 0 ? tracks[i] : null;
+        if (!t) { hero.classList.remove('is-continue'); return false }
+        const { pos, dur } = R.pos(i);
+        hero.classList.add('is-continue');
+        if (btn.dataset.mode === 'mix') { btn.dataset.mode = ''; btn.innerHTML = '♫&nbsp; Auto Mix'; btn.onclick = startAutoMix }
+        const sig = ['c', t.id, t.name, t.artist, t.album, t.art ? 1 : 0, pos > 1].join('|');
+        if (hero.dataset.csig !== sig) {
+          hero.dataset.csig = sig; btn.dataset.sig = '';
+          $('#heroEyebrow').textContent = 'CONTINUE LISTENING';
+          $('#heroTitle').textContent = t.name;
+          $('#heroSubtitle').textContent = `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}`;
+          setCover($('#heroArt'), t);
+          heroPlay.innerHTML = pos > 1 ? '▶  Resume' : '▶  Play';
+          heroPlay.setAttribute('aria-label', pos > 1 ? 'Resume' : 'Play');
+          tint(t.art)
+        }
+        heroFill.style.width = (dur ? Math.min(100, pos / dur * 100) : 0) + '%';
+        heroTime.textContent = dur ? (pos > 1 ? `${fmt(dur - pos)} left` : fmt(dur)) : '';
+        return true
+      }
       function applyGreeting() {
+        if (current >= 0 || !tracks.length) hero.classList.remove('is-continue');
+        else if (applyContinue()) return;
         if (current >= 0 || !tracks.length) { if (btn.dataset.mode === 'mix') { btn.dataset.mode = ''; btn.dataset.sig = ''; btn.innerHTML = '♫&nbsp; Auto Mix'; btn.onclick = startAutoMix } return }
         const m = buildMix(), P = PARTS[m.part], first = m.picked[0];
         const sig = [m.key, first && first.t.id, !!(first && first.t.art)].join('|');
@@ -9683,14 +9744,15 @@
       const heroBar = document.createElement('div'); heroBar.className = 'hero-progress'; heroBar.innerHTML = '<i></i>';
       btn.before(heroPlay); btn.after(heroTime); hero.append(heroBar);
       const heroFill = heroBar.firstChild;
-      heroPlay.onclick = () => $('#play').click();
-      $('#heroArt').addEventListener('click', () => { if (current >= 0 && tracks[current]) $('#openFullscreen').click() });
+      heroPlay.onclick = () => { const R = window.musikoResume; if (current < 0 && R) { const i = R.index(); if (i >= 0) { R.start(i); return } } $('#play').click() };
+      $('#heroArt').addEventListener('click', () => { if (current >= 0 && tracks[current]) $('#openFullscreen').click(); else if (hero.classList.contains('is-continue')) heroPlay.onclick() });
       function syncHeroPlaying() {
         const on = current >= 0 && !!tracks[current];
         hero.classList.toggle('is-playing', on);
-        if (!on) { heroTime.textContent = ''; heroFill.style.width = '0%'; return }
+        hero.classList.toggle('is-paused', on && audio.paused); if (on) hero.classList.remove('is-continue');
+        if (!on) { if (!hero.classList.contains('is-continue')) { heroTime.textContent = ''; heroFill.style.width = '0%' } return }
         const paused = audio.paused, d = audio.duration, p = audio.currentTime || 0;
-        const label = paused ? '▶  Play' : '❚❚  Pause'; if (heroPlay.innerHTML !== label) heroPlay.innerHTML = label;
+        const label = paused ? '▶  Resume' : '❚❚  Pause'; if (heroPlay.innerHTML !== label) heroPlay.innerHTML = label;
         heroPlay.setAttribute('aria-label', paused ? 'Play' : 'Pause');
         heroFill.style.width = (Number.isFinite(d) && d > 0 ? Math.min(100, p / d * 100) : 0) + '%';
         heroTime.textContent = Number.isFinite(d) && d > 0 ? `${fmt(p)} / ${fmt(d)}` : '';
@@ -9699,7 +9761,7 @@
       ['timeupdate', 'play', 'pause', 'loadedmetadata', 'seeked'].forEach(ev => document.addEventListener(ev, e => { if (e.target === audio) syncHeroPlaying() }, true));
 
       const origSync = window.syncHero;
-      window.syncHero = function (t) { const out = origSync.apply(this, arguments); btn.dataset.sig = ''; applyGreeting(); syncHeroPlaying(); return out };
+      window.syncHero = function (t) { const out = origSync.apply(this, arguments); btn.dataset.sig = ''; hero.dataset.csig = ''; applyGreeting(); syncHeroPlaying(); return out };
 
       /* ---------- lyric highlight ---------- */
       const sec = document.createElement('section');
@@ -9736,80 +9798,6 @@
       setInterval(() => { if (activeView === 'Home') renderLyric() }, 400);
       setInterval(() => { if (partOf() !== (mix && mix.part)) refresh() }, 60000);
       refresh();
-    })();
-  </script>
-  <style id="mobile-scroll-perf">
-    :root { --solid-base: #0e0e13 }
-    html[data-theme="light"] { --solid-base: #f5f3f6 }
-    html[data-skin="black"] { --solid-base: #000 }
-    html[data-skin="strawberry"] { --solid-base: #fff0f0 }
-
-    /* rows outside the viewport are skipped by the browser */
-    html body #tracklist .track { content-visibility: auto; contain-intrinsic-size: auto 72px }
-
-    @media (max-width: 760px) {
-      /* no live blur over scrolling content: solid, skin-tinted panels instead */
-      html body .app { -webkit-backdrop-filter: none !important; backdrop-filter: none !important }
-      html body main > .top {
-        background: linear-gradient(var(--top-surface), var(--top-surface)), var(--solid-base) !important;
-        -webkit-backdrop-filter: none !important; backdrop-filter: none !important
-      }
-      html body .mobile-tabs {
-        background: var(--solid-base) !important;
-        -webkit-backdrop-filter: none !important; backdrop-filter: none !important
-      }
-      html body .player {
-        background: linear-gradient(var(--skin-player, #1e1c23d1), var(--skin-player, #1e1c23d1)), var(--solid-base) !important;
-        -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, .35), 0 0 0 1px rgba(255, 255, 255, .06)
-      }
-      html[data-theme="light"] body .player { background: #fffffff2 !important }
-      /* no endless animation or soft transitions on the hero while scrolling */
-      html body .hero-art { animation: none !important }
-      html body .hero.is-playing .hero-glow { transition: none }
-    }
-  </style>
-  <script>
-    // Scroll performance: small cover thumbnails + throttled A–Z rail updates
-    (() => {
-      const origSetCover = window.setCover;
-      if (typeof origSetCover === 'function') {
-        const SMALL = '.track .cover,.queue-cover,.stats-cover,.recent-art,.album-art,.lib-art,.continue-art';
-        const ready = new Map(), pending = new Map(), SIZE = 256;
-        const makeThumb = src => new Promise(resolve => {
-          const img = new Image(); img.decoding = 'async';
-          img.onload = () => {
-            try {
-              const w = img.naturalWidth, h = img.naturalHeight, side = Math.min(w, h);
-              if (!side || side <= SIZE) return resolve(src);
-              const c = document.createElement('canvas'); c.width = c.height = SIZE;
-              c.getContext('2d').drawImage(img, (w - side) / 2, (h - side) / 2, side, side, 0, 0, SIZE, SIZE);
-              c.toBlob(b => resolve(b ? URL.createObjectURL(b) : src), 'image/jpeg', .85)
-            } catch { resolve(src) }
-          };
-          img.onerror = () => resolve(src);
-          img.src = src
-        });
-        const thumb = src => { if (pending.has(src)) return pending.get(src); const p = makeThumb(src).then(u => { ready.set(src, u); return u }); pending.set(src, p); return p };
-        window.setCover = function (el, t) {
-          if (!el || !t || !t.art || !el.matches || !el.matches(SMALL)) return origSetCover.apply(this, arguments);
-          const src = t.art;
-          if (ready.has(src)) { el.dataset.artSrc = src; return origSetCover.call(this, el, { art: ready.get(src) }) }
-          origSetCover.call(this, el, { art: '' });
-          el.dataset.artSrc = src;
-          thumb(src).then(u => { if (el.dataset.artSrc === src && el.isConnected) origSetCover.call(window, el, { art: u }) })
-        }
-      }
-
-      const origAz = window.updateAzActive;
-      if (typeof origAz === 'function') {
-        let last = 0, timer = 0;
-        window.updateAzActive = function () {
-          const now = performance.now();
-          if (now - last < 120) { if (!timer) timer = setTimeout(() => { timer = 0; window.updateAzActive() }, 120); return }
-          last = now; return origAz.apply(this, arguments)
-        }
-      }
     })();
   </script>
 </body>
