@@ -7848,6 +7848,131 @@
       html body main { max-width: 100%; overflow-x: hidden; -webkit-overflow-scrolling: touch }
     }
   </style>
+  <style id="musiko-library-page">
+    /* ===== Library page ===== */
+    .library-page { --lib-accent: #ff5368; display: block; padding: 4px 0 24px }
+    .library-page[hidden], .lib-backbar[hidden] { display: none }
+    .lib-backbar { margin: 0 0 12px }
+    html.in-library .mobile-nav { display: none !important }
+
+    .lib-list { display: flex; flex-direction: column; margin: 0 0 30px }
+    .lib-row {
+      display: flex; align-items: center; gap: 16px; width: 100%;
+      padding: 0 4px 0 0; min-height: 60px; background: none; border: 0; color: inherit;
+      font: 500 17px/1.2 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      text-align: left; cursor: pointer; position: relative; border-radius: 12px;
+      -webkit-tap-highlight-color: transparent
+    }
+    .lib-row:hover { background: rgba(255, 255, 255, .04) }
+    .lib-row:active { background: rgba(255, 255, 255, .08) }
+    .lib-row:focus-visible { outline: 2px solid var(--lib-accent); outline-offset: 2px }
+    .lib-ico { flex: none; width: 34px; display: grid; place-items: center; color: var(--lib-accent) }
+    .lib-ico svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round }
+    .lib-label { flex: 1; min-width: 0; padding: 18px 0; border-bottom: 1px solid rgba(255, 255, 255, .12); align-self: stretch; display: flex; align-items: center }
+    .lib-label > span:first-child { flex: 1 }
+    .lib-row:last-child .lib-label { border-bottom-color: transparent }
+    .lib-count { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; margin-right: 10px }
+    .lib-chev { width: 16px; height: 16px; stroke: var(--muted); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; margin-right: 6px }
+    .lib-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--playlist-color, var(--lib-accent)) }
+
+    .lib-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 14px }
+    .lib-head h2 { margin: 0; font: 700 22px/1.2 'DM Sans', system-ui, sans-serif; letter-spacing: -.01em }
+    .lib-head button { background: none; border: 0; color: var(--lib-accent); font: 600 14px 'DM Sans', system-ui, sans-serif; cursor: pointer; padding: 4px 0 }
+
+    .lib-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 16px }
+    @media (min-width: 761px) { .lib-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)) } .lib-row { font-size: 16px } }
+    .lib-card { display: block; text-align: left; background: none; border: 0; padding: 0; color: inherit; cursor: pointer; min-width: 0; -webkit-tap-highlight-color: transparent }
+    .lib-art {
+      display: grid; place-items: center; aspect-ratio: 1; width: 100%; border-radius: 10px;
+      background: rgba(255, 255, 255, .07) center / cover no-repeat; color: rgba(255, 255, 255, .35); font-size: 34px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .3); transition: transform .16s ease
+    }
+    .lib-card:hover .lib-art { transform: scale(1.02) }
+    .lib-card:active .lib-art { transform: scale(.98) }
+    .lib-card:focus-visible { outline: 2px solid var(--lib-accent); outline-offset: 4px; border-radius: 12px }
+    .lib-name { display: block; margin-top: 9px; font: 600 15px/1.25 'DM Sans', system-ui, sans-serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+    .lib-sub { display: block; margin-top: 2px; color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+    .lib-empty { padding: 26px 18px; border: 1px dashed rgba(255, 255, 255, .16); border-radius: 16px; text-align: center; color: var(--muted) }
+    .lib-empty strong { display: block; color: var(--white); margin-bottom: 4px; font-size: 15px }
+    .lib-empty button { margin-top: 14px }
+    .mobile-tabs button.tab-library.active svg { fill: none; stroke-width: 2.3 }
+    .mobile-tabs button.tab-library.active svg circle { fill: currentColor }
+    html[data-theme="light"] .lib-label { border-bottom-color: rgba(40, 32, 44, .12) }
+    html[data-theme="light"] .lib-row:hover { background: rgba(40, 32, 44, .05) }
+    html[data-theme="light"] .lib-art { background-color: rgba(40, 32, 44, .08); color: rgba(40, 32, 44, .35) }
+  </style>
+  <style id="musiko-miniplayer-glass">
+    /* ===== Mini player: Apple-Music-style transparent glass ===== */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .player {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 55%),
+        rgba(24, 14, 22, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      border: 1px solid rgba(255, 255, 255, .16);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .22),
+        inset 0 0 22px rgba(0, 0, 0, .28),
+        0 10px 36px rgba(0, 0, 0, .28)
+    }
+
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .player {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, .08) 60%),
+        rgba(255, 255, 255, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      backdrop-filter: blur(26px) saturate(190%);
+      border-color: rgba(255, 255, 255, .55);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 10px 32px rgba(40, 30, 60, .16)
+    }
+
+    /* controls sit directly on the glass: no extra fills */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .player .icon-btn:not(.play) {
+      background: transparent
+    }
+  </style>
+  <style id="musiko-mobile-fixed-header">
+    /* phones: no chip row under the header */
+    @media (max-width: 760px) { html body main > .mobile-nav { display: none !important } }
+    /* ===== Phones: header + filter chips stay pinned while the library scrolls ===== */
+    @media (max-width: 760px) {
+      html body main > .top {
+        position: sticky;
+        top: -16px;               /* main has 16px top padding; stick flush to the edge */
+        z-index: 8;
+        margin: -16px -14px 0;
+        padding: calc(16px + env(safe-area-inset-top)) 14px 10px;
+        --top-surface: var(--skin-app, #0b0d14dc);
+        --top-edge: var(--skin-border, #ffffff18);
+        /* same glass as the desktop top bar */
+        background: linear-gradient(to bottom,
+          color-mix(in srgb, var(--top-surface) 88%, transparent),
+          color-mix(in srgb, var(--top-surface) 72%, transparent));
+        -webkit-backdrop-filter: blur(18px) saturate(130%);
+        backdrop-filter: blur(18px) saturate(130%)
+      }
+
+      html body main > .mobile-nav {
+        position: sticky;
+        top: calc(var(--mtop-h, 70px) - 16px);
+        z-index: 7;
+        margin: 0 -14px 12px;
+        padding: 0 14px 10px;
+        --top-surface: var(--skin-app, #0b0d14dc);
+        --top-edge: var(--skin-border, #ffffff18);
+        background: color-mix(in srgb, var(--top-surface) 72%, transparent);
+        -webkit-backdrop-filter: blur(18px) saturate(130%);
+        backdrop-filter: blur(18px) saturate(130%);
+        border-bottom: 1px solid color-mix(in srgb, var(--top-edge) 55%, transparent)
+      }
+
+      html[data-theme="light"] body main > .top,
+      html[data-theme="light"] body main > .mobile-nav {
+        --top-surface: #ffffffb8;
+        --top-edge: #28202c16
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -7963,6 +8088,8 @@
           <div id="topSongsList" class="top-songs-list"></div>
         </div>
       </section>
+      <div class="lib-backbar" id="libraryBack" hidden><button type="button" class="glass-btn" id="libraryBackBtn">← Library</button></div>
+      <section class="library-page" id="librarySection" hidden></section>
       <section class="albums-section" id="albumsSection" hidden>
         <div class="section-head">
           <div>
@@ -8471,7 +8598,7 @@
     function playlistTint(p) { const allowed = ['#ff5368', '#8b70ff', '#328fe8', '#20a77a', '#e6a33a']; return allowed.includes(p?.color) ? p.color : allowed[0] }
     function renderPlaylists() { const nav = document.querySelector('#playlistNav'); nav.innerHTML = playlists.map(p => `<button class="playlist-nav-item ${activePlaylistId === p.id ? 'active' : ''}" data-pid="${escapeHtml(p.id)}" style="--playlist-color:${playlistTint(p)}"><span class="playlist-dot"></span><span class="playlist-nav-name">${escapeHtml(p.name)}</span><span class="playlist-edit" data-edit-playlist="${escapeHtml(p.id)}" title="Edit playlist" aria-label="Edit ${escapeHtml(p.name)}">✎</span><span class="playlist-delete" data-delete-playlist="${escapeHtml(p.id)}" title="Delete playlist" aria-label="Delete ${escapeHtml(p.name)}">×</span></button>`).join(''); nav.querySelectorAll('[data-pid]').forEach(el => el.onclick = e => { if (e.target.closest('[data-delete-playlist],[data-edit-playlist]')) return; selectView(playlists.find(p => p.id === el.dataset.pid)?.name || el.dataset.pid, el.dataset.pid) }); nav.querySelectorAll('[data-delete-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); deletePlaylist(el.dataset.deletePlaylist) }); nav.querySelectorAll('[data-edit-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); openPlaylistDialog(el.dataset.editPlaylist) }); renderMobileNav() }
     function renderMobileNav() { const nav = document.querySelector('#mobileNav'); if (!nav) return; const navView = activeView === 'Album' ? 'Albums' : activeView; renderMobileTabs(navView); const views = ['Recently added']; nav.innerHTML = views.map(name => `<button data-name=\"${name}\" class=\"${navView === name && !activePlaylistId ? 'active' : ''}\">${name}</button>`).join('') + playlists.map(p => `<button data-name=\"${escapeHtml(p.id)}\" class=\"${activePlaylistId === p.id ? 'active' : ''}\">${escapeHtml(p.name)}</button>`).join('') + '<button class=\"mobile-auto-mix\" data-auto-mix>♫ Auto Mix</button><button class=\"mobile-new-playlist\" data-new-playlist>＋ New playlist</button>'; nav.querySelectorAll('button').forEach(b => b.onclick = () => { if (b.hasAttribute('data-auto-mix')) { startAutoMix(); return } if (b.hasAttribute('data-new-playlist')) { openPlaylistDialog(); return } const p = playlists.find(x => x.id === b.dataset.name); selectView(p ? p.name : b.dataset.name, p?.id || null) }) }
-    function renderMobileTabs(navView) { const tabs = document.querySelector('#mobileTabs'); if (!tabs) return; const searching = document.activeElement === document.querySelector('#search') || (!!searchTerm && activeView !== 'Home'); const items = [['Home', 'Home', '<path d="m3 10.5 9-7.2 9 7.2V20a1 1 0 0 1-1 1h-4.5v-6.5h-7V21H4a1 1 0 0 1-1-1z"/>'], ['All tracks', 'Songs', '<path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>'], ['Favorites', 'Favorites', '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>'], ['Albums', 'Albums', '<path fill-rule="evenodd" d="M6.5 3.5h11a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3h-11a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3zM12 8.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4z"/>'], ['__search', 'Search', '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>']]; tabs.innerHTML = items.map(([view, label, icon]) => { const isSearch = view === '__search', on = isSearch ? searching : (!searching && navView === view && !activePlaylistId); return `<button type="button" data-tab="${view}" class="tab-${label.toLowerCase()}${on ? ' active' : ''}" aria-label="${label}"${on ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true">${icon}</svg><span>${label}</span></button>` }).join(''); tabs.querySelectorAll('button').forEach(b => b.onclick = () => { const m = document.querySelector('main'); if (b.dataset.tab === '__search') { if (m) m.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelector('#search').focus(); return } const same = b.classList.contains('active'); document.querySelector('#search').blur(); if (!same || searchTerm) { if (searchTerm) { searchTerm = ''; document.querySelector('#search').value = '' } selectView(b.dataset.tab) } if (m) m.scrollTo({ top: 0, behavior: same ? 'smooth' : 'auto' }) }) }
+    function renderMobileTabs(navView) { const tabs = document.querySelector('#mobileTabs'); if (!tabs) return; const searching = document.activeElement === document.querySelector('#search') || (!!searchTerm && activeView !== 'Home'); const items = [['Home', 'Home', '<path d="m3 10.5 9-7.2 9 7.2V20a1 1 0 0 1-1 1h-4.5v-6.5h-7V21H4a1 1 0 0 1-1-1z"/>'], ['Library', 'Library', '<rect x="4" y="3.5" width="16" height="17" rx="3.2"/><path d="M10 16V8.6l5-1V14"/><circle cx="8.6" cy="16" r="1.4"/><circle cx="13.6" cy="14" r="1.4"/>'], ['Favorites', 'Favorites', '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>'], ['__search', 'Search', '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>']]; tabs.innerHTML = items.map(([view, label, icon]) => { const isSearch = view === '__search', on = isSearch ? searching : view === 'Library' ? (!searching && (['Library', 'All tracks', 'Albums', 'Recently added'].includes(navView) || !!activePlaylistId)) : (!searching && navView === view && !activePlaylistId); return `<button type="button" data-tab="${view}" class="tab-${label.toLowerCase()}${on ? ' active' : ''}" aria-label="${label}"${on ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true">${icon}</svg><span>${label}</span></button>` }).join(''); tabs.querySelectorAll('button').forEach(b => b.onclick = () => { const m = document.querySelector('main'); if (b.dataset.tab === '__search') { if (m) m.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelector('#search').focus(); return } const same = b.classList.contains('active') && (b.dataset.tab !== 'Library' || (window.musikoLibraryAtRoot && window.musikoLibraryAtRoot())); document.querySelector('#search').blur(); if (!same || searchTerm) { if (searchTerm) { searchTerm = ''; document.querySelector('#search').value = '' } selectView(b.dataset.tab) } if (m) m.scrollTo({ top: 0, behavior: same ? 'smooth' : 'auto' }) }) }
     (() => { const root = document.documentElement, field = () => document.querySelector('#search'); const typing = el => el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') && el.type !== 'checkbox' && el.type !== 'range' && el.type !== 'file'; document.addEventListener('focusin', e => { if (typing(e.target)) root.classList.add('kb-open'); if (e.target === field()) renderMobileNav() }); document.addEventListener('focusout', e => { if (typing(e.target)) setTimeout(() => { if (!typing(document.activeElement)) root.classList.remove('kb-open') }, 60); if (e.target === field()) setTimeout(renderMobileNav, 80) }) })();
     function selectView(name, playlistId = null) { const playlist = playlistId ? playlists.find(p => p.id === playlistId) : null; if (playlist) name = playlist.name; activeView = name; activePlaylistId = playlistId; activeAlbumKey = null; const isHome = name === 'Home' && !playlistId, isAlbums = name === 'Albums' && !playlistId; document.querySelector('.hero').hidden = !isHome; document.querySelector('#albumsSection').hidden = !isAlbums; document.querySelector('.track-section-head').hidden = isHome || isAlbums; document.querySelector('#tracklist').hidden = isHome || isAlbums; document.querySelector('#backToAlbums').hidden = true; document.querySelector('#viewKicker').textContent = isHome ? 'MUSIKO' : playlistId ? 'PLAYLISTS' : 'LIBRARY'; document.querySelector('#viewTitle').textContent = name; document.querySelector('#listTitle').textContent = playlistId ? name : name === 'All tracks' ? 'Your tracks' : name; document.querySelector('#playlistDescription').textContent = playlistId ? (playlists.find(p => p.id === playlistId)?.description || '') : ''; document.querySelector('#playlistDescription').hidden = !playlistId || !playlists.find(p => p.id === playlistId)?.description; document.querySelector('#editActivePlaylist').hidden = !playlistId; document.querySelector('#listKicker').textContent = playlistId ? 'PLAYLIST' : name === 'Favorites' ? 'YOUR FAVORITES' : 'YOUR COLLECTION'; document.querySelectorAll('.nav button[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === name)); renderPlaylists(); render(); preloadedTrackIndex = -1; prepareNextTrack() }
     async function createPlaylist(name, description = '', color = '#ff5368', rule = 'manual', ruleValue = '') { name = (name || '').trim(); if (!name) return null; const p = { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, name, description: description.trim(), color: playlistTint({ color }), trackIds: [], rule, ruleValue: ruleValue.trim() }; playlists.push(p); try { await dbRequest('playlists', 'put', p) } catch { playlists = playlists.filter(x => x.id !== p.id); toast('Could not save playlist'); return null } renderPlaylists(); return p }
@@ -8580,6 +8707,120 @@
       const pl = document.querySelector('#playlistNav');
       if (pl) new MutationObserver(labelItems).observe(pl, { childList: true });
       sync();
+    })();
+  </script>
+  <script>
+    // keep the pinned chip row directly under the pinned header on phones
+    (() => {
+      const top = document.querySelector('main > .top'), main = document.querySelector('main');
+      if (!top || !main) return;
+      const sync = () => main.style.setProperty('--mtop-h', top.offsetHeight + 'px');
+      sync(); addEventListener('resize', sync);
+      if (window.ResizeObserver) new ResizeObserver(sync).observe(top);
+    })();
+  </script>
+  <script>
+    // Library page: Playlists / Artists / Albums / Songs / Downloaded + Recently Added
+    (() => {
+      const $ = q => document.querySelector(q);
+      const sec = $('#librarySection'), backBar = $('#libraryBack'), backBtn = $('#libraryBackBtn');
+      if (!sec) return;
+      const origSelect = window.selectView, origRender = window.render, origVisible = window.visibleTracks,
+        origAlbum = window.openAlbumView, origPlaylists = window.renderPlaylists;
+      let mode = null, artist = null;
+      window.musikoLibraryAtRoot = () => mode === 'root';
+      const LIB_MODES = ['root', 'playlists', 'artists'];
+      const chev = '<svg class="lib-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
+      const icons = {
+        playlists: '<rect x="3.5" y="4" width="17" height="16" rx="3.5"/><path d="M10 9.2v5.6l4.6-2.8z"/>',
+        artists: '<circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20c.6-3.7 3.6-5.7 7.2-5.7s6.6 2 7.2 5.7"/>',
+        albums: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.6"/><path d="M12 3.5v3"/>',
+        songs: '<path d="M14 4v11.2"/><path d="M14 4c1.2 2.6 3.6 3.1 5 3.4"/><circle cx="10.8" cy="16.2" r="3.2"/>',
+        downloaded: ''
+      };
+      const esc = v => escapeHtml(String(v ?? ''));
+      const artistName = t => (t.artist && t.artist.trim()) || 'Unknown Artist';
+      const artistGroups = () => { const m = new Map(); tracks.forEach(t => { const n = artistName(t); const g = m.get(n) || { name: n, count: 0, art: '' }; g.count++; if (!g.art && t.art) g.art = t.art; m.set(n, g) }); return [...m.values()].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })) };
+      const songsLabel = n => `${n} ${n === 1 ? 'song' : 'songs'}`;
+      const row = (go, icon, label, count) => `<button type="button" class="lib-row" data-go="${go}"><span class="lib-ico"><svg viewBox="0 0 24 24" aria-hidden="true">${icon}</svg></span><span class="lib-label"><span>${label}</span><span class="lib-count">${count}</span>${chev}</span></button>`;
+
+      function setChrome(kicker, title) {
+        $('#viewKicker').textContent = kicker; $('#viewTitle').textContent = title;
+        document.documentElement.classList.toggle('in-library', LIB_MODES.includes(mode));
+      }
+      function showBack(label) { backBar.hidden = !label; if (label) backBtn.textContent = '← ' + label }
+
+      function renderRoot() {
+        const albums = getAlbumGroups();
+        const recent = albums.map(g => ({ g, last: Math.max(...g.indices) })).sort((a, b) => b.last - a.last).slice(0, 12).map(x => x.g);
+        sec.innerHTML = `<div class="lib-list">${row('playlists', icons.playlists, 'Playlists', playlists.length)}${row('artists', icons.artists, 'Artists', artistGroups().length)}${row('albums', icons.albums, 'Albums', albums.length)}${row('songs', icons.songs, 'Songs', tracks.length)}</div>`
+          + `<div class="lib-head"><h2>Recently Added</h2>${recent.length ? '<button type="button" data-go="recent">See all</button>' : ''}</div>`
+          + (recent.length ? `<div class="lib-grid">${recent.map((g, i) => `<button type="button" class="lib-card" data-album="${i}"><span class="lib-art">♫</span><span class="lib-name">${esc(g.album)}</span><span class="lib-sub">${esc(g.artist)}</span></button>`).join('')}</div>`
+            : '<div class="lib-empty"><strong>Nothing here yet</strong>Add music and your newest albums will show up here.<br><button type="button" class="glass-btn" data-go="add">＋ Add music</button></div>');
+        sec.querySelectorAll('[data-album]').forEach(c => { const g = recent[+c.dataset.album]; setCover(c.querySelector('.lib-art'), { art: g.art }); c.dataset.key = g.key });
+      }
+      function renderPlaylistsPage() {
+        sec.innerHTML = playlists.length ? `<div class="lib-list">${playlists.map(p => `<button type="button" class="lib-row" data-playlist="${esc(p.id)}" style="--playlist-color:${playlistTint(p)}"><span class="lib-ico"><span class="lib-dot"></span></span><span class="lib-label"><span>${esc(p.name)}</span><span class="lib-count">${songsLabel(smartTrackIds(p).length)}</span>${chev}</span></button>`).join('')}</div>`
+          : '<div class="lib-empty"><strong>No playlists yet</strong>Group your songs into playlists.<br><button type="button" class="glass-btn" data-go="newplaylist">＋ New playlist</button></div>';
+      }
+      function renderArtistsPage() {
+        const groups = artistGroups();
+        sec.innerHTML = groups.length ? `<div class="lib-list">${groups.map(g => `<button type="button" class="lib-row" data-artist="${esc(g.name)}"><span class="lib-ico"><svg viewBox="0 0 24 24" aria-hidden="true">${icons.artists}</svg></span><span class="lib-label"><span>${esc(g.name)}</span><span class="lib-count">${songsLabel(g.count)}</span>${chev}</span></button>`).join('')}</div>`
+          : '<div class="lib-empty"><strong>No artists yet</strong>Add music to browse by artist.</div>';
+      }
+      function paint() { if (mode === 'root') renderRoot(); else if (mode === 'playlists') renderPlaylistsPage(); else if (mode === 'artists') renderArtistsPage() }
+
+      function enter(next, arg) {
+        mode = next; artist = next === 'artist' ? arg : null;
+        if (next === 'artist' || next === 'downloaded') {
+          origSelect('All tracks', null);
+          sec.hidden = true;
+          const title = next === 'artist' ? arg : 'Downloaded';
+          setChrome(next === 'artist' ? 'ARTIST' : 'LIBRARY', title);
+          $('#listTitle').textContent = title; $('#listKicker').textContent = next === 'artist' ? 'ARTIST' : 'ON THIS DEVICE';
+          showBack(next === 'artist' ? 'Artists' : 'Library');
+          return;
+        }
+        origSelect('Library', null);
+        $('.track-section-head').hidden = true; $('#tracklist').hidden = true; $('#backToAlbums').hidden = true;
+        sec.hidden = false; updateAzActive();
+        setChrome('LIBRARY', next === 'root' ? 'Library' : next === 'playlists' ? 'Playlists' : 'Artists');
+        showBack(next === 'root' ? '' : 'Library');
+        paint();
+        const m = $('main'); if (m) m.scrollTo({ top: 0 });
+      }
+      function leave() { mode = null; artist = null; sec.hidden = true; backBar.hidden = true; document.documentElement.classList.remove('in-library') }
+
+      window.selectView = function (name, playlistId = null) {
+        if (!playlistId && name === 'Library') return enter('root');
+        leave();
+        return origSelect(name, playlistId);
+      };
+      window.openAlbumView = function (key) { leave(); return origAlbum(key) };
+      window.visibleTracks = function () { const r = origVisible(); return artist ? r.filter(x => artistName(x.t) === artist) : r };
+      window.render = function () {
+        const out = origRender.apply(this, arguments);
+        if (LIB_MODES.includes(mode)) { if (searchTerm) { leave(); origSelect('All tracks', null) } else paint() }
+        return out;
+      };
+      window.renderPlaylists = function () { const out = origPlaylists.apply(this, arguments); if (mode === 'playlists' || mode === 'root') paint(); return out };
+
+      sec.addEventListener('click', e => {
+        const el = e.target.closest('[data-go],[data-album],[data-playlist],[data-artist]'); if (!el) return;
+        if (el.dataset.album !== undefined) return origAlbum(el.dataset.key);
+        if (el.dataset.playlist) { const p = playlists.find(x => x.id === el.dataset.playlist); return p && window.selectView(p.name, p.id) }
+        if (el.dataset.artist !== undefined) return enter('artist', el.dataset.artist);
+        switch (el.dataset.go) {
+          case 'playlists': return enter('playlists');
+          case 'artists': return enter('artists');
+          case 'albums': return window.selectView('Albums');
+          case 'songs': return window.selectView('All tracks');
+          case 'recent': return window.selectView('Recently added');
+          case 'add': return $('#openBtn').click();
+          case 'newplaylist': return openPlaylistDialog();
+        }
+      });
+      backBtn.addEventListener('click', () => { if (mode === 'artist') enter('artists'); else window.selectView('Library') });
     })();
   </script>
 </body>
