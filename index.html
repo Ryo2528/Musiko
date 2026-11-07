@@ -6765,7 +6765,7 @@
       display: none
     }
 
-    html body main:has(.hero:not([hidden])):has(#recentSection[hidden]) .home-empty {
+    html.lib-empty body main:has(.hero:not([hidden])) .home-empty {
       display: flex
     }
 
@@ -8059,6 +8059,303 @@
       }
     }
   </style>
+  <style id="tracks-revamp">
+    /* ===== Track list revamp: flat rows, quiet type, one accent for "now playing" ===== */
+
+    /* header: one big title, count and sort sit on its baseline */
+    html body .track-section-head {
+      align-items: flex-end;
+      gap: 14px;
+      margin: 6px 2px 10px
+    }
+
+    html body .track-section-head .section-kicker {
+      display: none
+    }
+
+    html body .track-section-head #listTitle {
+      font-size: clamp(26px, 6.8vw, 38px);
+      line-height: 1.04;
+      font-weight: 700;
+      letter-spacing: -.035em
+    }
+
+    html body .track-section-head .playlist-head-actions {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      gap: 14px;
+      flex: none
+    }
+
+    html body .track-section-head #count {
+      order: 1;
+      font-size: 13px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums
+    }
+
+    html body .track-section-head .az-badge {
+      order: 2;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: none;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0
+    }
+
+    /* list: no card, rows sit directly on the page */
+    html body #tracklist {
+      border: 0;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
+      overflow: visible;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none
+    }
+
+    html body #tracklist.az-on {
+      margin-right: 32px
+    }
+
+    html body #tracklist .empty {
+      border: 1px dashed var(--hair);
+      border-radius: 12px
+    }
+
+    /* letter headings */
+    html body #tracklist .az-divider {
+      padding: 24px 14px 8px;
+      border: 0;
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .02em
+    }
+
+    html body #tracklist .az-divider:first-child {
+      padding-top: 8px
+    }
+
+    /* rows */
+    html body #tracklist .track {
+      grid-template-columns: 28px 52px minmax(0, 1.5fr) minmax(0, 1fr) 48px repeat(3, 32px);
+      gap: 14px;
+      min-height: 72px;
+      padding: 10px 6px 10px 14px;
+      border: 0;
+      border-bottom: 1px solid var(--hair);
+      border-radius: 0;
+      background: none;
+      transform: none;
+      transition: background-color .14s var(--ease)
+    }
+
+    html body #tracklist .track:last-child {
+      border-bottom: 0
+    }
+
+    html body #tracklist .track:hover {
+      background: var(--fill-1);
+      transform: none
+    }
+
+    html body #tracklist .track.current {
+      background: color-mix(in srgb, var(--accent) 6%, transparent);
+      box-shadow: inset 2px 0 0 var(--accent)
+    }
+
+    html body #tracklist .track.current .track-name {
+      color: var(--accent)
+    }
+
+    html body #tracklist .track .cover {
+      width: 52px;
+      height: 52px;
+      border-radius: 6px;
+      outline: 1px solid var(--hair);
+      outline-offset: -1px
+    }
+
+    html body #tracklist .track-copy-line .track-name {
+      flex: 0 1 auto
+    }
+
+    html body #tracklist .track-name {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -.01em
+    }
+
+    html body #tracklist .track-artist {
+      margin-top: 3px;
+      font-size: 13px
+    }
+
+    html body #tracklist .track-album {
+      margin: 0;
+      font-size: 13px;
+      opacity: 1
+    }
+
+    html body #tracklist .track-length {
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums
+    }
+
+    html body #tracklist .track-no {
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums
+    }
+
+    html body #tracklist .track-action {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      color: var(--muted);
+      background: none
+    }
+
+    html body #tracklist .track-action:hover {
+      background: var(--fill-2);
+      color: var(--white)
+    }
+
+    html body #tracklist .track-action.favorite-on {
+      color: var(--accent)
+    }
+
+    /* desktop: actions appear on hover, a saved heart always stays */
+    @media (hover:hover) and (min-width:761px) {
+      html body #tracklist .track .track-action:not(.favorite-on) {
+        opacity: 0
+      }
+
+      html body #tracklist .track:hover .track-action,
+      html body #tracklist .track:focus-within .track-action,
+      html body #tracklist .track.current .track-action {
+        opacity: 1
+      }
+    }
+
+    /* phone: drop the album column and row numbers, keep every action reachable */
+    @media (max-width:760px) {
+      html body #tracklist .track {
+        grid-template-columns: 52px minmax(0, 1fr) 38px repeat(3, 28px);
+        gap: 8px;
+        min-height: 68px;
+        padding: 10px 0 10px 12px
+      }
+
+      html body #tracklist .track-no,
+      html body #tracklist .track-album {
+        display: none
+      }
+
+      html body #tracklist .track-action {
+        width: 28px;
+        height: 32px;
+        font-size: 16px;
+        opacity: 1
+      }
+
+      html body #tracklist .track-length {
+        font-size: 11px
+      }
+    }
+
+    @media (max-width:350px) {
+      html body #tracklist .track {
+        grid-template-columns: 42px minmax(0, 1fr) 34px repeat(3, 24px);
+        gap: 6px;
+        padding-left: 8px
+      }
+
+      html body #tracklist .track .cover {
+        width: 42px;
+        height: 42px
+      }
+
+      html body #tracklist .track-name {
+        font-size: 14px
+      }
+    }
+
+    /* A–Z rail: bare letters, no capsule, no glow */
+    html body .az-rail {
+      width: 22px;
+      padding: 6px 0;
+      border: 0;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none
+    }
+
+    html body .az-rail:hover,
+    html body .az-rail.dragging {
+      border-color: transparent;
+      box-shadow: none
+    }
+
+    html body .az-rail:focus-visible {
+      box-shadow: none;
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px
+    }
+
+    html body .az-rail button {
+      font-size: 10.5px
+    }
+
+    html body .az-rail button.has,
+    html body .az-rail.hovering button.has {
+      color: var(--muted)
+    }
+
+    html body .az-rail button:not(.has)::after {
+      width: 2px;
+      height: 2px
+    }
+
+    html body .az-rail button.active,
+    html body .az-rail.hovering button.active {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800
+    }
+
+    html body .az-rail button.active::before {
+      display: none
+    }
+
+    /* phones: stop the rail above the mini player and tab bar */
+    @media (max-width:760px) {
+      html body .az-rail {
+        bottom: calc(172px + env(safe-area-inset-bottom, 0px))
+      }
+    }
+
+    html body .az-bubble {
+      border-radius: 10px
+    }
+
+    html body .az-bubble b {
+      text-shadow: none
+    }
+  </style>
 </head>
 
 <body>
@@ -8674,10 +8971,10 @@
     function getAlbumGroups() { const groups = new Map(); tracks.forEach((track, index) => { const key = albumIdentity(track); let group = groups.get(key); if (!group) { group = { key, album: track.album || 'Unknown Album', artist: track.artist || 'Unknown Artist', art: track.art || '', indices: [] }; groups.set(key, group) } if (!group.art && track.art) group.art = track.art; group.indices.push(index) }); return [...groups.values()].sort((a, b) => a.album.localeCompare(b.album) || a.artist.localeCompare(b.artist)) }
     function renderAlbums() { const section = document.querySelector('#albumsSection'), grid = document.querySelector('#albumGrid'); if (!section || !grid) return; section.hidden = activeView !== 'Albums'; if (activeView !== 'Albums') return; const groups = getAlbumGroups(); grid.innerHTML = groups.length ? groups.map((group, index) => `<button type="button" class="album-card" data-album-index="${index}"><span class="album-art">♫</span><span class="album-name">${escapeHtml(group.album)}</span><span class="album-artist">${escapeHtml(group.artist)}</span><span class="album-count">${group.indices.length} ${group.indices.length === 1 ? 'song' : 'songs'}</span></button>`).join('') : '<div class="stats-empty">Add music to your library to browse albums.</div>'; grid.querySelectorAll('[data-album-index]').forEach((card, index) => { const group = groups[index]; setCover(card.querySelector('.album-art'), { art: group.art }); card.onclick = () => openAlbumView(group.key) }) }
     function openAlbumView(key) { const album = getAlbumGroups().find(group => group.key === key); if (!album) return; activeView = 'Album'; activeAlbumKey = key; activePlaylistId = null; document.querySelector('.hero').hidden = true; document.querySelector('#albumsSection').hidden = true; document.querySelector('.track-section-head').hidden = false; document.querySelector('#tracklist').hidden = false; document.querySelector('#viewKicker').textContent = 'ALBUM'; document.querySelector('#viewTitle').textContent = album.album; document.querySelector('#listTitle').textContent = album.album; document.querySelector('#listKicker').textContent = 'ALBUM'; document.querySelector('#playlistDescription').textContent = album.artist; document.querySelector('#playlistDescription').hidden = false; document.querySelector('#editActivePlaylist').hidden = true; document.querySelector('#backToAlbums').hidden = false; document.querySelectorAll('.nav button[data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === 'Albums')); renderPlaylists(); render(); preloadedTrackIndex = -1; prepareNextTrack() }
-    function renderRecent() { const section = document.querySelector('#recentSection'), grid = document.querySelector('#recentGrid'); section.hidden = activeView !== 'Home' || !tracks.length; if (!tracks.length) return; const recent = tracks.slice(-5).reverse(); grid.innerHTML = recent.map((t, i) => `<div class="recent-card" data-recent="${tracks.length - 1 - i}"><div class="recent-art">♫</div><div class="recent-track">${escapeHtml(t.name)}</div><div class="recent-artist">${escapeHtml(t.artist)}</div></div>`).join(''); grid.querySelectorAll('.recent-card').forEach(el => { const i = +el.dataset.recent; setCover(el.querySelector('.recent-art'), tracks[i]); el.onclick = () => playTrack(i) }) }
+    function renderRecent() { const section = document.querySelector('#recentSection'), grid = document.querySelector('#recentGrid'); section.hidden = true; document.documentElement.classList.toggle('lib-empty', !tracks.length); return; const recent = tracks.slice(-5).reverse(); grid.innerHTML = recent.map((t, i) => `<div class="recent-card" data-recent="${tracks.length - 1 - i}"><div class="recent-art">♫</div><div class="recent-track">${escapeHtml(t.name)}</div><div class="recent-artist">${escapeHtml(t.artist)}</div></div>`).join(''); grid.querySelectorAll('.recent-card').forEach(el => { const i = +el.dataset.recent; setCover(el.querySelector('.recent-art'), tracks[i]); el.onclick = () => playTrack(i) }) }
     function updateAmbient(t) { if (!t?.art) { document.documentElement.style.setProperty('--ambient-a', '#33405f'); document.documentElement.style.setProperty('--ambient-b', '#633c57'); return } const img = new Image(); img.onload = () => { if (current < 0 || tracks[current]?.id !== t.id) return; try { const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d', { willReadFrequently: true }); canvas.width = 24; canvas.height = 24; ctx.drawImage(img, 0, 0, 24, 24); const pixels = ctx.getImageData(0, 0, 24, 24).data, bins = new Map(); for (let i = 0; i < pixels.length; i += 4) { const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3]; if (a < 160 || (r > 242 && g > 242 && b > 242) || (r < 18 && g < 18 && b < 18)) continue; const key = [r >> 5, g >> 5, b >> 5].join(','), bin = bins.get(key) || { count: 0, r: 0, g: 0, b: 0 }; bin.count++; bin.r += r; bin.g += g; bin.b += b; bins.set(key, bin) } const top = [...bins.values()].sort((a, b) => b.count - a.count).slice(0, 2); if (!top.length) return; const color = x => `rgb(${Math.round(x.r / x.count)}, ${Math.round(x.g / x.count)}, ${Math.round(x.b / x.count)})`; document.documentElement.style.setProperty('--ambient-a', color(top[0])); document.documentElement.style.setProperty('--ambient-b', color(top[1] || top[0])) } catch { } }; img.onerror = () => { }; img.src = t.art } function syncHero(t) { updateAmbient(t); document.querySelector('#heroEyebrow').textContent = t ? 'NOW PLAYING' : 'YOUR MUSIC, YOUR WAY'; document.querySelector('#heroTitle').textContent = t ? t.name : 'A soundtrack that’s yours.'; document.querySelector('#heroSubtitle').textContent = t ? `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}` : 'Bring your favorite songs together in one place.'; setCover(document.querySelector('#heroArt'), t) }
     function saveListeningStats(force = false) { const now = Date.now(); if (!force && now - lastStatsSavedAt < 5000) return; lastStatsSavedAt = now; try { localStorage.setItem('musiko-listening-stats', JSON.stringify(listeningStats)) } catch { } }
-    function renderListeningStats() { const section = document.querySelector('#listeningStats'); if (!section) return; section.hidden = activeView !== 'Home' || !tracks.length; const total = Math.floor(listeningStats.totalSeconds), hours = Math.floor(total / 3600), minutes = Math.floor(total % 3600 / 60); document.querySelector('#listeningTime').textContent = hours ? `${hours} hr ${minutes} min` : `${minutes} min`; const ranked = tracks.map(t => ({ t, stats: listeningStats.tracks[t.id] || { plays: 0, seconds: 0 } })).filter(item => item.stats.plays > 0).sort((a, b) => b.stats.plays - a.stats.plays || b.stats.seconds - a.stats.seconds).slice(0, 5), list = document.querySelector('#topSongsList'); list.innerHTML = ranked.length ? ranked.map(({ t, stats }, i) => `<div class="top-song-row"><span class="top-song-rank">${i + 1}</span><span class="stats-cover">♫</span><span class="top-song-copy"><strong>${escapeHtml(t.name)}</strong><small>${escapeHtml(t.artist)}</small></span><span class="top-song-plays">${stats.plays} ${stats.plays === 1 ? 'play' : 'plays'}</span></div>`).join('') : '<div class="stats-empty">Play songs from your library to see your top tracks.</div>'; list.querySelectorAll('.stats-cover').forEach((cover, i) => setCover(cover, ranked[i]?.t)) }
+    function renderListeningStats() { const section = document.querySelector('#listeningStats'); if (!section) return; section.hidden = activeView !== 'Home' || !tracks.length; const total = Math.floor(listeningStats.totalSeconds), hours = Math.floor(total / 3600), minutes = Math.floor(total % 3600 / 60); document.querySelector('#listeningTime').textContent = hours ? `${hours} hr ${minutes} min` : `${minutes} min`; const ranked = tracks.map(t => ({ t, stats: listeningStats.tracks[t.id] || { plays: 0, seconds: 0 } })).filter(item => item.stats.plays > 0).sort((a, b) => b.stats.plays - a.stats.plays || b.stats.seconds - a.stats.seconds).slice(0, 5), list = document.querySelector('#topSongsList'); const statsHtml = ranked.length ? ranked.map(({ t, stats }, i) => `<div class="top-song-row"><span class="top-song-rank">${i + 1}</span><span class="stats-cover">♫</span><span class="top-song-copy"><strong>${escapeHtml(t.name)}</strong><small>${escapeHtml(t.artist)}</small></span><span class="top-song-plays">${stats.plays} ${stats.plays === 1 ? 'play' : 'plays'}</span></div>`).join('') : '<div class="stats-empty">Play songs from your library to see your top tracks.</div>', statsSig = statsHtml + ranked.map(x => x.t.art ? 1 : 0).join(''); if (list._sig !== statsSig) { list._sig = statsSig; list.innerHTML = statsHtml; list.querySelectorAll('.stats-cover').forEach((cover, i) => setCover(cover, ranked[i]?.t)) } }
     function recordPlayStart(track) { if (!track) return; const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.plays++; item.lastPlayed = Date.now(); lastListenTrackId = track.id; lastListenPosition = 0; saveListeningStats(true); renderListeningStats() }
     function recordListenTime(deck) { if (deck !== audio || deck.paused || current < 0 || !tracks[current]) return; const position = deck.currentTime, track = tracks[current]; if (lastListenTrackId !== track.id) { lastListenTrackId = track.id; lastListenPosition = position; return } if (lastListenPosition !== null) { const delta = position - lastListenPosition; if (delta > 0 && delta <= 5) { const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.seconds += delta; listeningStats.totalSeconds += delta; const now = Date.now(); saveListeningStats(); if (now - lastStatsRenderedAt >= 1000) { lastStatsRenderedAt = now; renderListeningStats() } } } lastListenPosition = position } function syncMobileTrackEdit() { const button = document.querySelector("#editCurrentTrack"), status = document.querySelector("#mobileTrackEditStatus"); if (!button || !status) return; const track = current >= 0 ? tracks[current] : null; button.disabled = !track; status.textContent = track ? `${track.name} · ${track.artist}` : "Play a song to edit its details." } function render() { syncMobileTrackEdit(); renderRecent(); renderListeningStats(); renderAlbums(); const shown = visibleTracks(); document.querySelector('#count').textContent = `${shown.length} ${shown.length === 1 ? 'song' : 'songs'}`; const az = isAzView(); document.querySelector('#azBadge').hidden = !az; let lastLetter = ''; renderAzRail(az ? shown : []); if (!shown.length) { const message = searchTerm ? 'Try a different title, artist, or album.' : activeView === 'Favorites' ? 'Tap the ♡ beside a song to save it here.' : activePlaylistId ? 'Add songs to this playlist with the + button.' : 'Add MP3s or other audio files to start listening.'; list.innerHTML = `<div class="empty"><strong>${tracks.length ? 'No tracks here yet' : 'Your library is waiting'}</strong>${escapeHtml(message)}</div>`; return } list.innerHTML = shown.map(({ t, i }, n) => { const L = az ? azLetter(t.name) : '', head = az && L !== lastLetter ? `<div class="az-divider" data-letter="${escapeHtml(L)}">${escapeHtml(L)}</div>` : ''; lastLetter = L; return head + `<div class="track ${i === current ? 'current' : ''}" data-i="${i}"><div class="track-no">${i === current && !audio.paused ? '♫' : String(n + 1).padStart(2, '0')}</div><div class="cover" data-cover="${i}">♫</div><div class="track-copy"><div class="track-copy-line"><div class="track-name">${escapeHtml(t.name)}</div><button type="button" class="metadata-edit" data-edit-track="${escapeHtml(t.id)}" title="Edit song, artist, and album details" aria-label="Edit details for ${escapeHtml(t.name)}">✎</button></div><div class="track-artist">${escapeHtml(t.artist)}</div></div><div class="track-album">${escapeHtml(t.album)}</div><div class="track-length">${fmt(t.duration)}</div><button class="track-action ${t.favorite ? 'favorite-on' : ''}" data-favorite="${i}" title="${t.favorite ? 'Remove from' : 'Add to'} favorites">${t.favorite ? '♥' : '♡'}</button><button class="track-action queue-add" data-queue="${i}" title="Add to Up Next" aria-label="Add to Up Next">⇥</button><button class="track-action" data-add="${i}" title="Add to playlist">＋</button></div>` }).join(''); list.querySelectorAll('[data-cover]').forEach(el => setCover(el, tracks[+el.dataset.cover])); list.querySelectorAll('[data-edit-track]').forEach(el => el.onclick = e => { e.stopPropagation(); openTrackMetadata(el.dataset.editTrack) }); list.querySelectorAll('.track').forEach(el => el.addEventListener('click', e => { if (e.target.closest('button')) return; playTrack(+el.dataset.i) })); list.querySelectorAll('[data-favorite]').forEach(el => el.onclick = e => { e.stopPropagation(); toggleFavorite(+el.dataset.favorite) }); list.querySelectorAll('[data-queue]').forEach(el => el.onclick = e => { e.stopPropagation(); enqueueTrack(+el.dataset.queue) }); list.querySelectorAll('[data-add]').forEach(el => el.onclick = e => { e.stopPropagation(); addToPlaylist(+el.dataset.add) }); }
     function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) }
@@ -8893,7 +9190,7 @@
 
       sec.addEventListener('click', e => {
         const el = e.target.closest('[data-go],[data-album],[data-playlist],[data-artist]'); if (!el) return;
-        if (el.dataset.album !== undefined) return origAlbum(el.dataset.key);
+        if (el.dataset.album !== undefined) { const g = getAlbumGroups().find(x => x.key === el.dataset.key); return g && playTrack(g.indices[0]) }
         if (el.dataset.playlist) { const p = playlists.find(x => x.id === el.dataset.playlist); return p && window.selectView(p.name, p.id) }
         if (el.dataset.artist !== undefined) return enter('artist', el.dataset.artist);
         switch (el.dataset.go) {
@@ -8967,6 +9264,552 @@
       window.openPlaylistDialog = function () { const out = origOpen.apply(this, arguments); refresh(); return out };
       del.addEventListener('click', () => { const id = editingPlaylistId; if (!id) return; closePlaylistDialog(); deletePlaylist(id) });
       refresh();
+    })();
+  </script>
+  <style id="home-extras">
+    .home-continue[hidden],
+    .home-artists[hidden] {
+      display: none !important
+    }
+
+    .home-continue .section-head,
+    .home-artists .section-head {
+      margin-bottom: 12px
+    }
+
+    .continue-card {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      padding: 12px 16px 12px 12px;
+      border: 1px solid var(--hair);
+      border-radius: 12px;
+      background: var(--fill-1);
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color .14s var(--ease)
+    }
+
+    .continue-card:hover {
+      background: var(--fill-2)
+    }
+
+    .continue-art {
+      width: 72px;
+      height: 72px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      outline: 1px solid var(--hair);
+      outline-offset: -1px;
+      background: linear-gradient(145deg, #cf6876, #58465f) center / cover no-repeat;
+      color: #fff9;
+      font-size: 22px
+    }
+
+    .continue-copy {
+      display: block;
+      min-width: 0
+    }
+
+    .continue-copy strong,
+    .continue-copy small {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis
+    }
+
+    .continue-copy strong {
+      font-size: 17px;
+      font-weight: 650;
+      letter-spacing: -.015em
+    }
+
+    .continue-copy small {
+      margin-top: 3px;
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .continue-bar {
+      display: block;
+      height: 3px;
+      margin: 11px 0 6px;
+      overflow: hidden;
+      border-radius: 2px;
+      background: var(--fill-2)
+    }
+
+    .continue-bar i {
+      display: block;
+      height: 100%;
+      background: var(--accent)
+    }
+
+    .continue-copy .continue-left {
+      margin-top: 0;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums
+    }
+
+    .continue-go {
+      padding: 10px 18px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 650
+    }
+
+    @media (max-width:760px) {
+      .continue-card {
+        grid-template-columns: 56px minmax(0, 1fr) auto;
+        gap: 12px
+      }
+
+      .continue-art {
+        width: 56px;
+        height: 56px
+      }
+
+      .continue-copy strong {
+        font-size: 15px
+      }
+
+      .continue-go {
+        padding: 9px 13px
+      }
+    }
+  </style>
+  <script>
+    // Home: Continue listening + Most played artists
+    (() => {
+      const $ = q => document.querySelector(q);
+      const recent = $('#recentSection'); if (!recent) return;
+      const RESUME_KEY = 'musiko-resume';
+      const cont = document.createElement('section'), artists = document.createElement('section');
+      cont.className = 'recent-section home-continue'; cont.id = 'continueSection'; cont.hidden = true; cont.setAttribute('aria-label', 'Continue listening');
+      artists.className = 'recent-section home-artists'; artists.id = 'topArtistsSection'; artists.hidden = true; artists.setAttribute('aria-label', 'Most played artists');
+      recent.before(cont); recent.after(artists);
+
+      // remember where playback stopped so "Resume" can pick up from there
+      let lastSaved = '';
+      const saveResume = () => { try { const t = tracks[current]; if (!t || !Number.isFinite(audio.currentTime)) return; const v = JSON.stringify({ id: t.id, t: Math.floor(audio.currentTime) }); if (v === lastSaved) return; lastSaved = v; localStorage.setItem(RESUME_KEY, v) } catch { } };
+      const savedResume = () => { try { return JSON.parse(localStorage.getItem(RESUME_KEY) || 'null') } catch { return null } };
+      setInterval(() => { if (!audio.paused) saveResume() }, 4000);
+      addEventListener('pagehide', saveResume);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) saveResume() });
+
+      const lastPlayedIndex = () => { let best = -1, at = 0; tracks.forEach((t, i) => { const s = listeningStats.tracks[t.id]; if (s && s.lastPlayed > at) { at = s.lastPlayed; best = i } }); return best };
+      const resumePos = i => { const t = tracks[i]; if (!t) return 0; const live = current === i, saved = savedResume(); let pos = live ? audio.currentTime : (saved && saved.id === t.id ? saved.t : 0); const dur = (live && Number.isFinite(audio.duration) ? audio.duration : t.duration) || 0; if (!Number.isFinite(pos) || (dur && pos > dur - 3)) pos = 0; return { pos, dur } };
+
+      function renderContinue() {
+        const i = lastPlayedIndex(), show = activeView === 'Home' && i >= 0 && !!tracks[i];
+        cont.hidden = !show; if (!show) return;
+        const t = tracks[i], { pos, dur } = resumePos(i), playing = current === i && !audio.paused;
+        const sig = [i, t.id, t.name, t.artist, t.art ? 1 : 0, playing, pos > 1].join('|');
+        if (cont.dataset.sig !== sig) {
+          cont.dataset.sig = sig;
+          cont.innerHTML = `<div class="section-head"><div><h2>Continue listening</h2></div></div><button type="button" class="continue-card"><span class="continue-art">♫</span><span class="continue-copy"><strong>${escapeHtml(t.name)}</strong><small>${escapeHtml(t.artist)}</small><span class="continue-bar"><i></i></span><small class="continue-left"></small></span>${playing ? '' : `<span class="continue-go">${pos > 1 ? 'Resume' : 'Play'}</span>`}</button>`;
+          setCover(cont.querySelector('.continue-art'), t);
+          cont.querySelector('.continue-card').onclick = () => {
+            if (current === i && audio.src) { if (audio.paused) $('#play').click() }
+            else { const start = resumePos(i).pos; playTrack(i); if (start > 1) audio.addEventListener('loadedmetadata', () => { try { audio.currentTime = start } catch { } }, { once: true }) }
+            setTimeout(refresh, 200)
+          };
+        }
+        cont.querySelector('.continue-bar i').style.width = (dur ? Math.min(100, pos / dur * 100) : 0) + '%';
+        cont.querySelector('.continue-left').textContent = dur ? (pos > 1 ? `${fmt(dur - pos)} left` : fmt(dur)) : '';
+      }
+
+      function renderArtists() {
+        const map = new Map();
+        tracks.forEach((t, i) => { const name = (t.artist || '').trim(), s = listeningStats.tracks[t.id]; if (!name || !s || !s.plays) return; const g = map.get(name) || { name, plays: 0, seconds: 0, art: '', best: i, bestPlays: -1 }; g.plays += s.plays; g.seconds += s.seconds || 0; if (!g.art && t.art) g.art = t.art; if (s.plays > g.bestPlays) { g.bestPlays = s.plays; g.best = i } map.set(name, g) });
+        const list = [...map.values()].sort((a, b) => b.plays - a.plays || b.seconds - a.seconds).slice(0, 5);
+        const show = activeView === 'Home' && list.length > 0; artists.hidden = !show; if (!show) return;
+        const sig = JSON.stringify(list.map(g => [g.name, g.plays, g.best, g.art ? 1 : 0]));
+        if (artists.dataset.sig === sig) return; artists.dataset.sig = sig;
+        artists.innerHTML = `<div class="section-head"><div><h2>Most played artists</h2></div></div><div class="recent-grid">${list.map((g, n) => `<div class="recent-card" role="button" tabindex="0" data-n="${n}"><div class="recent-art">♫</div><div class="recent-track">${escapeHtml(g.name)}</div><div class="recent-artist">${g.plays} ${g.plays === 1 ? 'play' : 'plays'}</div></div>`).join('')}</div>`;
+        artists.querySelectorAll('.recent-card').forEach(el => { const g = list[+el.dataset.n]; setCover(el.querySelector('.recent-art'), { art: g.art }); const go = () => { playTrack(g.best); setTimeout(refresh, 200) }; el.onclick = go; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } } });
+      }
+
+      let raf = 0;
+      function refresh() { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { renderContinue(); renderArtists() }) }
+      const origRender = window.render, origStats = window.renderListeningStats;
+      window.render = function () { const out = origRender.apply(this, arguments); refresh(); return out };
+      window.renderListeningStats = function () { const out = origStats.apply(this, arguments); refresh(); return out };
+      ['play', 'pause', 'loadedmetadata'].forEach(ev => document.addEventListener(ev, e => { if (e.target === audio) { if (ev === 'pause') saveResume(); refresh() } }, true));
+      refresh();
+    })();
+  </script>
+  <style id="home-greeting-lyrics">
+    .home-lyric[hidden] {
+      display: none !important
+    }
+
+    .home-lyric {
+      margin: 0 0 30px
+    }
+
+    .lyric-card {
+      display: block;
+      width: 100%;
+      padding: 2px 0 2px 18px;
+      border: 0;
+      border-left: 2px solid var(--accent);
+      background: none;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer
+    }
+
+    .lyric-now {
+      display: block;
+      font-size: clamp(20px, 3.6vw, 30px);
+      font-weight: 650;
+      line-height: 1.25;
+      letter-spacing: -.02em;
+      color: var(--white);
+      text-wrap: balance
+    }
+
+    .lyric-now.swap {
+      animation: lyricIn .28s var(--ease)
+    }
+
+    @keyframes lyricIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px)
+      }
+    }
+
+    .lyric-next {
+      display: block;
+      margin-top: 8px;
+      font-size: 15px;
+      line-height: 1.4;
+      color: var(--muted);
+      opacity: .75
+    }
+
+    .lyric-next:empty {
+      display: none
+    }
+
+    .lyric-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .lyric-meta b {
+      font-weight: 600;
+      color: var(--accent)
+    }
+
+    .lyric-card:hover .lyric-meta b {
+      text-decoration: underline;
+      text-underline-offset: 3px
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      .lyric-now.swap {
+        animation: none
+      }
+    }
+  </style>
+  <style id="home-now-playing-polish">
+    /* ===== Now Playing hero: album-tinted, with real playback controls ===== */
+    html body .hero-art.has-art { background-size: cover; background-position: center }
+    #heroPlay { display: none; margin-right: 12px }
+    html body .hero.is-playing #heroAdd { display: none }
+    html body .hero.is-playing #heroPlay,
+    html body .hero.is-playing #autoMixHero { display: none }
+    .hero-time { display: none; margin-left: 14px; font-size: 12px; color: #e0d8dd; font-variant-numeric: tabular-nums; opacity: .8; vertical-align: middle }
+    html body .hero.is-playing .hero-time:not(:empty) { display: inline-block }
+    html[data-theme="light"] .hero-time { color: #625963 }
+
+    html body .hero.is-playing .hero-glow {
+      width: 72%;
+      background: radial-gradient(ellipse at 76% 48%, color-mix(in srgb, var(--ambient-a) 58%, transparent), transparent 62%),
+                  radial-gradient(ellipse at 92% 90%, color-mix(in srgb, var(--ambient-b) 40%, transparent), transparent 55%);
+      transition: opacity .6s ease
+    }
+    html body .hero.is-playing .hero-art {
+      cursor: pointer;
+      box-shadow: 0 22px 56px color-mix(in srgb, var(--ambient-a) 45%, rgba(0, 0, 0, .5)), 0 0 0 1px #ffffff26;
+      transition: transform .25s var(--ease), box-shadow .4s ease
+    }
+    @media (hover:hover) { html body .hero.is-playing .hero-art:hover { transform: scale(1.025) } }
+
+    .hero-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 3; background: color-mix(in srgb, var(--white) 10%, transparent); opacity: 0; transition: opacity .3s }
+    .hero-progress i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 0 2px 2px 0; transition: width .25s linear }
+    html body .hero.is-playing .hero-progress { opacity: 1 }
+
+    /* ===== Lyric highlight: a proper card, dim previous line → bright current → dim next ===== */
+    .home-lyric { margin: 0 0 32px }
+    html body .lyric-card {
+      position: relative;
+      display: block;
+      width: 100%;
+      padding: 18px 26px 20px;
+      border: 1px solid var(--hair);
+      border-left: 1px solid var(--hair);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--ambient-a) 20%, transparent), var(--fill-1) 62%);
+      transition: border-color .18s var(--ease), background-color .18s var(--ease)
+    }
+    html body .lyric-card:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent) }
+    html body .lyric-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px }
+
+    .lyric-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px }
+    .lyric-kicker { display: inline-flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--muted) }
+    .lyric-eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px }
+    .lyric-eq u { width: 3px; height: 100%; border-radius: 2px; background: var(--accent); transform-origin: bottom; animation: lyricEq 1s ease-in-out infinite }
+    .lyric-eq u:nth-child(2) { animation-delay: -.35s }
+    .lyric-eq u:nth-child(3) { animation-delay: -.7s }
+    .home-lyric.is-paused .lyric-eq u { animation-play-state: paused }
+    @keyframes lyricEq { 0%, 100% { transform: scaleY(.3) } 50% { transform: scaleY(1) } }
+    .lyric-open { font-size: 13px; font-weight: 600; color: var(--accent); white-space: nowrap }
+    .lyric-card:hover .lyric-open { text-decoration: underline; text-underline-offset: 3px }
+
+    .lyric-prev, .lyric-next { display: block; font-size: 15px; line-height: 1.4; color: var(--muted); opacity: .55; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+    .lyric-prev:empty, .lyric-next:empty { display: none }
+    .lyric-prev { margin-bottom: 8px }
+    html body .lyric-now {
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+      font-size: clamp(22px, 3.4vw, 32px); line-height: 1.22; letter-spacing: -.025em
+    }
+    html body .lyric-next { margin-top: 10px; opacity: .6 }
+    html body .lyric-meta { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--hair); font-size: 13px; color: var(--muted) }
+    html body .lyric-meta .lyric-song { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+
+    @media (max-width: 760px) {
+      html body .lyric-card { padding: 16px 18px 18px }
+      .lyric-head { margin-bottom: 10px }
+      .hero-time { margin-left: 10px }
+    }
+    /* ===== Hero action row: wraps cleanly, never collides with the title or progress line ===== */
+    html body .hero-copy { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 10px }
+    html body .hero-copy > .eyebrow,
+    html body .hero-copy > h1,
+    html body .hero-copy > p { flex: 0 0 100%; min-width: 0 }
+    html body .hero-copy > p { margin-bottom: 8px }
+    html body .hero-copy > .hero-cta { flex: none; margin: 0; white-space: nowrap }
+    html body .hero-copy > .hero-time { flex: none; margin: 0 0 0 4px }
+
+    @media (max-width: 760px) {
+      /* let the hero grow with its content instead of clipping it at a fixed height */
+      html body .hero { height: auto; min-height: clamp(185px, 52vw, 220px); padding: 16px 16px 24px; display: flex; flex-direction: column; justify-content: flex-end }
+      html body .hero-copy { position: relative; left: auto; right: auto; bottom: auto; width: 100%; max-width: none }
+      html body .hero-copy > .hero-cta { height: 42px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center }
+      html body .hero.is-playing #heroPlay { min-width: 104px }
+      html body .hero-copy > .hero-time { flex: 0 0 100%; text-align: left; margin: 0 }
+    }
+    @media (max-width: 380px) {
+      html body .hero-copy > .hero-cta { padding: 0 13px }
+      html body .hero.is-playing #heroPlay { min-width: 0 }
+    }
+    @media (prefers-reduced-motion: reduce) { .lyric-eq u { animation: none; transform: scaleY(.7) } }
+  </style>
+  <script>
+    // Home: time-of-day greeting with a suggested mix + lyric highlight
+    (() => {
+      const $ = q => document.querySelector(q);
+      const hero = $('.hero'), btn = $('#autoMixHero'); if (!hero || !btn) return;
+
+      /* ---------- time-of-day greeting + suggested mix ---------- */
+      const PARTS = {
+        morning: { hello: 'Good morning', when: 'in the morning', label: 'morning' },
+        afternoon: { hello: 'Good afternoon', when: 'in the afternoon', label: 'afternoon' },
+        evening: { hello: 'Good evening', when: 'in the evening', label: 'evening' },
+        night: { hello: 'Up late?', when: 'late at night', label: 'night' }
+      };
+      const partOf = (h = new Date().getHours()) => h >= 5 && h < 12 ? 'morning' : h >= 12 && h < 17 ? 'afternoon' : h >= 17 && h < 22 ? 'evening' : 'night';
+      const PARTS_KEY = 'musiko-dayparts';
+      const loadParts = () => { try { return JSON.parse(localStorage.getItem(PARTS_KEY) || '{}') || {} } catch { return {} } };
+
+      // learn which songs you play at which time of day
+      const origRecord = window.recordPlayStart;
+      window.recordPlayStart = function (track) {
+        const out = origRecord.apply(this, arguments);
+        try { if (track) { const all = loadParts(), mine = all[track.id] || (all[track.id] = {}), p = partOf(); mine[p] = (mine[p] || 0) + 1; localStorage.setItem(PARTS_KEY, JSON.stringify(all)) } } catch { }
+        return out
+      };
+
+      let mix = null;
+      function buildMix() {
+        const part = partOf(), key = `${part}|${tracks.length}|${new Date().toDateString()}`;
+        if (mix && mix.key === key) return mix;
+        const parts = loadParts();
+        const pool = tracks.map((t, i) => ({ t, i, hits: (parts[t.id] || {})[part] || 0, score: ((parts[t.id] || {})[part] || 0) * 4 + (listeningStats.tracks[t.id]?.plays || 0) + Math.random() * 1.5 })).sort((a, b) => b.score - a.score);
+        const picked = []; let prev = '';
+        while (pool.length && picked.length < 15) { let k = pool.findIndex(x => x.t.artist !== prev); if (k < 0) k = 0; const [x] = pool.splice(k, 1); picked.push(x); prev = x.t.artist }
+        mix = { key, part, picked, learned: picked.some(x => x.hits > 0) };
+        return mix
+      }
+      function startMix() {
+        const m = buildMix(); if (!m.picked.length) return;
+        queue = m.picked.slice(1).map(({ t }) => ({ qid: crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random(), trackId: t.id }));
+        renderQueue(); playTrack(m.picked[0].i);
+        toast(`${PARTS[m.part].label[0].toUpperCase() + PARTS[m.part].label.slice(1)} mix · ${m.picked.length} songs`)
+      }
+      function applyGreeting() {
+        if (current >= 0 || !tracks.length) { if (btn.dataset.mode === 'mix') { btn.dataset.mode = ''; btn.dataset.sig = ''; btn.innerHTML = '♫&nbsp; Auto Mix'; btn.onclick = startAutoMix } return }
+        const m = buildMix(), P = PARTS[m.part], first = m.picked[0];
+        const sig = [m.key, first && first.t.id, !!(first && first.t.art)].join('|');
+        if (btn.dataset.sig === sig && btn.dataset.mode === 'mix') return;
+        btn.dataset.sig = sig; btn.dataset.mode = 'mix';
+        $('#heroEyebrow').textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }).toUpperCase();
+        $('#heroTitle').textContent = P.hello;
+        $('#heroSubtitle').textContent = m.learned ? `${m.picked.length} songs, leaning on what you play ${P.when}. Starts with ${first.t.name}.` : `${m.picked.length} songs from your library. Starts with ${first.t.name}.`;
+        setCover($('#heroArt'), first.t);
+        btn.innerHTML = `♫&nbsp; Play ${P.label} mix`; btn.onclick = startMix
+      }
+      /* ---------- hero: play/pause, time and progress while a song is loaded ---------- */
+      const heroPlay = document.createElement('button'); heroPlay.type = 'button'; heroPlay.className = 'hero-cta'; heroPlay.id = 'heroPlay';
+      const heroTime = document.createElement('span'); heroTime.className = 'hero-time'; heroTime.setAttribute('aria-hidden', 'true');
+      const heroBar = document.createElement('div'); heroBar.className = 'hero-progress'; heroBar.innerHTML = '<i></i>';
+      btn.before(heroPlay); btn.after(heroTime); hero.append(heroBar);
+      const heroFill = heroBar.firstChild;
+      heroPlay.onclick = () => $('#play').click();
+      $('#heroArt').addEventListener('click', () => { if (current >= 0 && tracks[current]) $('#openFullscreen').click() });
+      function syncHeroPlaying() {
+        const on = current >= 0 && !!tracks[current];
+        hero.classList.toggle('is-playing', on);
+        if (!on) { heroTime.textContent = ''; heroFill.style.width = '0%'; return }
+        const paused = audio.paused, d = audio.duration, p = audio.currentTime || 0;
+        const label = paused ? '▶  Play' : '❚❚  Pause'; if (heroPlay.innerHTML !== label) heroPlay.innerHTML = label;
+        heroPlay.setAttribute('aria-label', paused ? 'Play' : 'Pause');
+        heroFill.style.width = (Number.isFinite(d) && d > 0 ? Math.min(100, p / d * 100) : 0) + '%';
+        heroTime.textContent = Number.isFinite(d) && d > 0 ? `${fmt(p)} / ${fmt(d)}` : '';
+        sec.classList.toggle('is-paused', paused)
+      }
+      ['timeupdate', 'play', 'pause', 'loadedmetadata', 'seeked'].forEach(ev => document.addEventListener(ev, e => { if (e.target === audio) syncHeroPlaying() }, true));
+
+      const origSync = window.syncHero;
+      window.syncHero = function (t) { const out = origSync.apply(this, arguments); btn.dataset.sig = ''; applyGreeting(); syncHeroPlaying(); return out };
+
+      /* ---------- lyric highlight ---------- */
+      const sec = document.createElement('section');
+      sec.className = 'recent-section home-lyric'; sec.id = 'lyricSection'; sec.hidden = true; sec.setAttribute('aria-label', 'Lyric highlight');
+      sec.innerHTML = '<button type="button" class="lyric-card" title="Open lyrics"><span class="lyric-head"><span class="lyric-kicker"><i class="lyric-eq" aria-hidden="true"><u></u><u></u><u></u></i>LYRICS</span><span class="lyric-open">Open lyrics ›</span></span><span class="lyric-prev"></span><span class="lyric-now"></span><span class="lyric-next"></span><span class="lyric-meta"><span class="lyric-song"></span></span></button>';
+      (document.querySelector('#continueSection') || document.querySelector('#recentSection')).before(sec);
+      const nowEl = sec.querySelector('.lyric-now'), nextEl = sec.querySelector('.lyric-next'), prevEl = sec.querySelector('.lyric-prev'), songEl = sec.querySelector('.lyric-song');
+      sec.querySelector('.lyric-card').onclick = () => { const o = $('#openLyrics'); if (o) o.click() };
+      const hash = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h) };
+      let lyricSig = '';
+      function renderLyric() {
+        const t = current >= 0 ? tracks[current] : null;
+        let line = '', next = '', prev = '', key = '';
+        if (activeView === 'Home' && t) {
+          const synced = t.lyricLines || [];
+          if (synced.length) {
+            let at = -1; for (let i = 0; i < synced.length; i++) { if (synced[i].time <= audio.currentTime) at = i; else break }
+            line = at < 0 ? '♪' : (synced[at].text || '♪'); next = (synced[at + 1] && synced[at + 1].text) || ''; prev = (at > 0 && synced[at - 1] && synced[at - 1].text) || ''; key = t.id + '|s|' + at
+          } else if (t.lyrics) {
+            const lines = String(t.lyrics).split(/\n+/).map(x => x.trim()).filter(x => x.length >= 12 && !/^[\[(]/.test(x));
+            if (lines.length) { line = lines[hash(t.id) % lines.length]; key = t.id + '|p' }
+          }
+        }
+        sec.hidden = !line; if (!line) { lyricSig = ''; return }
+        if (key === lyricSig) return; lyricSig = key;
+        nowEl.textContent = line; nextEl.textContent = next; prevEl.textContent = prev; songEl.textContent = `${t.name} · ${t.artist}`;
+        nowEl.classList.remove('swap'); void nowEl.offsetWidth; nowEl.classList.add('swap')
+      }
+
+      /* ---------- keep both in step with the app ---------- */
+      let raf = 0; const refresh = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { applyGreeting(); syncHeroPlaying(); renderLyric() }) };
+      const origRender = window.render;
+      window.render = function () { const out = origRender.apply(this, arguments); refresh(); return out };
+      setInterval(() => { if (activeView === 'Home') renderLyric() }, 400);
+      setInterval(() => { if (partOf() !== (mix && mix.part)) refresh() }, 60000);
+      refresh();
+    })();
+  </script>
+  <style id="mobile-scroll-perf">
+    :root { --solid-base: #0e0e13 }
+    html[data-theme="light"] { --solid-base: #f5f3f6 }
+    html[data-skin="black"] { --solid-base: #000 }
+    html[data-skin="strawberry"] { --solid-base: #fff0f0 }
+
+    /* rows outside the viewport are skipped by the browser */
+    html body #tracklist .track { content-visibility: auto; contain-intrinsic-size: auto 72px }
+
+    @media (max-width: 760px) {
+      /* no live blur over scrolling content: solid, skin-tinted panels instead */
+      html body .app { -webkit-backdrop-filter: none !important; backdrop-filter: none !important }
+      html body main > .top {
+        background: linear-gradient(var(--top-surface), var(--top-surface)), var(--solid-base) !important;
+        -webkit-backdrop-filter: none !important; backdrop-filter: none !important
+      }
+      html body .mobile-tabs {
+        background: var(--solid-base) !important;
+        -webkit-backdrop-filter: none !important; backdrop-filter: none !important
+      }
+      html body .player {
+        background: linear-gradient(var(--skin-player, #1e1c23d1), var(--skin-player, #1e1c23d1)), var(--solid-base) !important;
+        -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, .35), 0 0 0 1px rgba(255, 255, 255, .06)
+      }
+      html[data-theme="light"] body .player { background: #fffffff2 !important }
+      /* no endless animation or soft transitions on the hero while scrolling */
+      html body .hero-art { animation: none !important }
+      html body .hero.is-playing .hero-glow { transition: none }
+    }
+  </style>
+  <script>
+    // Scroll performance: small cover thumbnails + throttled A–Z rail updates
+    (() => {
+      const origSetCover = window.setCover;
+      if (typeof origSetCover === 'function') {
+        const SMALL = '.track .cover,.queue-cover,.stats-cover,.recent-art,.album-art,.lib-art,.continue-art';
+        const ready = new Map(), pending = new Map(), SIZE = 256;
+        const makeThumb = src => new Promise(resolve => {
+          const img = new Image(); img.decoding = 'async';
+          img.onload = () => {
+            try {
+              const w = img.naturalWidth, h = img.naturalHeight, side = Math.min(w, h);
+              if (!side || side <= SIZE) return resolve(src);
+              const c = document.createElement('canvas'); c.width = c.height = SIZE;
+              c.getContext('2d').drawImage(img, (w - side) / 2, (h - side) / 2, side, side, 0, 0, SIZE, SIZE);
+              c.toBlob(b => resolve(b ? URL.createObjectURL(b) : src), 'image/jpeg', .85)
+            } catch { resolve(src) }
+          };
+          img.onerror = () => resolve(src);
+          img.src = src
+        });
+        const thumb = src => { if (pending.has(src)) return pending.get(src); const p = makeThumb(src).then(u => { ready.set(src, u); return u }); pending.set(src, p); return p };
+        window.setCover = function (el, t) {
+          if (!el || !t || !t.art || !el.matches || !el.matches(SMALL)) return origSetCover.apply(this, arguments);
+          const src = t.art;
+          if (ready.has(src)) { el.dataset.artSrc = src; return origSetCover.call(this, el, { art: ready.get(src) }) }
+          origSetCover.call(this, el, { art: '' });
+          el.dataset.artSrc = src;
+          thumb(src).then(u => { if (el.dataset.artSrc === src && el.isConnected) origSetCover.call(window, el, { art: u }) })
+        }
+      }
+
+      const origAz = window.updateAzActive;
+      if (typeof origAz === 'function') {
+        let last = 0, timer = 0;
+        window.updateAzActive = function () {
+          const now = performance.now();
+          if (now - last < 120) { if (!timer) timer = setTimeout(() => { timer = 0; window.updateAzActive() }, 120); return }
+          last = now; return origAz.apply(this, arguments)
+        }
+      }
     })();
   </script>
 </body>
