@@ -4582,7 +4582,7 @@
       }
     }
   </style>
-  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .32 ? '#101114' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 4, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, customBackground: '' }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent)) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
+  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .32 ? '#101114' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 4, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, customBackground: '', customDim: 60, customBlur: 0 }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent)) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground; if (Number.isFinite(saved.customDim)) value.customDim = Math.min(90, Math.max(0, saved.customDim)); if (Number.isFinite(saved.customBlur)) value.customBlur = Math.min(24, Math.max(0, saved.customBlur)) } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); root.style.setProperty('--custom-dim', value.customDim / 100); root.style.setProperty('--custom-blur', value.customBlur + 'px'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
   <style>
     .queue-panel {
       position: fixed;
@@ -8438,7 +8438,7 @@
       <div class="nav-label playlist-label"><span>PLAYLISTS</span><button id="autoMix" title="Build an Auto Mix">Auto
           Mix</button><button id="newPlaylist" title="Create playlist">＋</button></div>
       <div class="nav" id="playlistNav"></div>
-      <div class="side-bottom">Your music, your space.<br>Your library stays on this device.</div>
+      
     </aside>
     <main>
       <div class="top">
@@ -8448,7 +8448,7 @@
               stroke-width="1.8">
               <circle cx="10.8" cy="10.8" r="6.8" />
               <path d="m16 16 5 5" />
-            </svg><input id="search" type="search" placeholder="Search songs, artists, albums"
+            </svg><input id="search" type="search" placeholder="Search"
               autocomplete="off"></label><button class="glass-btn add-btn" id="openBtn"><span>＋</span> Add
             music</button><button class="settings-trigger" id="openSettings" title="Settings"
             aria-label="Open settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -8470,7 +8470,7 @@
         <div class="hero-copy">
           <div class="eyebrow" id="heroEyebrow">YOUR MUSIC, YOUR WAY</div>
           <h1 id="heroTitle">A soundtrack that’s yours.</h1>
-          <p id="heroSubtitle">Bring your favorite songs together in one place.</p><button class="hero-cta"
+          <p id="heroSubtitle"></p><button class="hero-cta"
             id="heroAdd">＋&nbsp; Add your music</button><button class="hero-cta" id="autoMixHero">♫&nbsp; Auto
             Mix</button>
         </div><span class="strawberry-float strawberry-one" aria-hidden="true">🍓</span><span
@@ -8482,7 +8482,7 @@
         <div class="hero-glow"></div>
       </section>
       <section class="home-empty" id="homeEmpty" aria-label="Add music">
-        <div><strong>Drop audio files anywhere</strong><span>MP3, WAV, FLAC, M4A and OGG. Files stay on this device.</span></div>
+        <div><strong>Drop audio files anywhere</strong></div>
         <div class="home-empty-actions"><button type="button" class="glass-btn add-btn" id="emptyAdd">＋ Add music</button><button type="button" class="glass-btn" id="emptyFolder">Import folder</button></div>
       </section>
       <section class="recent-section" id="recentSection" hidden>
@@ -8514,7 +8514,7 @@
           <div>
             <div class="section-kicker">YOUR LIBRARY</div>
             <h2>Albums</h2>
-            <p class="album-page-subtitle">Browse your music by album.</p>
+            
           </div>
         </div>
         <div class="album-grid" id="albumGrid"></div>
@@ -8530,7 +8530,7 @@
             songs</span></div>
       </div>
       <div class="tracklist" id="tracklist" hidden>
-        <div class="empty"><strong>Your library is waiting</strong>Add MP3s or other audio files to start listening.
+        <div class="empty"><strong>Your library is waiting</strong>
         </div>
       </div>
     </main>
@@ -8541,7 +8541,7 @@
       <div class="cover" id="nowCover">♫</div>
       <div class="now-copy">
         <div class="now-title" id="nowTitle">Nothing playing</div>
-        <div class="now-artist" id="nowArtist">Choose a track from your library</div>
+        <div class="now-artist" id="nowArtist"></div>
       </div><button class="lyrics-toggle" id="openLyrics" title="Show lyrics">Lyrics</button><button class="heart"
         id="nowFavorite" title="Add to favorites">♡</button>
     </div>
@@ -8597,7 +8597,7 @@
       <div class="full-meta">
         <div class="full-eyebrow">NOW PLAYING</div>
         <h2 class="full-title" id="fullTitle">Nothing playing</h2>
-        <div class="full-artist" id="fullArtist">Choose a track from your library</div>
+        <div class="full-artist" id="fullArtist"></div>
         <div class="full-album" id="fullAlbum"></div><button class="lyrics-toggle full-lyrics-btn" id="fullLyrics">Show
           lyrics</button><button class="lyrics-toggle full-sleep-shortcut sleep-shortcut" id="fullSleepShortcut">Sleep
           timer</button>
@@ -8643,7 +8643,7 @@
         </div><button class="lyrics-close" id="closeLyrics" title="Close lyrics">×</button>
       </div>
       <div class="lyrics-body" id="lyricsBody"></div>
-      <div class="lyrics-hint" id="lyricsHint">Lyrics may be looked up using this track’s title and artist.</div>
+      <div class="lyrics-hint" id="lyricsHint" hidden></div>
     </div>
   </section>
   <section class="settings-panel" id="settingsPanel" aria-hidden="true">
@@ -8658,7 +8658,6 @@
         <section class="setting-group theme-setting">
           <div>
             <h3>Theme</h3>
-            <p>Pick a complete look for your player.</p>
           </div>
           <div class="theme-choices" role="group" aria-label="Theme"><button type="button"
               data-skin="midnight"><i></i><span>Midnight</span></button><button type="button"
@@ -8676,15 +8675,24 @@
         <section class="setting-group" id="customBackgroundSetting">
           <div>
             <h3>Custom background</h3>
-            <p id="customBackgroundStatus">Add an image to use with the Custom theme.</p>
+            <p id="customBackgroundStatus"></p>
           </div><button type="button" class="glass-btn" id="chooseCustomBackground">Choose image</button><input
             class="file-input" id="customBackgroundInput" type="file" accept="image/*"
             aria-label="Choose custom background">
         </section>
+        <section class="setting-group" id="customLookSetting">
+          <div class="custom-look">
+            <h3>Background look</h3>
+            <label class="custom-look-row"><span>Dim</span><input type="range" id="customDim" min="0" max="90" step="1"
+                aria-label="Background dimming"><output id="customDimValue"></output></label>
+            <label class="custom-look-row"><span>Blur</span><input type="range" id="customBlur" min="0" max="24" step="1"
+                aria-label="Background blur"><output id="customBlurValue"></output></label>
+            <button type="button" class="glass-btn" id="removeCustomBackground">Remove image</button>
+          </div>
+        </section>
         <section class="setting-group">
           <div>
             <h3>Accent color</h3>
-            <p>Personalize highlights and controls.</p>
           </div>
           <div class="accent-options" role="group" aria-label="Accent color"><button type="button" data-accent="#ff5368"
               aria-label="Coral" title="Coral"><span></span></button><button type="button" data-accent="#8b70ff"
@@ -8695,7 +8703,6 @@
         <section class="setting-group">
           <div>
             <h3>Appearance</h3>
-            <p>Switch between light and dark.</p>
           </div>
           <div class="setting-segment" role="group" aria-label="Appearance mode"><button type="button"
               data-mode="light">Light</button><button type="button" data-mode="dark">Dark</button></div>
@@ -8703,7 +8710,7 @@
         <section class="setting-group">
           <div>
             <h3>Sleep timer</h3>
-            <p id="sleepTimerStatus">Stop playback after a while.</p>
+            <p id="sleepTimerStatus"></p>
           </div><select class="setting-select" id="sleepTimerSelect" aria-label="Sleep timer">
             <option value="off">Off</option>
             <option value="15">15 minutes</option>
@@ -8716,54 +8723,47 @@
         <section class="setting-group">
           <div>
             <h3>Import a folder</h3>
-            <p>Add audio files from a music directory.</p>
           </div><button type="button" class="glass-btn" id="folderImportSettings">Choose folder</button>
         </section>
         <section class="setting-group">
           <div>
             <h3>Larger mobile player buttons</h3>
-            <p>Make the mini player controls easier to tap on phones.</p>
           </div><label class="setting-switch"><input type="checkbox" id="largerMobileControls"
               aria-label="Larger mobile player buttons"><span></span></label>
         </section>
         <section class="setting-group">
           <div>
             <h3>Search animation</h3>
-            <p>Animate the search field when it expands on mobile.</p>
           </div><label class="setting-switch"><input type="checkbox" id="searchAnimation"
               aria-label="Mobile search animation"><span></span></label>
         </section>
         <section class="setting-group">
           <div>
             <h3>Glass effect</h3>
-            <p>Use translucent panels and soft blur.</p>
           </div><label class="setting-switch"><input type="checkbox" id="glassEffect"
               aria-label="Glass effect"><span></span></label>
         </section>
         <section class="setting-group">
           <div>
             <h3>Ultra low-end device</h3>
-            <p>Reduce visual effects and skip crossfade and preloading.</p>
           </div><label class="setting-switch"><input type="checkbox" id="lowEndMode"
               aria-label="Ultra low-end device mode"><span></span></label>
         </section>
         <section class="setting-group mobile-track-edit">
           <div>
             <h3>Track details</h3>
-            <p id="mobileTrackEditStatus">Play a song to edit its details.</p>
+            <p id="mobileTrackEditStatus"></p>
           </div><button type="button" class="glass-btn" id="editCurrentTrack" disabled>Edit details</button>
         </section>
         <section class="setting-group">
           <div>
             <h3>Skip silence</h3>
-            <p>Automatically move past sustained quiet sections during playback.</p>
           </div><label class="setting-switch"><input type="checkbox" id="trimSilence"
               aria-label="Skip silence"><span></span></label>
         </section>
         <section class="setting-group">
           <div>
             <h3>Playback speed</h3>
-            <p>Adjust the song speed.</p>
           </div><select class="setting-select" id="playbackRate" aria-label="Playback speed">
             <option value="0.5">0.5×</option>
             <option value="0.75">0.75×</option>
@@ -8777,7 +8777,6 @@
         <section class="setting-group">
           <div>
             <h3>Crossfade</h3>
-            <p>Blend the end of one song into the next.</p>
           </div><select class="setting-select" id="crossfadeDuration" aria-label="Crossfade duration">
             <option value="0">Off</option>
             <option value="2">2 seconds</option>
@@ -8791,18 +8790,16 @@
         <section class="setting-group">
           <div>
             <h3>Gapless playback</h3>
-            <p>Preload the next song to minimize pauses.</p>
           </div><label class="setting-switch"><input type="checkbox" id="gaplessPlayback"
               aria-label="Gapless playback"><span></span></label>
         </section>
       </div>
-      <div class="settings-footer">Your preferences are saved on this device.</div>
     </div>
   </section>
   <div class="sleep-quick-panel" id="sleepQuickPanel" role="dialog" aria-label="Sleep timer" aria-hidden="true">
     <div class="sleep-quick-header"><strong>Sleep timer</strong><button type="button" id="closeSleepQuick"
         aria-label="Close sleep timer">×</button></div>
-    <div class="sleep-quick-status" id="sleepQuickStatus">Choose when playback stops.</div>
+    <div class="sleep-quick-status" id="sleepQuickStatus"></div>
     <div class="sleep-quick-options"><button type="button" data-sleep-choice="15">15 min</button><button type="button"
         data-sleep-choice="30">30 min</button><button type="button" data-sleep-choice="45">45 min</button><button
         type="button" data-sleep-choice="60">60 min</button><button type="button" data-sleep-choice="end">End of
@@ -8822,16 +8819,16 @@
         <div class="pl-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 6.5h11M3.5 11.5h11M3.5 16.5h6"/><path d="M19 5v10.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></div>
         <div class="pl-preview-copy"><div class="pl-preview-name" id="plPreviewName">Untitled playlist</div><div class="pl-preview-sub" id="plPreviewSub">0 songs · Regular playlist</div></div>
       </div><label class="playlist-field"><span>Playlist name <span class="pl-count" id="plNameCount">0/40</span></span><input id="playlistNameInput" maxlength="40"
-          placeholder="e.g. Late night drive" required autocomplete="off"></label><label
+          required autocomplete="off"></label><label
         class="playlist-field"><span>Description <span class="pl-count" id="plDescCount">optional</span></span><textarea id="playlistDescriptionInput"
-          maxlength="140" rows="2" placeholder="What belongs in this mix?"></textarea></label><div class="playlist-field" id="plTypeBlock"><span>Playlist type</span>
+          maxlength="140" rows="2" ></textarea></label><div class="playlist-field" id="plTypeBlock"><span>Playlist type</span>
         <div class="pl-seg" role="group" aria-label="Playlist kind"><button type="button" data-kind="manual">Regular</button><button type="button" data-kind="smart">Smart</button></div>
         <div class="pl-tiles" id="plTiles" role="group" aria-label="Smart playlist rule" hidden>
-          <button type="button" data-rule="favorites"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg><b>Favorites</b><small>Songs you heart</small></button>
-          <button type="button" data-rule="top"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><b>Most played</b><small>Top 25 songs</small></button>
-          <button type="button" data-rule="recent"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><b>Recently added</b><small>Latest 25 songs</small></button>
-          <button type="button" data-rule="artist"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20c.6-3.7 3.6-5.7 7.2-5.7s6.6 2 7.2 5.7"/></svg><b>Artist</b><small>One artist</small></button>
-          <button type="button" data-rule="album"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.6"/></svg><b>Album</b><small>One album</small></button>
+          <button type="button" data-rule="favorites"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg><b>Favorites</b></button>
+          <button type="button" data-rule="top"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><b>Most played</b></button>
+          <button type="button" data-rule="recent"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><b>Recently added</b></button>
+          <button type="button" data-rule="artist"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20c.6-3.7 3.6-5.7 7.2-5.7s6.6 2 7.2 5.7"/></svg><b>Artist</b></button>
+          <button type="button" data-rule="album"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.6"/></svg><b>Album</b></button>
         </div></div><label id="plRuleLabel" hidden
         class="playlist-field">Playlist type<select id="playlistRule" class="playlist-rule-select"
           aria-label="Playlist type">
@@ -8842,7 +8839,7 @@
           <option value="top">Smart · Most played</option>
           <option value="recent">Smart · Recently added</option>
         </select><small class="pl-hint" id="plHint"></small></label><label class="playlist-field" id="playlistRuleValueField" hidden>Match<input
-          id="playlistRuleValue" maxlength="160" placeholder="Artist or album name" list="plMatchList" autocomplete="off"><datalist id="plMatchList"></datalist></label><input type="hidden"
+          id="playlistRuleValue" maxlength="160" list="plMatchList" autocomplete="off"><datalist id="plMatchList"></datalist></label><input type="hidden"
         id="playlistColorValue" value="#ff5368">
       <div class="playlist-field"><span>Choose a color</span>
         <div class="playlist-colors" role="group" aria-label="Playlist color"><button type="button"
@@ -8869,13 +8866,12 @@
       <form id="metadataForm">
         <div class="metadata-cover-editor">
           <div id="metadataCoverPreview" class="metadata-cover-preview">♫</div>
-          <div class="metadata-cover-copy"><strong>Album artwork</strong><small>Choose an image from your
-              device.</small><label class="metadata-cover-choose">Change cover<input id="metadataCoverInput" type="file"
+          <div class="metadata-cover-copy"><strong>Album artwork</strong><label class="metadata-cover-choose">Change cover<input id="metadataCoverInput" type="file"
                 accept="image/*"></label></div>
         </div><label class="playlist-field">Song title<input id="metadataTitle" maxlength="160" required></label><label
           class="playlist-field">Artist / band<input id="metadataArtist" maxlength="160"
-            placeholder="Unknown Artist"></label><label class="playlist-field">Album name<input id="metadataAlbum"
-            maxlength="160" placeholder="Unknown Album"></label>
+            ></label><label class="playlist-field">Album name<input id="metadataAlbum"
+            maxlength="160" ></label>
         <div class="playlist-form-error" id="metadataError" role="alert"></div>
         <footer><button type="button" class="glass-btn metadata-remove-btn" id="metadataRemoveSong">Remove
             song</button><button type="button" class="glass-btn" data-close-metadata>Cancel</button><button
@@ -8934,8 +8930,8 @@
     const libraryLoaded = restoreLibrary();
     const fmt = s => { if (!Number.isFinite(s)) return '0:00'; return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') };
     function toast(s) { let t = document.querySelector('#toast'); t.textContent = s; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200) }
-    function syncSleepShortcuts() { const active = !!(sleepUntil || sleepAtTrackEnd); let description = 'Sleep timer'; if (sleepAtTrackEnd) description = 'Sleep timer active · stops at end of track'; else if (sleepUntil) { const remaining = Math.max(0, Math.ceil((sleepUntil - Date.now()) / 1000)); description = `Sleep timer active · ${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')} remaining` } const mini = document.querySelector('#miniSleepShortcut'), full = document.querySelector('#fullSleepShortcut');[mini, full].forEach(button => { if (button) { button.dataset.active = String(active); button.title = description; button.setAttribute('aria-label', description) } }); if (full) full.textContent = active ? 'Sleep timer · on' : 'Sleep timer'; document.querySelectorAll('[data-sleep-choice]').forEach(button => button.classList.toggle('active', button.dataset.sleepChoice === sleepTimerChoice)); const quickStatus = document.querySelector('#sleepQuickStatus'); if (quickStatus) quickStatus.textContent = sleepAtTrackEnd ? 'Playback will stop at the end of this track.' : sleepUntil ? description : 'Choose when playback stops.' }
-    function clearSleepTimer() { clearTimeout(sleepTimeoutId); clearInterval(sleepIntervalId); sleepTimeoutId = sleepIntervalId = sleepUntil = 0; sleepAtTrackEnd = false; sleepTimerChoice = 'off'; const select = document.querySelector('#sleepTimerSelect'), status = document.querySelector('#sleepTimerStatus'); if (select) select.value = 'off'; if (status) status.textContent = 'Stop playback after a while.'; syncSleepShortcuts() }
+    function syncSleepShortcuts() { const active = !!(sleepUntil || sleepAtTrackEnd); let description = 'Sleep timer'; if (sleepAtTrackEnd) description = 'Sleep timer active · stops at end of track'; else if (sleepUntil) { const remaining = Math.max(0, Math.ceil((sleepUntil - Date.now()) / 1000)); description = `Sleep timer active · ${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')} remaining` } const mini = document.querySelector('#miniSleepShortcut'), full = document.querySelector('#fullSleepShortcut');[mini, full].forEach(button => { if (button) { button.dataset.active = String(active); button.title = description; button.setAttribute('aria-label', description) } }); if (full) full.textContent = active ? 'Sleep timer · on' : 'Sleep timer'; document.querySelectorAll('[data-sleep-choice]').forEach(button => button.classList.toggle('active', button.dataset.sleepChoice === sleepTimerChoice)); const quickStatus = document.querySelector('#sleepQuickStatus'); if (quickStatus) quickStatus.textContent = sleepAtTrackEnd ? 'Playback will stop at the end of this track.' : sleepUntil ? description : '' }
+    function clearSleepTimer() { clearTimeout(sleepTimeoutId); clearInterval(sleepIntervalId); sleepTimeoutId = sleepIntervalId = sleepUntil = 0; sleepAtTrackEnd = false; sleepTimerChoice = 'off'; const select = document.querySelector('#sleepTimerSelect'), status = document.querySelector('#sleepTimerStatus'); if (select) select.value = 'off'; if (status) status.textContent = ''; syncSleepShortcuts() }
     function stopForSleepTimer() { sleepPauseTriggered = true; clearSleepTimer(); audio.pause(); toast('Sleep timer stopped playback') }
     function updateSleepCountdown() { if (sleepAtTrackEnd) { document.querySelector('#sleepTimerStatus').textContent = 'Playback will stop when this track ends.'; syncSleepShortcuts(); return } if (!sleepUntil) { syncSleepShortcuts(); return } const remaining = Math.max(0, Math.ceil((sleepUntil - Date.now()) / 1000)), minutes = Math.floor(remaining / 60), seconds = String(remaining % 60).padStart(2, '0'); document.querySelector('#sleepTimerStatus').textContent = `Stops in ${minutes}:${seconds}`; syncSleepShortcuts() }
     function setSleepTimer(choice) { clearSleepTimer(); if (choice === 'off') return; if (choice === 'end') { if (current < 0) { document.querySelector('#sleepTimerStatus').textContent = 'Choose a song first.'; return } document.querySelector('#sleepTimerSelect').value = 'end'; sleepTimerChoice = 'end'; sleepAtTrackEnd = true; updateSleepCountdown(); toast('Playback will stop at the end of this track'); return } const minutes = Number(choice); if (!Number.isFinite(minutes) || minutes < 1) return; document.querySelector('#sleepTimerSelect').value = choice; sleepTimerChoice = choice; sleepUntil = Date.now() + minutes * 60000; sleepTimeoutId = setTimeout(stopForSleepTimer, minutes * 60000); sleepIntervalId = setInterval(updateSleepCountdown, 1000); updateSleepCountdown(); toast(`Sleep timer set for ${minutes} minutes`) }
@@ -8946,11 +8942,11 @@
     function fileBase(name) { return (name || '').replace(/\.[^.]+$/, '').trim().toLowerCase() }
     async function addFiles(fileList) { const selected = [...fileList]; await libraryLoaded; const incoming = selected.filter(f => f.type.startsWith('audio/') || /\.(mp3|wav|ogg|m4a|flac|aac)$/i.test(f.name)), lrcFiles = selected.filter(f => /\.lrc$/i.test(f.name)); if (!incoming.length && !lrcFiles.length) { toast('No audio or LRC lyric files found'); return } toast('Adding music and reading tags…'); const added = await Promise.all(incoming.map(async f0 => { const f = fixAudioFile(f0); const tags = /\.mp3$/i.test(f.name) ? await readId3(f) : {}; return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, file: f, fileName: f.name, type: f.type, url: URL.createObjectURL(f), art: tags.art || '', customArtBlob: null, name: tags.title || f.name.replace(/\.[^.]+$/, ''), artist: tags.artist || 'Local audio', album: tags.album || 'Local files', duration: 0, favorite: false, lyrics: tags.lyrics || '', lyricLines: [], lyricsSource: tags.lyrics ? 'MP3 tags' : '', lyricsLookup: '' } })); tracks.push(...added); let attached = 0; for (const lyricFile of lrcFiles) { const lines = parseLrc(await lyricFile.text()); if (!lines.length) continue; const base = fileBase(lyricFile.name), target = added.find(t => fileBase(t.fileName) === base) || tracks.find(t => fileBase(t.fileName) === base) || tracks.find(t => fileBase(t.name) === base); if (target) { target.lyricLines = lines; target.lyrics = lines.map(x => x.text).join('\n'); target.lyricsSource = 'LRC file'; target.lyricsLookup = ''; await saveTrack(target); attached++ } } await Promise.all(added.map(saveTrack)); render(); const summary = added.length ? `Added ${added.length} ${added.length === 1 ? 'track' : 'tracks'}` : 'Checked lyric files'; toast(`${summary}${attached ? ` · lyrics loaded for ${attached}` : lrcFiles.length ? ' · no matching lyrics were found' : ''}`); files.value = '' }
     function setCover(el, t) { el.classList.toggle('has-art', !!t?.art); el.style.backgroundImage = t?.art ? `url("${t.art}")` : ''; el.textContent = t?.art ? '' : '♫' }
-    function syncFull(t) { document.querySelector('#fullTitle').textContent = t?.name || 'Nothing playing'; document.querySelector('#fullArtist').textContent = t?.artist || 'Choose a track from your library'; document.querySelector('#fullAlbum').textContent = t?.album && t.album !== 'Local files' ? t.album : ''; const wrap = document.querySelector('#fullArtWrap'); wrap.replaceChildren(); if (t?.art) { const img = document.createElement('img'); img.src = t.art; img.alt = `Album artwork for ${t.name}`; wrap.append(img); document.querySelector('#fullBg').style.backgroundImage = `url("${t.art}")` } else { const fallback = document.createElement('div'); fallback.className = 'no-art'; fallback.textContent = '♫'; wrap.append(fallback); document.querySelector('#fullBg').style.backgroundImage = '' } }
+    function syncFull(t) { document.querySelector('#fullTitle').textContent = t?.name || 'Nothing playing'; document.querySelector('#fullArtist').textContent = t?.artist || ''; document.querySelector('#fullAlbum').textContent = t?.album && t.album !== 'Local files' ? t.album : ''; const wrap = document.querySelector('#fullArtWrap'); wrap.replaceChildren(); if (t?.art) { const img = document.createElement('img'); img.src = t.art; img.alt = `Album artwork for ${t.name}`; wrap.append(img); document.querySelector('#fullBg').style.backgroundImage = `url("${t.art}")` } else { const fallback = document.createElement('div'); fallback.className = 'no-art'; fallback.textContent = '♫'; wrap.append(fallback); document.querySelector('#fullBg').style.backgroundImage = '' } }
     function fullLyricsOn() { const f = document.querySelector('#fullscreen'); return f.classList.contains('open') && f.classList.contains('lyrics-on') }
     function lyricsTargets() { const list = []; if (document.querySelector('#lyricsPanel').classList.contains('open')) list.push({ body: document.querySelector('#lyricsBody'), modal: true }); if (fullLyricsOn()) list.push({ body: document.querySelector('#fullLyricsBody'), modal: false }); return list }
     function lyricsVisible() { return lyricsTargets().length > 0 }
-    function lyricsEmptyHtml(t) { const box = (title, text) => `<div class="lyrics-empty"><strong>${title}</strong>${text}</div>`; if (t.lyricsLookup === 'loading') return box('Finding synced lyrics…', 'This can take a moment.'); if (t.lyricsLookup === 'unavailable') return box('Add artist details to this track', 'Musiko needs an artist and duration to find timed lyrics.'); if (t.lyricsLookup === 'done') return box('No timed lyrics were found', 'You can still add a matching .lrc file beside the track in Musiko.'); if (t.lyricsLookup === 'failed') return box('Lyrics could not be reached', 'Check your connection; Musiko will try again next time this track plays.'); return box('Play this track to sync lyrics', 'Musiko will look up timed lyrics automatically.') }
+    function lyricsEmptyHtml(t) { const box = (title, text) => `<div class="lyrics-empty"><strong>${title}</strong></div>`; if (t.lyricsLookup === 'loading') return box('Finding synced lyrics…', 'This can take a moment.'); if (t.lyricsLookup === 'unavailable') return box('Add artist details to this track', 'Musiko needs an artist and duration to find timed lyrics.'); if (t.lyricsLookup === 'done') return box('No timed lyrics were found', 'You can still add a matching .lrc file beside the track in Musiko.'); if (t.lyricsLookup === 'failed') return box('Lyrics could not be reached', 'Check your connection; Musiko will try again next time this track plays.'); return box('Play this track to sync lyrics', 'Musiko will look up timed lyrics automatically.') }
     function renderLyrics() {
       const t = tracks[current];
       lyricsTargets().forEach(({ body, modal }) => {
@@ -8960,7 +8956,7 @@
           document.querySelector('#lyricsSong').textContent = t ? `${t.name} · ${t.artist}` : 'Nothing playing';
           hint.textContent = !t ? '' : t.lyricsSource === 'LRCLIB' ? (t.lyricLines?.length ? 'Synced lyrics from LRCLIB.' : 'Lyrics from LRCLIB · timing was unavailable.') : t.lyricsSource === 'LRC file' ? 'Synced lyrics from your LRC file.' : t.lyricsLookup === 'loading' ? 'Searching for timed lyrics using this track’s details…' : 'When local lyrics are unavailable, Musiko looks up the track title, artist, album, and duration on LRCLIB.'
         }
-        if (!t) { body.innerHTML = '<div class="lyrics-empty"><strong>Choose a track</strong>Lyrics will appear here while music is playing.</div>'; return }
+        if (!t) { body.innerHTML = '<div class="lyrics-empty"><strong>Choose a track</strong></div>'; return }
         if (t.lyricLines?.length) { t.lyricLines.forEach((line, i) => { const el = document.createElement('div'); el.className = 'lyric-line'; el.textContent = line.text || '♪'; el.dataset.line = i; el.onclick = () => { audio.currentTime = line.time }; body.append(el) }) }
         else if (t.lyrics) { const text = document.createElement('div'); text.className = 'lyrics-plain'; text.textContent = t.lyrics; body.append(text) }
         else body.innerHTML = lyricsEmptyHtml(t);
@@ -9020,7 +9016,7 @@
     function renderAlbums() { const section = document.querySelector('#albumsSection'), grid = document.querySelector('#albumGrid'); if (!section || !grid) return; section.hidden = activeView !== 'Albums'; if (activeView !== 'Albums') return; const groups = getAlbumGroups(); grid.innerHTML = groups.length ? groups.map((group, index) => `<button type="button" class="album-card" data-album-index="${index}"><span class="album-art">♫</span><span class="album-name">${escapeHtml(group.album)}</span><span class="album-artist">${escapeHtml(group.artist)}</span><span class="album-count">${group.indices.length} ${group.indices.length === 1 ? 'song' : 'songs'}</span></button>`).join('') : '<div class="stats-empty">Add music to your library to browse albums.</div>'; grid.querySelectorAll('[data-album-index]').forEach((card, index) => { const group = groups[index]; setCover(card.querySelector('.album-art'), { art: group.art }); card.onclick = () => openAlbumView(group.key) }) }
     function openAlbumView(key) { const album = getAlbumGroups().find(group => group.key === key); if (!album) return; activeView = 'Album'; activeAlbumKey = key; activePlaylistId = null; document.querySelector('.hero').hidden = true; document.querySelector('#albumsSection').hidden = true; document.querySelector('.track-section-head').hidden = false; document.querySelector('#tracklist').hidden = false; document.querySelector('#viewKicker').textContent = 'ALBUM'; document.querySelector('#viewTitle').textContent = album.album; document.querySelector('#listTitle').textContent = album.album; document.querySelector('#listKicker').textContent = 'ALBUM'; document.querySelector('#playlistDescription').textContent = album.artist; document.querySelector('#playlistDescription').hidden = false; document.querySelector('#editActivePlaylist').hidden = true; document.querySelector('#backToAlbums').hidden = false; document.querySelectorAll('.nav button[data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === 'Albums')); renderPlaylists(); render(); preloadedTrackIndex = -1; prepareNextTrack() }
     function renderRecent() { const section = document.querySelector('#recentSection'), grid = document.querySelector('#recentGrid'); section.hidden = true; document.documentElement.classList.toggle('lib-empty', !tracks.length); return; const recent = tracks.slice(-5).reverse(); grid.innerHTML = recent.map((t, i) => `<div class="recent-card" data-recent="${tracks.length - 1 - i}"><div class="recent-art">♫</div><div class="recent-track">${escapeHtml(t.name)}</div><div class="recent-artist">${escapeHtml(t.artist)}</div></div>`).join(''); grid.querySelectorAll('.recent-card').forEach(el => { const i = +el.dataset.recent; setCover(el.querySelector('.recent-art'), tracks[i]); el.onclick = () => playTrack(i) }) }
-    function updateAmbient(t) { if (!t?.art) { document.documentElement.style.setProperty('--ambient-a', '#33405f'); document.documentElement.style.setProperty('--ambient-b', '#633c57'); return } const img = new Image(); img.onload = () => { if (current < 0 || tracks[current]?.id !== t.id) return; try { const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d', { willReadFrequently: true }); canvas.width = 24; canvas.height = 24; ctx.drawImage(img, 0, 0, 24, 24); const pixels = ctx.getImageData(0, 0, 24, 24).data, bins = new Map(); for (let i = 0; i < pixels.length; i += 4) { const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3]; if (a < 160 || (r > 242 && g > 242 && b > 242) || (r < 18 && g < 18 && b < 18)) continue; const key = [r >> 5, g >> 5, b >> 5].join(','), bin = bins.get(key) || { count: 0, r: 0, g: 0, b: 0 }; bin.count++; bin.r += r; bin.g += g; bin.b += b; bins.set(key, bin) } const top = [...bins.values()].sort((a, b) => b.count - a.count).slice(0, 2); if (!top.length) return; const color = x => `rgb(${Math.round(x.r / x.count)}, ${Math.round(x.g / x.count)}, ${Math.round(x.b / x.count)})`; document.documentElement.style.setProperty('--ambient-a', color(top[0])); document.documentElement.style.setProperty('--ambient-b', color(top[1] || top[0])) } catch { } }; img.onerror = () => { }; img.src = t.art } function syncHero(t) { updateAmbient(t); document.querySelector('#heroEyebrow').textContent = t ? 'NOW PLAYING' : 'YOUR MUSIC, YOUR WAY'; document.querySelector('#heroTitle').textContent = t ? t.name : 'A soundtrack that’s yours.'; document.querySelector('#heroSubtitle').textContent = t ? `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}` : 'Bring your favorite songs together in one place.'; setCover(document.querySelector('#heroArt'), t) }
+    function updateAmbient(t) { if (!t?.art) { document.documentElement.style.setProperty('--ambient-a', '#33405f'); document.documentElement.style.setProperty('--ambient-b', '#633c57'); return } const img = new Image(); img.onload = () => { if (current < 0 || tracks[current]?.id !== t.id) return; try { const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d', { willReadFrequently: true }); canvas.width = 24; canvas.height = 24; ctx.drawImage(img, 0, 0, 24, 24); const pixels = ctx.getImageData(0, 0, 24, 24).data, bins = new Map(); for (let i = 0; i < pixels.length; i += 4) { const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3]; if (a < 160 || (r > 242 && g > 242 && b > 242) || (r < 18 && g < 18 && b < 18)) continue; const key = [r >> 5, g >> 5, b >> 5].join(','), bin = bins.get(key) || { count: 0, r: 0, g: 0, b: 0 }; bin.count++; bin.r += r; bin.g += g; bin.b += b; bins.set(key, bin) } const top = [...bins.values()].sort((a, b) => b.count - a.count).slice(0, 2); if (!top.length) return; const color = x => `rgb(${Math.round(x.r / x.count)}, ${Math.round(x.g / x.count)}, ${Math.round(x.b / x.count)})`; document.documentElement.style.setProperty('--ambient-a', color(top[0])); document.documentElement.style.setProperty('--ambient-b', color(top[1] || top[0])) } catch { } }; img.onerror = () => { }; img.src = t.art } function syncHero(t) { updateAmbient(t); document.querySelector('#heroEyebrow').textContent = t ? 'NOW PLAYING' : 'YOUR MUSIC, YOUR WAY'; document.querySelector('#heroTitle').textContent = t ? t.name : 'A soundtrack that’s yours.'; document.querySelector('#heroSubtitle').textContent = t ? `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}` : ''; setCover(document.querySelector('#heroArt'), t) }
     function saveListeningStats(force = false) { const now = Date.now(); if (!force && now - lastStatsSavedAt < 5000) return; lastStatsSavedAt = now; try { localStorage.setItem('musiko-listening-stats', JSON.stringify(listeningStats)) } catch { } }
     function renderListeningStats() {
       const section = document.querySelector('#listeningStats'); if (!section) return;
@@ -9032,8 +9028,8 @@
       const topArtist = [...byArtist].sort((a, b) => b[1] - a[1])[0];
       const tiles = [
         ['Total listening', dur(listeningStats.totalSeconds), `${items.length} of ${tracks.length} ${tracks.length === 1 ? 'song' : 'songs'} played`],
-        ['Total plays', totalPlays.toLocaleString(), items.length ? `${(totalPlays / items.length).toFixed(1)} per song` : 'Start listening'],
-        ['Top artist', topArtist ? topArtist[0] : '—', topArtist ? `${topArtist[1]} ${topArtist[1] === 1 ? 'play' : 'plays'}` : 'No artist data yet']
+        ['Total plays', totalPlays.toLocaleString(), items.length ? `${(totalPlays / items.length).toFixed(1)} per song` : ''],
+        ['Top artist', topArtist ? topArtist[0] : '—', topArtist ? `${topArtist[1]} ${topArtist[1] === 1 ? 'play' : 'plays'}` : '']
       ];
       const tilesHtml = tiles.map(([label, value, sub], n) => `<div class="stat-tile${n === 2 ? ' is-wide' : ''}"><span class="stat-label">${label}</span><strong class="stat-value">${escapeHtml(String(value))}</strong><span class="stat-sub">${escapeHtml(sub)}</span></div>`).join('');
       const rowsHtml = ranked.length ? ranked.map(({ t, i, stats }, n) => `<button type="button" class="top-song-row${n === 0 ? ' is-first' : ''}" data-i="${i}" title="Play ${escapeHtml(t.name)}"><span class="top-song-rank">${n + 1}</span><span class="stats-cover">♫</span><span class="top-song-copy"><strong>${escapeHtml(t.name)}</strong><small>${escapeHtml(t.artist)}</small><span class="top-song-meter"><i style="width:${Math.max(4, Math.round(stats.plays / max * 100))}%"></i></span></span><span class="top-song-plays"><strong>${stats.plays} ${stats.plays === 1 ? 'play' : 'plays'}</strong><small>${dur(stats.seconds)}</small></span></button>`).join('') : '<div class="stats-empty">Play songs from your library to see your top tracks.</div>';
@@ -9045,7 +9041,7 @@
       if (!list._bound) { list._bound = true; list.addEventListener('click', e => { const row = e.target.closest('[data-i]'); if (row) playTrack(+row.dataset.i) }) }
     }
     function recordPlayStart(track) { if (!track) return; const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.plays++; item.lastPlayed = Date.now(); lastListenTrackId = track.id; lastListenPosition = 0; saveListeningStats(true); renderListeningStats() }
-    function recordListenTime(deck) { if (deck !== audio || deck.paused || current < 0 || !tracks[current]) return; const position = deck.currentTime, track = tracks[current]; if (lastListenTrackId !== track.id) { lastListenTrackId = track.id; lastListenPosition = position; return } if (lastListenPosition !== null) { const delta = position - lastListenPosition; if (delta > 0 && delta <= 5) { const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.seconds += delta; listeningStats.totalSeconds += delta; const now = Date.now(); saveListeningStats(); if (now - lastStatsRenderedAt >= 1000) { lastStatsRenderedAt = now; renderListeningStats() } } } lastListenPosition = position } function syncMobileTrackEdit() { const button = document.querySelector("#editCurrentTrack"), status = document.querySelector("#mobileTrackEditStatus"); if (!button || !status) return; const track = current >= 0 ? tracks[current] : null; button.disabled = !track; status.textContent = track ? `${track.name} · ${track.artist}` : "Play a song to edit its details." } function render() { syncMobileTrackEdit(); renderRecent(); renderListeningStats(); renderAlbums(); const shown = visibleTracks(); document.querySelector('#count').textContent = `${shown.length} ${shown.length === 1 ? 'song' : 'songs'}`; const az = isAzView(); document.querySelector('#azBadge').hidden = !az; let lastLetter = ''; renderAzRail(az ? shown : []); if (!shown.length) { const message = searchTerm ? 'Try a different title, artist, or album.' : activeView === 'Favorites' ? 'Tap the ♡ beside a song to save it here.' : activePlaylistId ? 'Add songs to this playlist with the + button.' : 'Add MP3s or other audio files to start listening.'; list.innerHTML = `<div class="empty"><strong>${tracks.length ? 'No tracks here yet' : 'Your library is waiting'}</strong>${escapeHtml(message)}</div>`; return } list.innerHTML = shown.map(({ t, i }, n) => { const L = az ? azLetter(t.name) : '', head = az && L !== lastLetter ? `<div class="az-divider" data-letter="${escapeHtml(L)}">${escapeHtml(L)}</div>` : ''; lastLetter = L; return head + `<div class="track ${i === current ? 'current' : ''}" data-i="${i}"><div class="track-no">${i === current && !audio.paused ? '♫' : String(n + 1).padStart(2, '0')}</div><div class="cover" data-cover="${i}">♫</div><div class="track-copy"><div class="track-copy-line"><div class="track-name">${escapeHtml(t.name)}</div><button type="button" class="metadata-edit" data-edit-track="${escapeHtml(t.id)}" title="Edit song, artist, and album details" aria-label="Edit details for ${escapeHtml(t.name)}">✎</button></div><div class="track-artist">${escapeHtml(t.artist)}</div></div><div class="track-album">${escapeHtml(t.album)}</div><div class="track-length">${fmt(t.duration)}</div><button class="track-action ${t.favorite ? 'favorite-on' : ''}" data-favorite="${i}" title="${t.favorite ? 'Remove from' : 'Add to'} favorites">${t.favorite ? '♥' : '♡'}</button><button class="track-action queue-add" data-queue="${i}" title="Add to Up Next" aria-label="Add to Up Next">⇥</button><button class="track-action" data-add="${i}" title="Add to playlist">＋</button></div>` }).join(''); list.querySelectorAll('[data-cover]').forEach(el => setCover(el, tracks[+el.dataset.cover])); list.querySelectorAll('[data-edit-track]').forEach(el => el.onclick = e => { e.stopPropagation(); openTrackMetadata(el.dataset.editTrack) }); list.querySelectorAll('.track').forEach(el => el.addEventListener('click', e => { if (e.target.closest('button')) return; playTrack(+el.dataset.i) })); list.querySelectorAll('[data-favorite]').forEach(el => el.onclick = e => { e.stopPropagation(); toggleFavorite(+el.dataset.favorite) }); list.querySelectorAll('[data-queue]').forEach(el => el.onclick = e => { e.stopPropagation(); enqueueTrack(+el.dataset.queue) }); list.querySelectorAll('[data-add]').forEach(el => el.onclick = e => { e.stopPropagation(); addToPlaylist(+el.dataset.add) }); }
+    function recordListenTime(deck) { if (deck !== audio || deck.paused || current < 0 || !tracks[current]) return; const position = deck.currentTime, track = tracks[current]; if (lastListenTrackId !== track.id) { lastListenTrackId = track.id; lastListenPosition = position; return } if (lastListenPosition !== null) { const delta = position - lastListenPosition; if (delta > 0 && delta <= 5) { const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.seconds += delta; listeningStats.totalSeconds += delta; const now = Date.now(); saveListeningStats(); if (now - lastStatsRenderedAt >= 1000) { lastStatsRenderedAt = now; renderListeningStats() } } } lastListenPosition = position } function syncMobileTrackEdit() { const button = document.querySelector("#editCurrentTrack"), status = document.querySelector("#mobileTrackEditStatus"); if (!button || !status) return; const track = current >= 0 ? tracks[current] : null; button.disabled = !track; status.textContent = track ? `${track.name} · ${track.artist}` : "" } function render() { syncMobileTrackEdit(); renderRecent(); renderListeningStats(); renderAlbums(); const shown = visibleTracks(); document.querySelector('#count').textContent = `${shown.length} ${shown.length === 1 ? 'song' : 'songs'}`; const az = isAzView(); document.querySelector('#azBadge').hidden = !az; let lastLetter = ''; renderAzRail(az ? shown : []); if (!shown.length) { const message = ''; list.innerHTML = `<div class="empty"><strong>${tracks.length ? 'No tracks here yet' : 'Your library is waiting'}</strong>${escapeHtml(message)}</div>`; return } list.innerHTML = shown.map(({ t, i }, n) => { const L = az ? azLetter(t.name) : '', head = az && L !== lastLetter ? `<div class="az-divider" data-letter="${escapeHtml(L)}">${escapeHtml(L)}</div>` : ''; lastLetter = L; return head + `<div class="track ${i === current ? 'current' : ''}" data-i="${i}"><div class="track-no">${i === current && !audio.paused ? '♫' : String(n + 1).padStart(2, '0')}</div><div class="cover" data-cover="${i}">♫</div><div class="track-copy"><div class="track-copy-line"><div class="track-name">${escapeHtml(t.name)}</div><button type="button" class="metadata-edit" data-edit-track="${escapeHtml(t.id)}" title="Edit song, artist, and album details" aria-label="Edit details for ${escapeHtml(t.name)}">✎</button></div><div class="track-artist">${escapeHtml(t.artist)}</div></div><div class="track-album">${escapeHtml(t.album)}</div><div class="track-length">${fmt(t.duration)}</div><button class="track-action ${t.favorite ? 'favorite-on' : ''}" data-favorite="${i}" title="${t.favorite ? 'Remove from' : 'Add to'} favorites">${t.favorite ? '♥' : '♡'}</button><button class="track-action queue-add" data-queue="${i}" title="Add to Up Next" aria-label="Add to Up Next">⇥</button><button class="track-action" data-add="${i}" title="Add to playlist">＋</button></div>` }).join(''); list.querySelectorAll('[data-cover]').forEach(el => setCover(el, tracks[+el.dataset.cover])); list.querySelectorAll('[data-edit-track]').forEach(el => el.onclick = e => { e.stopPropagation(); openTrackMetadata(el.dataset.editTrack) }); list.querySelectorAll('.track').forEach(el => el.addEventListener('click', e => { if (e.target.closest('button')) return; playTrack(+el.dataset.i) })); list.querySelectorAll('[data-favorite]').forEach(el => el.onclick = e => { e.stopPropagation(); toggleFavorite(+el.dataset.favorite) }); list.querySelectorAll('[data-queue]').forEach(el => el.onclick = e => { e.stopPropagation(); enqueueTrack(+el.dataset.queue) }); list.querySelectorAll('[data-add]').forEach(el => el.onclick = e => { e.stopPropagation(); addToPlaylist(+el.dataset.add) }); }
     function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) }
     function playlistTint(p) { const allowed = ['#ff5368', '#8b70ff', '#328fe8', '#20a77a', '#e6a33a']; return allowed.includes(p?.color) ? p.color : allowed[0] }
     function renderPlaylists() { const nav = document.querySelector('#playlistNav'); nav.innerHTML = playlists.map(p => `<button class="playlist-nav-item ${activePlaylistId === p.id ? 'active' : ''}" data-pid="${escapeHtml(p.id)}" style="--playlist-color:${playlistTint(p)}"><span class="playlist-dot"></span><span class="playlist-nav-name">${escapeHtml(p.name)}</span><span class="playlist-edit" data-edit-playlist="${escapeHtml(p.id)}" title="Edit playlist" aria-label="Edit ${escapeHtml(p.name)}">✎</span><span class="playlist-delete" data-delete-playlist="${escapeHtml(p.id)}" title="Delete playlist" aria-label="Delete ${escapeHtml(p.name)}">×</span></button>`).join(''); nav.querySelectorAll('[data-pid]').forEach(el => el.onclick = e => { if (e.target.closest('[data-delete-playlist],[data-edit-playlist]')) return; selectView(playlists.find(p => p.id === el.dataset.pid)?.name || el.dataset.pid, el.dataset.pid) }); nav.querySelectorAll('[data-delete-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); deletePlaylist(el.dataset.deletePlaylist) }); nav.querySelectorAll('[data-edit-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); openPlaylistDialog(el.dataset.editPlaylist) }); renderMobileNav() }
@@ -9060,11 +9056,11 @@
     function closePlaylistPicker() { const p = document.querySelector('#playlistPicker'); p.classList.remove('open'); p.setAttribute('aria-hidden', 'true'); pendingPlaylistTrack = -1 }
     async function addSongToPlaylist(id) { const p = playlists.find(x => x.id === id), t = tracks[pendingPlaylistTrack]; if (!p || !t) return; if (p.trackIds.includes(t.id)) { toast(`Already in ${p.name}`); closePlaylistPicker(); return } p.trackIds.push(t.id); try { await dbRequest('playlists', 'put', p); toast(`Added to ${p.name}`) } catch { toast('Could not save playlist change') } closePlaylistPicker(); render() }
     async function addToPlaylist(i) { if (!playlists.length) { openPlaylistDialog(); pendingPlaylistTrack = i; return } openPlaylistPicker(i) }
-    function updatePlaylistRuleFields() { const rule = document.querySelector('#playlistRule').value, field = document.querySelector('#playlistRuleValueField'); field.hidden = !['artist', 'album'].includes(rule); document.querySelector('#playlistRuleValue').placeholder = rule === 'artist' ? 'Artist name' : 'Album name' } function openPlaylistDialog(id = null) { editingPlaylistId = id; const p = id ? playlists.find(x => x.id === id) : null, dialog = document.querySelector('#playlistDialog'); document.querySelector('#playlistDialogTitle').textContent = p ? 'Edit playlist' : 'Create playlist'; document.querySelector('#savePlaylistButton').textContent = p ? 'Save changes' : 'Create playlist'; document.querySelector('#playlistNameInput').value = p?.name || ''; document.querySelector('#playlistDescriptionInput').value = p?.description || ''; document.querySelector('#playlistRule').value = p?.rule || 'manual'; document.querySelector('#playlistRuleValue').value = p?.ruleValue || ''; updatePlaylistRuleFields(); document.querySelector('#playlistFormError').textContent = ''; setPlaylistColor(p?.color || '#ff5368'); dialog.classList.add('open'); dialog.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => document.querySelector('#playlistNameInput').focus()) }
+    function updatePlaylistRuleFields() { const rule = document.querySelector('#playlistRule').value, field = document.querySelector('#playlistRuleValueField'); field.hidden = !['artist', 'album'].includes(rule); document.querySelector('#playlistRuleValue') } function openPlaylistDialog(id = null) { editingPlaylistId = id; const p = id ? playlists.find(x => x.id === id) : null, dialog = document.querySelector('#playlistDialog'); document.querySelector('#playlistDialogTitle').textContent = p ? 'Edit playlist' : 'Create playlist'; document.querySelector('#savePlaylistButton').textContent = p ? 'Save changes' : 'Create playlist'; document.querySelector('#playlistNameInput').value = p?.name || ''; document.querySelector('#playlistDescriptionInput').value = p?.description || ''; document.querySelector('#playlistRule').value = p?.rule || 'manual'; document.querySelector('#playlistRuleValue').value = p?.ruleValue || ''; updatePlaylistRuleFields(); document.querySelector('#playlistFormError').textContent = ''; setPlaylistColor(p?.color || '#ff5368'); dialog.classList.add('open'); dialog.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => document.querySelector('#playlistNameInput').focus()) }
     function closePlaylistDialog() { const d = document.querySelector('#playlistDialog'); d.classList.remove('open'); d.setAttribute('aria-hidden', 'true'); editingPlaylistId = null; pendingPlaylistTrack = -1 }
     function setPlaylistColor(color) { document.querySelector('#playlistColorValue').value = color; document.querySelectorAll('[data-playlist-color]').forEach(b => { const active = b.dataset.playlistColor === color; b.classList.toggle('active', active); b.setAttribute('aria-pressed', String(active)) }) }
     async function toggleFavorite(i) { tracks[i].favorite = !tracks[i].favorite; await saveTrack(tracks[i]); if (i === current) document.querySelector('#nowFavorite').classList.toggle('favorite-on', tracks[i].favorite); render(); preloadedTrackIndex = -1; prepareNextTrack() }
-    function renderQueue() { const el = document.querySelector('#queueList'), count = document.querySelector('#queueCount'), now = document.querySelector('#queueNow'); count.textContent = queue.length + ' ' + (queue.length === 1 ? 'song' : 'songs'); now.textContent = current >= 0 && tracks[current] ? tracks[current].name + ' · ' + tracks[current].artist : 'Nothing playing'; if (!queue.length) { el.innerHTML = '<div class="queue-empty"><strong>Your queue is empty</strong><span>Add songs from your library with the ⇥ button.</span></div>'; return } el.innerHTML = queue.map((item, n) => { const t = tracks.find(x => x.id === item.trackId); return t ? '<div class="queue-item"><span class="queue-position">' + String(n + 1).padStart(2, '0') + '</span><div class="queue-cover" data-queue-cover="' + item.qid + '">♫</div><div class="queue-copy"><strong>' + escapeHtml(t.name) + '</strong><span>' + escapeHtml(t.artist) + '</span></div><button type="button" data-play-queued="' + item.qid + '" title="Play now">▶</button><button type="button" data-remove-queued="' + item.qid + '" title="Remove from queue">×</button></div>' : '' }).join(''); el.querySelectorAll('[data-queue-cover]').forEach(node => { const item = queue.find(x => x.qid === node.dataset.queueCover), t = tracks.find(x => x.id === item?.trackId); if (t) setCover(node, t) }); el.querySelectorAll('[data-play-queued]').forEach(b => b.onclick = () => playQueued(b.dataset.playQueued)); el.querySelectorAll('[data-remove-queued]').forEach(b => b.onclick = () => { queue = queue.filter(x => x.qid !== b.dataset.removeQueued); renderQueue() }) }
+    function renderQueue() { const el = document.querySelector('#queueList'), count = document.querySelector('#queueCount'), now = document.querySelector('#queueNow'); count.textContent = queue.length + ' ' + (queue.length === 1 ? 'song' : 'songs'); now.textContent = current >= 0 && tracks[current] ? tracks[current].name + ' · ' + tracks[current].artist : 'Nothing playing'; if (!queue.length) { el.innerHTML = '<div class="queue-empty"><strong>Your queue is empty</strong></div>'; return } el.innerHTML = queue.map((item, n) => { const t = tracks.find(x => x.id === item.trackId); return t ? '<div class="queue-item"><span class="queue-position">' + String(n + 1).padStart(2, '0') + '</span><div class="queue-cover" data-queue-cover="' + item.qid + '">♫</div><div class="queue-copy"><strong>' + escapeHtml(t.name) + '</strong><span>' + escapeHtml(t.artist) + '</span></div><button type="button" data-play-queued="' + item.qid + '" title="Play now">▶</button><button type="button" data-remove-queued="' + item.qid + '" title="Remove from queue">×</button></div>' : '' }).join(''); el.querySelectorAll('[data-queue-cover]').forEach(node => { const item = queue.find(x => x.qid === node.dataset.queueCover), t = tracks.find(x => x.id === item?.trackId); if (t) setCover(node, t) }); el.querySelectorAll('[data-play-queued]').forEach(b => b.onclick = () => playQueued(b.dataset.playQueued)); el.querySelectorAll('[data-remove-queued]').forEach(b => b.onclick = () => { queue = queue.filter(x => x.qid !== b.dataset.removeQueued); renderQueue() }) }
     function startAutoMix() { if (!tracks.length) { toast('Add music to your library to make an Auto Mix'); return } const pool = tracks.map((track, index) => ({ track, index, plays: listeningStats.tracks[track.id]?.plays || 0, last: listeningStats.tracks[track.id]?.lastPlayed || 0, score: Math.random() })); const ordered = []; let previousArtist = ''; while (pool.length && ordered.length < 30) { pool.sort((a, b) => ((a.plays * 1.8) + (a.last ? Math.max(0, 1 - (Date.now() - a.last) / 86400000) * 3 : 0) + (a.track.artist === previousArtist ? 3 : 0) - a.score) - ((b.plays * 1.8) + (b.last ? Math.max(0, 1 - (Date.now() - b.last) / 86400000) * 3 : 0) + (b.track.artist === previousArtist ? 3 : 0) - b.score)); const pick = pool.shift(); ordered.push(pick); previousArtist = pick.track.artist } queue = ordered.slice(1).map(({ track }) => ({ qid: crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random(), trackId: track.id })); renderQueue(); playTrack(ordered[0].index); toast(`Auto Mix started · ${ordered.length} songs`) } function enqueueTrack(i) { const t = tracks[i]; if (!t) return; queue.push({ qid: crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random(), trackId: t.id }); preloadedTrackIndex = -1; renderQueue(); prepareNextTrack(); toast('Added ' + t.name + ' to Up Next') }
     function playQueued(qid) { const at = queue.findIndex(x => x.qid === qid); if (at < 0) return; const [item] = queue.splice(at, 1), i = tracks.findIndex(x => x.id === item.trackId); renderQueue(); if (i >= 0) playTrack(i) }
     function peekNextTrackIndex() { while (queue.length && !tracks.some(t => t.id === queue[0].trackId)) queue.shift(); if (queue.length) return tracks.findIndex(t => t.id === queue[0].trackId); const shown = visibleTracks(); if (!shown.length) return -1; if (shuffle) { if (preloadedTrackIndex >= 0 && tracks[preloadedTrackIndex]) return preloadedTrackIndex; preloadedTrackIndex = shown[Math.floor(Math.random() * shown.length)].i; return preloadedTrackIndex } const at = shown.findIndex(x => x.i === current); return shown[(at + 1 + shown.length) % shown.length].i }
@@ -9083,7 +9079,7 @@
     function startPlayback(deck, i, attempt) { const p = deck.play(); if (!p || !p.catch) return; p.catch(err => { if (deck !== audio || current !== i) return; if (err && err.name === 'NotAllowedError') { toast('Tap play to start the song'); return } if (attempt < 2) { const t = tracks[i]; if (t && t.file && attempt === 1) { try { URL.revokeObjectURL(t.url) } catch { } t.url = URL.createObjectURL(fixAudioFile(t.file)); deck.src = t.url } deck.load(); setTimeout(() => startPlayback(deck, i, attempt + 1), 250 * (attempt + 1)) } else toast('This audio format could not be played') }) }
     function reloadCurrentTrack() { const i = current, t = tracks[i]; if (!t || !t.file || t._retried) return false; t._retried = true; const at = audio.currentTime || 0, wasPlaying = !audio.paused; try { URL.revokeObjectURL(t.url) } catch { } t.url = URL.createObjectURL(fixAudioFile(t.file)); audio.src = t.url; audio.load(); audio.addEventListener('loadedmetadata', () => { if (at > 1) try { audio.currentTime = at } catch { } }, { once: true }); startPlayback(audio, i, 1); setTimeout(() => { if (tracks[i]) tracks[i]._retried = false }, 8000); return true }
     function openQueue() { renderQueue(); const p = document.querySelector('#queuePanel'); p.classList.add('open'); p.setAttribute('aria-hidden', 'false'); document.querySelector('#closeQueue').focus() } function closeQueue() { const p = document.querySelector('#queuePanel'); p.classList.remove('open'); p.setAttribute('aria-hidden', 'true') }
-    async function removeTrack(i) { if (!tracks[i]) return; if (activePlaylistId) { const p = playlists.find(x => x.id === activePlaylistId); if (p) { if (p.rule && p.rule !== 'manual') p.excludedTrackIds = [...new Set([...(p.excludedTrackIds || []), tracks[i].id])]; else p.trackIds = p.trackIds.filter(id => id !== tracks[i].id); try { await dbRequest('playlists', 'put', p) } catch { } render() } return } let was = current === i, removed = tracks[i]; if (removed.url) if (removed.url) URL.revokeObjectURL(removed.url); if (removed.art?.startsWith('blob:')) URL.revokeObjectURL(removed.art); tracks.splice(i, 1); preloadedTrackIndex = -1; queue = queue.filter(item => item.trackId !== removed.id); try { await dbRequest('tracks', 'delete', removed.id); for (const p of playlists) if (p.trackIds.includes(removed.id)) { p.trackIds = p.trackIds.filter(id => id !== removed.id); await dbRequest('playlists', 'put', p) } } catch { } if (current > i) current--; else if (was) { cancelCrossfade(); current = -1; audio.pause(); audio.removeAttribute('src'); document.querySelector('#nowTitle').textContent = 'Nothing playing'; document.querySelector('#nowArtist').textContent = 'Choose a track from your library'; document.querySelector('#nowFavorite').classList.remove('favorite-on'); document.querySelector('#nowFavorite').textContent = '♡'; setCover(document.querySelector('#nowCover'), null); syncHero(null); syncFull(null) } render(); if (current >= 0) prepareNextTrack() }
+    async function removeTrack(i) { if (!tracks[i]) return; if (activePlaylistId) { const p = playlists.find(x => x.id === activePlaylistId); if (p) { if (p.rule && p.rule !== 'manual') p.excludedTrackIds = [...new Set([...(p.excludedTrackIds || []), tracks[i].id])]; else p.trackIds = p.trackIds.filter(id => id !== tracks[i].id); try { await dbRequest('playlists', 'put', p) } catch { } render() } return } let was = current === i, removed = tracks[i]; if (removed.url) if (removed.url) URL.revokeObjectURL(removed.url); if (removed.art?.startsWith('blob:')) URL.revokeObjectURL(removed.art); tracks.splice(i, 1); preloadedTrackIndex = -1; queue = queue.filter(item => item.trackId !== removed.id); try { await dbRequest('tracks', 'delete', removed.id); for (const p of playlists) if (p.trackIds.includes(removed.id)) { p.trackIds = p.trackIds.filter(id => id !== removed.id); await dbRequest('playlists', 'put', p) } } catch { } if (current > i) current--; else if (was) { cancelCrossfade(); current = -1; audio.pause(); audio.removeAttribute('src'); document.querySelector('#nowTitle').textContent = 'Nothing playing'; document.querySelector('#nowArtist').textContent = ''; document.querySelector('#nowFavorite').classList.remove('favorite-on'); document.querySelector('#nowFavorite').textContent = '♡'; setCover(document.querySelector('#nowCover'), null); syncHero(null); syncFull(null) } render(); if (current >= 0) prepareNextTrack() }
     function toggle() { if (current < 0) { const shown = visibleTracks(); if (shown.length) playTrack(shown[0].i); else toast('Add some music first'); return } if (audio.paused) audio.play(); else audio.pause() }
     window.addEventListener('beforeunload', () => saveListeningStats(true)); document.querySelector('#openBtn').onclick = () => files.click(); document.querySelector('#heroAdd').onclick = () => files.click(); document.querySelector('#autoMixHero').onclick = startAutoMix; document.querySelector('#allRecent').onclick = () => selectView('All tracks'); document.querySelector('#backToAlbums').onclick = () => selectView('Albums'); files.onchange = () => { addFiles(files.files); files.value = '' }; document.querySelector('#folderImportSettings').onclick = () => document.querySelector('#folderFiles').click(); document.querySelector('#folderFiles').onchange = e => { addFiles(e.target.files); e.target.value = '' }; const customBackgroundInput = document.querySelector('#customBackgroundInput'), customBackgroundStatus = document.querySelector('#customBackgroundStatus'); if (window.MusikoAppearance.value.customBackground) customBackgroundStatus.textContent = 'Custom background is saved on this device.'; document.querySelector('#chooseCustomBackground').onclick = () => customBackgroundInput.click(); customBackgroundInput.onchange = e => { const file = e.target.files?.[0]; e.target.value = ''; if (!file || !file.type.startsWith('image/')) return; const imageUrl = URL.createObjectURL(file), image = new Image(); image.onload = () => { const scale = Math.min(1, 1200 / image.width, 800 / image.height), canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(image.width * scale)); canvas.height = Math.max(1, Math.round(image.height * scale)); const context = canvas.getContext('2d'); context.fillStyle = '#10121b'; context.fillRect(0, 0, canvas.width, canvas.height); context.drawImage(image, 0, 0, canvas.width, canvas.height); URL.revokeObjectURL(imageUrl); try { const settings = window.MusikoAppearance; settings.value.customBackground = canvas.toDataURL('image/jpeg', .72); settings.value.skin = 'custom'; settings.value.mode = 'dark'; settings.value.darkSkin = 'custom'; saveAppearance(); customBackgroundStatus.textContent = 'Custom background saved on this device.'; toast('Custom background applied') } catch { toast('Could not save that background image') } }; image.onerror = () => { URL.revokeObjectURL(imageUrl); toast('Could not open that image') }; image.src = imageUrl }; document.querySelector('#editCurrentTrack').onclick = () => { if (current < 0 || !tracks[current]) return; const id = tracks[current].id; closeSettings(); openTrackMetadata(id) }; document.querySelector('#play').onclick = toggle; document.querySelector('#newPlaylist').onclick = () => openPlaylistDialog(); document.querySelector('#autoMix').onclick = startAutoMix; document.querySelector('#playlistRule').onchange = updatePlaylistRuleFields; document.querySelector('#editActivePlaylist').onclick = () => { if (activePlaylistId) openPlaylistDialog(activePlaylistId) }; document.querySelectorAll('[data-close-playlist-dialog]').forEach(b => b.onclick = closePlaylistDialog); document.querySelectorAll('[data-close-playlist-picker]').forEach(b => b.onclick = closePlaylistPicker); document.querySelectorAll('[data-playlist-color]').forEach(b => b.onclick = () => setPlaylistColor(b.dataset.playlistColor)); document.querySelector('#createFromPicker').onclick = () => { document.querySelector('#playlistPicker').classList.remove('open'); document.querySelector('#playlistPicker').setAttribute('aria-hidden', 'true'); openPlaylistDialog() }; document.querySelector('#playlistForm').onsubmit = async e => { e.preventDefault(); const name = document.querySelector('#playlistNameInput').value.trim(), description = document.querySelector('#playlistDescriptionInput').value.trim(), color = document.querySelector('#playlistColorValue').value, rule = document.querySelector('#playlistRule').value, ruleValue = document.querySelector('#playlistRuleValue').value.trim(), error = document.querySelector('#playlistFormError'), duplicate = playlists.find(p => p.name.toLowerCase() === name.toLowerCase() && p.id !== editingPlaylistId); if (!name) { error.textContent = 'Give your playlist a name first.'; return } if (duplicate) { error.textContent = 'A playlist with this name already exists.'; return } if (['artist', 'album'].includes(rule) && !ruleValue) { error.textContent = 'Enter the artist or album to match.'; return } let p; if (editingPlaylistId) { p = playlists.find(x => x.id === editingPlaylistId); if (!p) return; p.name = name; p.description = description; p.color = playlistTint({ color }); p.rule = rule; p.ruleValue = ruleValue; try { await dbRequest('playlists', 'put', p) } catch { error.textContent = 'Could not save your playlist.'; return } renderPlaylists() } else p = await createPlaylist(name, description, color, rule, ruleValue); if (!p) return; if (pendingPlaylistTrack >= 0 && tracks[pendingPlaylistTrack]) { const track = tracks[pendingPlaylistTrack]; if (!p.trackIds.includes(track.id)) p.trackIds.push(track.id); try { await dbRequest('playlists', 'put', p) } catch { toast('Could not add this song to the playlist') } } pendingPlaylistTrack = -1; closePlaylistDialog(); closePlaylistPicker(); selectView(p.id, p.id) }; document.querySelector('#metadataRemoveSong').onclick = () => { const index = tracks.findIndex(track => track.id === editingTrackId); if (index < 0) return; const message = activePlaylistId ? 'Remove this song from the current playlist?' : 'Remove this song from your library?'; if (!confirm(message)) return; closeTrackMetadata(); removeTrack(index) }; document.querySelector('#metadataCoverInput').onchange = e => { const file = e.target.files?.[0]; if (!file || !file.type.startsWith('image/')) return; if (metadataPreviewUrl) URL.revokeObjectURL(metadataPreviewUrl); metadataPreviewUrl = URL.createObjectURL(file); const preview = document.querySelector('#metadataCoverPreview'); preview.style.backgroundImage = `url("${metadataPreviewUrl}")`; preview.classList.add('has-art'); preview.textContent = '' }; document.querySelector('#metadataForm').onsubmit = async e => { e.preventDefault(); const track = tracks.find(item => item.id === editingTrackId); if (!track) return; const title = document.querySelector('#metadataTitle').value.trim(); if (!title) { document.querySelector('#metadataError').textContent = 'Enter a song title.'; return } const artist = document.querySelector('#metadataArtist').value.trim() || 'Unknown Artist', album = document.querySelector('#metadataAlbum').value.trim() || 'Unknown Album', changed = track.artist !== artist || track.album !== album; track.name = title; track.artist = artist; track.album = album; const coverFile = document.querySelector('#metadataCoverInput').files?.[0]; if (coverFile) { if (track.customArtBlob && track.art?.startsWith('blob:')) URL.revokeObjectURL(track.art); track.customArtBlob = coverFile; track.art = metadataPreviewUrl || URL.createObjectURL(coverFile); metadataPreviewUrl = null } if (changed) track.lyricsLookup = ''; await saveTrack(track); closeTrackMetadata(); render(); renderQueue(); if (current >= 0 && tracks[current]?.id === track.id) { document.querySelector('#nowTitle').textContent = track.name; document.querySelector('#nowArtist').textContent = track.artist; syncHero(track); syncFull(track); if (changed) lookupLyrics(track) } toast('Track details saved') }; document.querySelectorAll('[data-close-metadata]').forEach(button => button.onclick = closeTrackMetadata); document.querySelector('#metadataDialog').addEventListener('click', e => { if (e.target.id === 'metadataDialog') closeTrackMetadata() }); document.querySelector('#playlistDialog').addEventListener('click', e => { if (e.target.id === 'playlistDialog') closePlaylistDialog() }); document.querySelector('#playlistPicker').addEventListener('click', e => { if (e.target.id === 'playlistPicker') closePlaylistPicker() }); document.querySelector('#search').oninput = e => { const query = e.target.value.trim(); if (query.toLowerCase() === 'terminal') { const settings = window.MusikoAppearance; settings.value.mode = 'dark'; settings.value.skin = 'terminal'; settings.value.darkSkin = 'terminal'; settings.value.accent = '#45ed82'; e.target.value = ''; searchTerm = ''; saveAppearance(); toast('Terminal theme activated') } else searchTerm = query; if (searchTerm && activeView === 'Home') selectView('All tracks'); else render(); preloadedTrackIndex = -1; prepareNextTrack() }; document.querySelector('#nowFavorite').onclick = () => { if (current >= 0) toggleFavorite(current) };
     /* ---- iOS: undo any accidental zoom / sideways pan, and show real Now Playing controls ---- */
@@ -9091,11 +9087,11 @@
     (() => { if (!('mediaSession' in navigator)) return; const ms = navigator.mediaSession, set = (a, f) => { try { ms.setActionHandler(a, f) } catch { } }; const sync = () => { const t = tracks[current]; if (!t) { ms.metadata = null; return } try { ms.metadata = new MediaMetadata({ title: t.name, artist: t.artist, album: t.album && t.album !== 'Local files' ? t.album : '', artwork: t.art ? [{ src: t.art, sizes: '512x512' }] : [] }) } catch { } }; const origShow = showTrack; showTrack = function (i) { const r = origShow.apply(this, arguments); sync(); return r }; const pos = () => { try { if (Number.isFinite(audio.duration) && audio.duration > 0) ms.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }) } catch { } }; audioDecks.forEach(d => { d.addEventListener('play', () => { if (d === audio) { ms.playbackState = 'playing'; pos() } }); d.addEventListener('pause', () => { if (d === audio) ms.playbackState = 'paused' }); d.addEventListener('loadedmetadata', () => { if (d === audio) pos() }); d.addEventListener('seeked', () => { if (d === audio) pos() }) }); set('play', () => { if (current < 0) toggle(); else audio.play() }); set('pause', () => audio.pause()); set('previoustrack', () => document.querySelector('#prev').click()); set('nexttrack', () => playNext()); set('seekto', e => { if (e.seekTime != null && Number.isFinite(audio.duration)) { audio.currentTime = Math.max(0, Math.min(audio.duration, e.seekTime)); pos() } }); set('seekbackward', e => { audio.currentTime = Math.max(0, audio.currentTime - (e.seekOffset || 10)) }); set('seekforward', e => { audio.currentTime = Math.min(audio.duration || 1e9, audio.currentTime + (e.seekOffset || 10)) }) })();
 
     function syncSettingsButtons() { const settings = window.MusikoAppearance; document.querySelectorAll('[data-mode]').forEach(button => { const active = button.dataset.mode === settings.value.mode; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }); document.querySelectorAll('.theme-choices [data-skin]').forEach(button => { const active = button.dataset.skin === settings.value.skin; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }); document.querySelectorAll('[data-accent]').forEach(button => { const active = button.dataset.accent === settings.value.accent; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }) }
-    function saveAppearance() { const settings = window.MusikoAppearance; document.documentElement.dataset.theme = settings.value.mode; document.documentElement.dataset.skin = settings.value.skin; document.documentElement.dataset.glass = settings.value.glassy ? 'on' : 'off'; document.documentElement.dataset.performance = settings.value.lowEnd ? 'low' : 'normal'; document.documentElement.dataset.searchAnimation = settings.value.searchAnimation ? 'on' : 'off'; document.documentElement.dataset.largeMobileControls = settings.value.largerMobileControls ? 'on' : 'off'; document.documentElement.style.setProperty('--accent', settings.value.accent); document.documentElement.style.setProperty('--accent-ink', window.MusikoInkFor(settings.value.accent)); document.documentElement.style.setProperty('--custom-background-image', settings.value.customBackground ? 'url(' + settings.value.customBackground + ')' : 'none'); settings.save(); syncSettingsButtons() }
+    function saveAppearance() { const settings = window.MusikoAppearance; document.documentElement.dataset.theme = settings.value.mode; document.documentElement.dataset.skin = settings.value.skin; document.documentElement.dataset.glass = settings.value.glassy ? 'on' : 'off'; document.documentElement.dataset.performance = settings.value.lowEnd ? 'low' : 'normal'; document.documentElement.dataset.searchAnimation = settings.value.searchAnimation ? 'on' : 'off'; document.documentElement.dataset.largeMobileControls = settings.value.largerMobileControls ? 'on' : 'off'; document.documentElement.style.setProperty('--accent', settings.value.accent); document.documentElement.style.setProperty('--accent-ink', window.MusikoInkFor(settings.value.accent)); document.documentElement.style.setProperty('--custom-background-image', settings.value.customBackground ? 'url(' + settings.value.customBackground + ')' : 'none'); document.documentElement.style.setProperty('--custom-dim', settings.value.customDim / 100); document.documentElement.style.setProperty('--custom-blur', settings.value.customBlur + 'px'); settings.save(); syncSettingsButtons() }
     function closeSettings() { const panel = document.querySelector('#settingsPanel'); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); document.querySelector('#openSettings').focus() }
     function openSettings() { const panel = document.querySelector('#settingsPanel'); syncSettingsButtons(); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); document.querySelector('#closeSettings').focus() }
     function closeSleepQuickMenu(restoreFocus = true) { const panel = document.querySelector('#sleepQuickPanel'); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); if (restoreFocus && sleepQuickOpener?.isConnected) sleepQuickOpener.focus(); sleepQuickOpener = null }
-    function toggleSleepQuickMenu(button) { const panel = document.querySelector('#sleepQuickPanel'); if (panel.classList.contains('open') && sleepQuickOpener === button) { closeSleepQuickMenu(); return } sleepQuickOpener = button; panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); const buttonRect = button.getBoundingClientRect(), panelRect = panel.getBoundingClientRect(), gap = 9; let left = Math.max(12, Math.min(innerWidth - panelRect.width - 12, buttonRect.left + buttonRect.width / 2 - panelRect.width / 2)), top = buttonRect.top - panelRect.height - gap; if (top < 8) top = Math.min(innerHeight - panelRect.height - 8, buttonRect.bottom + gap); panel.style.left = `${left}px`; panel.style.top = `${Math.max(8, top)}px`; panel.querySelector(`[data-sleep-choice="${sleepTimerChoice}"]`)?.focus() }
+    function toggleSleepQuickMenu(button) { const panel = document.querySelector('#sleepQuickPanel'); if (panel.classList.contains('open') && sleepQuickOpener === button) { closeSleepQuickMenu(); return } sleepQuickOpener = button; panel.classList.toggle('docked', button.id === 'miniSleepShortcut' && innerWidth > 760); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); const buttonRect = button.getBoundingClientRect(), panelRect = panel.getBoundingClientRect(), gap = 9; let left = Math.max(12, Math.min(innerWidth - panelRect.width - 12, buttonRect.left + buttonRect.width / 2 - panelRect.width / 2)), top = buttonRect.top - panelRect.height - gap; if (top < 8) top = Math.min(innerHeight - panelRect.height - 8, buttonRect.bottom + gap); panel.style.left = `${left}px`; panel.style.top = `${Math.max(8, top)}px`; panel.querySelector(`[data-sleep-choice="${sleepTimerChoice}"]`)?.focus() }
     const brandLogo = document.querySelector('.brand'); brandLogo.setAttribute('role', 'button'); brandLogo.setAttribute('tabindex', '0'); brandLogo.setAttribute('aria-label', 'Musiko home animation'); const playLogoAnimation = () => { brandLogo.classList.remove('brand-animating'); void brandLogo.offsetWidth; brandLogo.classList.add('brand-animating'); setTimeout(() => brandLogo.classList.remove('brand-animating'), 760) }; brandLogo.addEventListener('click', playLogoAnimation); brandLogo.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playLogoAnimation() } }); document.querySelectorAll('.strawberry-float').forEach(berry => berry.addEventListener('click', e => { e.stopPropagation(); const dark = document.documentElement.dataset.skin === 'strawberry-dark', animation = dark ? 'berry-dark-clicking' : 'berry-clicking'; berry.classList.remove('berry-clicking', 'berry-dark-clicking'); void berry.offsetWidth; berry.classList.add(animation); setTimeout(() => berry.classList.remove(animation), 950) })); document.querySelector('#miniQueueShortcut').onclick = openQueue; document.querySelector('#closeQueue').onclick = closeQueue; document.querySelector('#queueBackdrop').onclick = closeQueue; document.querySelector('#clearQueue').onclick = () => { queue = []; preloadedTrackIndex = -1; renderQueue(); prepareNextTrack(); toast('Up Next cleared') }; document.querySelector('#openSettings').onclick = openSettings; document.querySelector('#closeSettings').onclick = closeSettings; document.querySelector('#miniSleepShortcut').onclick = e => toggleSleepQuickMenu(e.currentTarget); document.querySelector('#fullSleepShortcut').onclick = e => toggleSleepQuickMenu(e.currentTarget); document.querySelector('#closeSleepQuick').onclick = () => closeSleepQuickMenu(); document.querySelectorAll('[data-sleep-choice]').forEach(button => button.onclick = () => { setSleepTimer(button.dataset.sleepChoice); closeSleepQuickMenu() }); document.addEventListener('pointerdown', e => { const panel = document.querySelector('#sleepQuickPanel'); if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.sleep-shortcut')) closeSleepQuickMenu(false) }); window.addEventListener('resize', () => closeSleepQuickMenu(false)); document.addEventListener('scroll', () => closeSleepQuickMenu(false), true); document.querySelector('#settingsPanel').onclick = e => { if (e.target.id === 'settingsPanel') closeSettings() }; document.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => { const settings = window.MusikoAppearance, currentSkin = settings.value.skin; settings.value.mode = button.dataset.mode; if (settings.value.mode === 'light') settings.value.skin = currentSkin === 'strawberry-dark' ? 'strawberry' : 'cloud'; else settings.value.skin = currentSkin === 'strawberry' ? 'strawberry-dark' : 'black'; if (settings.value.mode === 'dark') settings.value.darkSkin = settings.value.skin; saveAppearance() }); document.querySelectorAll('.theme-choices [data-skin]').forEach(button => button.onclick = () => { const settings = window.MusikoAppearance, skin = button.dataset.skin; settings.value.skin = skin; if (skin === 'cloud' || skin === 'strawberry') settings.value.mode = 'light'; else { settings.value.mode = 'dark'; settings.value.darkSkin = skin } settings.value.accent = ({ midnight: '#ff5368', rose: '#ff7198', strawberry: '#e53939', 'strawberry-dark': '#fd5f5f', ocean: '#53b8ee', forest: '#61c59a', glass: '#91caff', 'prism-dark': '#8b70ff', black: '#ff5368', terminal: '#45ed82', custom: '#8b70ff', cloud: '#ff5368' })[skin]; saveAppearance() }); document.querySelectorAll('[data-accent]').forEach(button => button.onclick = () => { window.MusikoAppearance.value.accent = button.dataset.accent; saveAppearance() }); syncSettingsButtons(); syncSleepShortcuts();
     function openLyrics() { document.querySelector('#lyricsPanel').classList.add('open'); renderLyrics() } function closeLyrics() { document.querySelector('#lyricsPanel').classList.remove('open') }; document.querySelector('#openLyrics').onclick = openLyrics; document.querySelector('#fullLyrics').onclick = () => setFullLyrics(!document.querySelector('#fullscreen').classList.contains('lyrics-on')); document.querySelector('#closeLyrics').onclick = closeLyrics; document.querySelector('#lyricsPanel').onclick = e => { if (e.target.id === 'lyricsPanel') closeLyrics() };
     document.querySelector('#next').onclick = playNext; document.querySelector('#prev').onclick = () => { if (audio.currentTime > 3) { audio.currentTime = 0; return } const shown = visibleTracks(); if (shown.length) { const at = shown.findIndex(x => x.i === current); playTrack(shown[(at - 1 + shown.length) % shown.length].i) } };
@@ -9216,17 +9212,17 @@
         sec.innerHTML = `<div class="lib-list">${row('playlists', icons.playlists, 'Playlists', playlists.length)}${row('artists', icons.artists, 'Artists', artistGroups().length)}${row('albums', icons.albums, 'Albums', albums.length)}${row('songs', icons.songs, 'Songs', tracks.length)}${row('favorites', icons.favorites, 'Favorites', tracks.filter(t => t.favorite).length)}</div>`
           + `<div class="lib-head"><h2>Recently Added</h2>${recent.length ? '<button type="button" data-go="recent">See all</button>' : ''}</div>`
           + (recent.length ? `<div class="lib-grid">${recent.map((g, i) => `<button type="button" class="lib-card" data-album="${i}"><span class="lib-art">♫</span><span class="lib-name">${esc(g.album)}</span><span class="lib-sub">${esc(g.artist)}</span></button>`).join('')}</div>`
-            : '<div class="lib-empty"><strong>Nothing here yet</strong>Add music and your newest albums will show up here.<br><button type="button" class="glass-btn" data-go="add">＋ Add music</button></div>');
+            : '<div class="lib-empty"><strong>Nothing here yet</strong><br><button type="button" class="glass-btn" data-go="add">＋ Add music</button></div>');
         sec.querySelectorAll('[data-album]').forEach(c => { const g = recent[+c.dataset.album]; setCover(c.querySelector('.lib-art'), { art: g.art }); c.dataset.key = g.key });
       }
       function renderPlaylistsPage() {
         sec.innerHTML = playlists.length ? `<div class="lib-list">${playlists.map(p => `<button type="button" class="lib-row" data-playlist="${esc(p.id)}" style="--playlist-color:${playlistTint(p)}"><span class="lib-ico"><span class="lib-dot"></span></span><span class="lib-label"><span>${esc(p.name)}</span><span class="lib-count">${songsLabel(smartTrackIds(p).length)}</span>${chev}</span></button>`).join('')}</div>`
-          : '<div class="lib-empty"><strong>No playlists yet</strong>Group your songs into playlists.<br><button type="button" class="glass-btn" data-go="newplaylist">＋ New playlist</button></div>';
+          : '<div class="lib-empty"><strong>No playlists yet</strong><br><button type="button" class="glass-btn" data-go="newplaylist">＋ New playlist</button></div>';
       }
       function renderArtistsPage() {
         const groups = artistGroups();
         sec.innerHTML = groups.length ? `<div class="lib-list">${groups.map(g => `<button type="button" class="lib-row" data-artist="${esc(g.name)}"><span class="lib-ico"><svg viewBox="0 0 24 24" aria-hidden="true">${icons.artists}</svg></span><span class="lib-label"><span>${esc(g.name)}</span><span class="lib-count">${songsLabel(g.count)}</span>${chev}</span></button>`).join('')}</div>`
-          : '<div class="lib-empty"><strong>No artists yet</strong>Add music to browse by artist.</div>';
+          : '<div class="lib-empty"><strong>No artists yet</strong></div>';
       }
       function paint() { if (mode === 'root') renderRoot(); else if (mode === 'playlists') renderPlaylistsPage(); else if (mode === 'artists') renderArtistsPage() }
 
@@ -9332,7 +9328,7 @@
         descCount.textContent = desc.value ? `${desc.value.length}/${desc.maxLength}` : 'optional';
         hint.textContent = HINTS[rule.value] || '';
         const r = rule.value; valField.firstChild.textContent = r === 'artist' ? 'Artist' : r === 'album' ? 'Album' : 'Match';
-        val.placeholder = r === 'artist' ? 'Start typing an artist…' : 'Start typing an album…';
+        
         fillSuggestions();
         del.hidden = !editingPlaylistId;
       }
@@ -10077,6 +10073,475 @@
     html body .playlist-modal-card footer button:not(.pl-delete),
     html body .queue-header-actions button { border-radius: 999px }
   </style>
+  <style id="musiko-close-btn">
+    /* ===== Close (X) buttons: Settings, Up Next, playlist/track dialogs, lyrics ===== */
+    html body .lyrics-close,
+    html body #closeQueue {
+      position: relative; flex: none; width: 36px; height: 36px; padding: 0; display: grid; place-items: center;
+      border-radius: 50%; border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+      background: color-mix(in srgb, currentColor 9%, transparent);
+      color: inherit; font-size: 0; line-height: 0; cursor: pointer; opacity: .85;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .16s ease, border-color .16s ease, color .16s ease, opacity .16s ease, transform .16s ease
+    }
+    /* crisp cross drawn with two bars instead of the text glyph */
+    html body .lyrics-close::before, html body .lyrics-close::after,
+    html body #closeQueue::before, html body #closeQueue::after {
+      content: ""; position: absolute; left: 50%; top: 50%; width: 14px; height: 2px; margin: -1px 0 0 -7px;
+      border-radius: 2px; background: currentColor; transition: transform .22s cubic-bezier(.2, .7, .2, 1)
+    }
+    html body .lyrics-close::before, html body #closeQueue::before { transform: rotate(45deg) }
+    html body .lyrics-close::after, html body #closeQueue::after { transform: rotate(-45deg) }
+    html body .lyrics-close:hover, html body #closeQueue:hover {
+      opacity: 1; color: var(--accent, #ff5368);
+      background: color-mix(in srgb, var(--accent, #ff5368) 16%, transparent);
+      border-color: color-mix(in srgb, var(--accent, #ff5368) 45%, transparent)
+    }
+    html body .lyrics-close:hover::before, html body #closeQueue:hover::before { transform: rotate(135deg) }
+    html body .lyrics-close:hover::after, html body #closeQueue:hover::after { transform: rotate(45deg) }
+    html body .lyrics-close:active, html body #closeQueue:active { transform: scale(.92) }
+    html body .lyrics-close:focus-visible, html body #closeQueue:focus-visible { outline: 2px solid var(--accent, #ff5368); outline-offset: 2px }
+    /* bigger tap target on phones without changing the look */
+    @media (pointer: coarse) {
+      html body .lyrics-close, html body #closeQueue { width: 40px; height: 40px }
+    }
+    /* light theme overrides from before must not win */
+    html[data-theme="light"] body .settings-card .lyrics-close { color: #39313a; background: rgba(40, 32, 44, .07); border-color: rgba(40, 32, 44, .14) }
+    html[data-theme="light"] body .settings-card .lyrics-close:hover { color: var(--accent, #ff5368); background: color-mix(in srgb, var(--accent, #ff5368) 16%, white); border-color: var(--accent, #ff5368) }
+    @media (prefers-reduced-motion: reduce) {
+      html body .lyrics-close::before, html body .lyrics-close::after, html body #closeQueue::before, html body #closeQueue::after { transition: none }
+    }
+  </style>
+  <style id="musiko-no-hints">
+    /* explanatory text removed: hide any leftover empty hint elements */
+    .setting-group p:empty, #heroSubtitle:empty, .sleep-quick-status:empty, .now-artist:empty, .full-artist:empty, .stat-sub:empty { display: none }
+    .lyrics-hint, .pl-hint, .settings-footer, .side-bottom { display: none !important }
+  </style>
+  <style id="musiko-queue-align">
+    /* ===== Up Next: lined up with the mini player, no blur ===== */
+    @media (min-width: 761px) {
+      /* right edge = right edge of the mini player; sits just above it */
+      html body .queue-panel .queue-drawer {
+        right: calc((100% - var(--side-w, 0px) - min(1080px, 100% - var(--side-w, 0px) - 106px)) / 2);
+        bottom: 112px;
+        width: min(410px, calc(100% - 32px));
+        max-height: min(620px, calc(100dvh - 140px));
+        border-radius: 22px;
+        transform-origin: bottom right;
+        transition: right .28s var(--ease, ease), transform .22s ease, opacity .22s ease
+      }
+    }
+    @media (min-width: 761px) and (max-width: 1100px) {
+      html body .queue-panel .queue-drawer { right: 20px }
+    }
+    /* the dimmed backdrop stays unblurred */
+    html body .queue-panel .queue-backdrop {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important
+    }
+    /* same glass as the mini player (copied from #musiko-miniplayer-glass) */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .queue-panel .queue-drawer {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 55%),
+        rgba(24, 14, 22, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      border: 1px solid rgba(255, 255, 255, .16);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .22),
+        inset 0 0 22px rgba(0, 0, 0, .28),
+        0 10px 36px rgba(0, 0, 0, .28)
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .queue-panel .queue-drawer {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, .08) 60%),
+        rgba(255, 255, 255, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      backdrop-filter: blur(26px) saturate(190%);
+      border-color: rgba(255, 255, 255, .55);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 10px 32px rgba(40, 30, 60, .16)
+    }
+    /* low-power / glass-off modes keep a solid surface */
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="dark"] body .queue-panel .queue-drawer { background: #1d1b22 }
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="light"] body .queue-panel .queue-drawer { background: #fbf9fa }
+  </style>
+  <style id="musiko-lyrics-glass">
+    /* ===== Lyrics preview: same glass as the mini player (and Up Next) ===== */
+    /* scrim behind it: dimmed only, so the glass has something to blur */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .lyrics-panel {
+      background: #05060b88;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .lyrics-panel {
+      background: rgba(236, 233, 239, .45)
+    }
+    /* fade the card instead of the whole panel: a fading parent would stop the card's glass from seeing the page behind it */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .lyrics-panel.open { animation: none }
+    html:not([data-glass="off"]):not([data-performance="low"]) body .lyrics-panel.open .lyrics-card { animation: screen-enter .2s ease both }
+    html:not([data-glass="off"]):not([data-performance="low"]) body .lyrics-card {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 55%),
+        rgba(24, 14, 22, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      border: 1px solid rgba(255, 255, 255, .16);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .22),
+        inset 0 0 22px rgba(0, 0, 0, .28),
+        0 10px 36px rgba(0, 0, 0, .28)
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .lyrics-card {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, .08) 60%),
+        rgba(255, 255, 255, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      backdrop-filter: blur(26px) saturate(190%);
+      border-color: rgba(255, 255, 255, .55);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 10px 32px rgba(40, 30, 60, .16)
+    }
+  </style>
+  <style id="musiko-sleep-glass">
+    /* ===== Sleep timer panel: same glass as the mini player ===== */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-panel {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 55%),
+        rgba(24, 14, 22, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 18px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .22),
+        inset 0 0 22px rgba(0, 0, 0, .28),
+        0 10px 36px rgba(0, 0, 0, .28)
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-panel {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, .08) 60%),
+        rgba(255, 255, 255, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      backdrop-filter: blur(26px) saturate(190%);
+      border-color: rgba(255, 255, 255, .55);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 10px 32px rgba(40, 30, 60, .16)
+    }
+    /* controls sit directly on the glass, like the mini player buttons */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-header button,
+    html:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-options button {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .12)
+    }
+    html:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-options button:hover,
+    html:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-options button.active {
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
+      border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+      color: var(--accent)
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-header button,
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-options button {
+      background: rgba(255, 255, 255, .35);
+      border-color: rgba(255, 255, 255, .6)
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-options button:hover,
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .sleep-quick-options button.active {
+      background: color-mix(in srgb, var(--accent) 14%, white);
+      border-color: var(--accent)
+    }
+    /* low-power mode keeps a solid surface */
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="dark"] body .sleep-quick-panel { background: #1d1b22 }
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="light"] body .sleep-quick-panel { background: #fbf9fa }
+  </style>
+  <style id="musiko-panels-glass">
+    /* ===== Settings + playlist / track-details / save-song dialogs: same glass as the mini player ===== */
+    /* scrims: dimmed only (no blur), so the glass cards have the page to blur */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .settings-panel,
+    html:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal {
+      background: transparent;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none
+    }
+    html:not([data-glass="off"]):not([data-performance="low"]) body .settings-panel { background: #05060b88 }
+    html:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-backdrop {
+      background: #05060b88;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .settings-panel,
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-backdrop { background: rgba(236, 233, 239, .45) }
+    /* fade the card, not the panel: a fading parent would stop the card's glass from seeing the page */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .settings-panel.open { animation: none }
+
+    html:not([data-glass="off"]):not([data-performance="low"]) body .settings-card,
+    html:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-card {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 55%),
+        rgba(24, 14, 22, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      border: 1px solid rgba(255, 255, 255, .16);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .22),
+        inset 0 0 22px rgba(0, 0, 0, .28),
+        0 10px 36px rgba(0, 0, 0, .28)
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .settings-card,
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-card {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, .08) 60%),
+        rgba(255, 255, 255, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      backdrop-filter: blur(26px) saturate(190%);
+      border-color: rgba(255, 255, 255, .55);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 10px 32px rgba(40, 30, 60, .16)
+    }
+
+    /* fields and selects sit on the glass as translucent chips */
+    html[data-theme="dark"]:not([data-glass="off"]):not([data-performance="low"]) body .settings-card .setting-select,
+    html[data-theme="dark"]:not([data-glass="off"]):not([data-performance="low"]) body .settings-card input:not([type="checkbox"]):not([type="range"]),
+    html[data-theme="dark"]:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-card input:not([type="checkbox"]),
+    html[data-theme="dark"]:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-card textarea,
+    html[data-theme="dark"]:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-card select {
+      background-color: rgba(255, 255, 255, .08);
+      border-color: rgba(255, 255, 255, .14)
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .settings-card .setting-select,
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .settings-card input:not([type="checkbox"]):not([type="range"]),
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-card input:not([type="checkbox"]),
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-card textarea,
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .playlist-modal-card select {
+      background-color: rgba(255, 255, 255, .35);
+      border-color: rgba(255, 255, 255, .6)
+    }
+    /* hairlines match the mini player's edge */
+    html[data-theme="dark"]:not([data-glass="off"]):not([data-performance="low"]) body .settings-header,
+    html[data-theme="dark"]:not([data-glass="off"]):not([data-performance="low"]) body .setting-group { border-color: rgba(255, 255, 255, .12) }
+
+    /* low-power mode keeps a solid surface */
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="dark"] body .settings-card,
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="dark"] body .playlist-modal-card { background: #1d1b22 }
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="light"] body .settings-card,
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="light"] body .playlist-modal-card { background: #fbf9fa }
+  </style>
+  <style id="musiko-sleep-align">
+    /* ===== Sleep timer (opened from the mini player): docked like Up Next ===== */
+    @media (min-width: 761px) {
+      html body .sleep-quick-panel.docked {
+        left: auto !important;
+        top: auto !important;
+        right: calc((100% - var(--side-w, 0px) - min(1080px, 100% - var(--side-w, 0px) - 106px)) / 2);
+        bottom: 112px;
+        transform-origin: bottom right
+      }
+    }
+    @media (min-width: 761px) and (max-width: 1100px) {
+      html body .sleep-quick-panel.docked { right: 20px }
+    }
+  </style>
+  <style id="musiko-settings-drawer">
+    /* ===== Settings: full-height drawer on the right ===== */
+    html body .settings-panel {
+      padding: 0;
+      align-items: stretch;
+      justify-content: flex-end
+    }
+    html body .settings-panel .settings-card {
+      width: min(420px, calc(100vw - 52px));
+      max-width: none;
+      height: 100%;
+      max-height: none;
+      display: flex;
+      flex-direction: column;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      border-radius: 0 !important;
+      border-width: 0 0 0 1px !important;
+      animation: settings-drawer-in .26s cubic-bezier(.2, .7, .2, 1) both
+    }
+    html body .settings-panel .settings-header { flex: none }
+    html body .settings-panel .settings-content {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain
+    }
+    @keyframes settings-drawer-in {
+      from { opacity: 0; transform: translateX(28px) }
+      to { opacity: 1; transform: translateX(0) }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html body .settings-panel .settings-card { animation: none }
+    }
+  </style>
+  <style id="musiko-logo-responsive">
+    /* ===== Logo: never squashed, scales with the sidebar width ===== */
+    html body .brand-icon {
+      flex: none;
+      width: 33px;
+      height: 33px;
+      min-width: 33px;
+      aspect-ratio: 1 / 1
+    }
+    html body .brand-icon svg { flex: none; width: 18px; height: 18px }
+    html body aside .side-head .brand {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: clip
+    }
+    /* narrow sidebar (tablet): tighter logo so icon + name + toggle fit */
+    @media (min-width: 761px) and (max-width: 1020px) {
+      html body aside .side-head { gap: 6px }
+      html body aside .side-head .brand { gap: 8px; padding-left: 4px; padding-right: 0; font-size: 19px; letter-spacing: -.5px }
+      html body aside .side-head .brand-icon { width: 30px; height: 30px; min-width: 30px; border-radius: 9px }
+      html body aside .side-head .brand-icon svg { width: 16px; height: 16px }
+      html body aside .side-toggle { width: 30px; height: 30px }
+    }
+    /* very narrow desktop windows: icon only, name hidden */
+    @media (min-width: 761px) and (max-width: 840px) {
+      html body aside .side-head .brand { font-size: 0; gap: 0 }
+    }
+    /* collapsed rail keeps the full-size icon */
+    html.side-collapsed body aside .side-head .brand-icon { width: 33px; height: 33px; min-width: 33px }
+    html.side-collapsed body aside .side-head .brand-icon svg { width: 18px; height: 18px }
+    /* phones: scale the wordmark gently on very small screens */
+    @media (max-width: 360px) {
+      html body .brand { font-size: 19px; gap: 8px }
+      html body .brand-icon { width: 30px; height: 30px; min-width: 30px }
+    }
+  </style>
+  <style id="musiko-topbar-glass">
+    /* ===== Top bar: same glass as the mini player, drawn on the bar itself ===== */
+    /* the app frame's own blur would make it a backdrop root and flatten the bar's glass */
+    html:not([data-glass="off"]):not([data-performance="low"]) body .app {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none
+    }
+    html:not([data-glass="off"]):not([data-performance="low"]) body main > .top {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 55%),
+        rgba(24, 14, 22, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      border-bottom: 1px solid rgba(255, 255, 255, .16);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .22),
+        inset 0 0 22px rgba(0, 0, 0, .28),
+        0 8px 28px rgba(0, 0, 0, .22)
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body main > .top {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, .08) 60%),
+        rgba(255, 255, 255, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      backdrop-filter: blur(26px) saturate(190%);
+      border-bottom-color: rgba(255, 255, 255, .55);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 8px 24px rgba(40, 30, 60, .12)
+    }
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="dark"] body main > .top { background: #1d1b22 }
+    html[data-performance="low"]:not([data-glass="off"])[data-theme="light"] body main > .top { background: #fbf9fa }
+  </style>
+  <style id="musiko-topbar-theme">
+    /* ===== Top bar glass follows the active theme: tinted by the skin, readable text on top ===== */
+    /* dark skins: skin surface + a hint of the accent, light text */
+    html[data-theme="dark"]:not([data-glass="off"]):not([data-performance="low"]) body main > .top {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 55%),
+        linear-gradient(color-mix(in srgb, var(--accent) 7%, transparent), color-mix(in srgb, var(--accent) 7%, transparent)),
+        color-mix(in srgb, var(--skin-player, #1e1c23) 62%, transparent),
+        rgba(14, 10, 16, .2);
+      border-bottom-color: color-mix(in srgb, var(--skin-border, #ffffff25) 70%, rgba(255, 255, 255, .1));
+      color: #f5f4f7
+    }
+    html[data-theme="dark"] body main > .top .crumb,
+    html[data-theme="dark"] body main > .top .crumb b { color: #f5f4f7 }
+    html[data-theme="dark"] body main > .top .crumb span { color: rgba(245, 244, 247, .62) }
+    html[data-theme="dark"] body main > .top .searchbox,
+    html[data-theme="dark"] body main > .top .settings-trigger {
+      background: rgba(255, 255, 255, .08);
+      border-color: rgba(255, 255, 255, .15);
+      color: #f5f4f7
+    }
+    html[data-theme="dark"] body main > .top .searchbox input::placeholder { color: rgba(245, 244, 247, .6) }
+
+    /* light skins: frosted white with a soft accent tint, dark text */
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body main > .top {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .12) 60%),
+        linear-gradient(color-mix(in srgb, var(--accent) 6%, transparent), color-mix(in srgb, var(--accent) 6%, transparent)),
+        rgba(255, 255, 255, .36);
+      border-bottom-color: color-mix(in srgb, var(--accent) 22%, rgba(255, 255, 255, .6));
+      color: #29242c
+    }
+    html[data-theme="light"] body main > .top .crumb,
+    html[data-theme="light"] body main > .top .crumb b { color: #29242c }
+    html[data-theme="light"] body main > .top .crumb span { color: #6d6571 }
+    html[data-theme="light"] body main > .top .searchbox,
+    html[data-theme="light"] body main > .top .settings-trigger {
+      background: rgba(40, 32, 44, .06);
+      border-color: rgba(40, 32, 44, .14);
+      color: #29242c
+    }
+    html[data-theme="light"] body main > .top .searchbox input,
+    html[data-theme="light"] body main > .top .searchbox input::placeholder { color: #6d6571 }
+  </style>
+  <style id="musiko-custom-theme">
+    /* ===== Custom theme: photo background with adjustable dim + blur, more translucent panels ===== */
+    html[data-theme="dark"][data-skin="custom"] {
+      --skin-app: #0b0d14a8;
+      --skin-aside: #090b129c;
+      --skin-list: #0a0c13a8;
+      --skin-hero: linear-gradient(110deg, #111522b8, #151827a8 55%, #10131eb8)
+    }
+    html[data-theme="dark"][data-skin="custom"] body .backdrop {
+      background:
+        linear-gradient(rgba(7, 9, 16, var(--custom-dim, .6)), rgba(14, 16, 28, var(--custom-dim, .6))),
+        var(--custom-background-image, none) center / cover no-repeat,
+        #0b0d14;
+      filter: blur(var(--custom-blur, 0px));
+      transform: scale(1.08)
+    }
+    html:not([data-skin="custom"]) #customLookSetting { display: none }
+    #customLookSetting .custom-look { display: grid; gap: 12px; width: 100% }
+    #customLookSetting .custom-look h3 { margin: 0 }
+    #customLookSetting .custom-look-row { display: flex; align-items: center; gap: 12px }
+    #customLookSetting .custom-look-row span { width: 34px; font-size: 12px; opacity: .75 }
+    #customLookSetting .custom-look-row input[type="range"] { flex: 1; min-width: 0; accent-color: var(--accent) }
+    #customLookSetting .custom-look-row output { width: 38px; text-align: right; font-size: 12px; font-variant-numeric: tabular-nums; opacity: .75 }
+    #customLookSetting #removeCustomBackground { justify-self: start }
+    #customLookSetting #removeCustomBackground[hidden] { display: none }
+  </style>
+  <script>
+    (() => {
+      const A = window.MusikoAppearance, root = document.documentElement;
+      const dim = document.querySelector('#customDim'), blur = document.querySelector('#customBlur');
+      const dimOut = document.querySelector('#customDimValue'), blurOut = document.querySelector('#customBlurValue');
+      const remove = document.querySelector('#removeCustomBackground'), status = document.querySelector('#customBackgroundStatus');
+      if (!A || !dim || !blur) return;
+      const show = () => {
+        dim.value = A.value.customDim; blur.value = A.value.customBlur;
+        dimOut.textContent = A.value.customDim + '%'; blurOut.textContent = A.value.customBlur + 'px';
+        remove.hidden = !A.value.customBackground
+      };
+      const apply = () => {
+        root.style.setProperty('--custom-dim', A.value.customDim / 100);
+        root.style.setProperty('--custom-blur', A.value.customBlur + 'px');
+        show()
+      };
+      dim.addEventListener('input', () => { A.value.customDim = +dim.value; apply() });
+      blur.addEventListener('input', () => { A.value.customBlur = +blur.value; apply() });
+      dim.addEventListener('change', () => A.save());
+      blur.addEventListener('change', () => A.save());
+      remove.addEventListener('click', () => {
+        A.value.customBackground = '';
+        root.style.setProperty('--custom-background-image', 'none');
+        A.save(); apply();
+        if (status) status.textContent = '';
+        if (typeof toast === 'function') toast('Custom background removed')
+      });
+      /* picking a new image shows the "Remove image" button */
+      new MutationObserver(show).observe(root, { attributes: true, attributeFilter: ['style', 'data-skin'] });
+      show()
+    })();
+  </script>
 </body>
 
 </html>
