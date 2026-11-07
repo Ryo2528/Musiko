@@ -2,6 +2,14 @@
 
 A lightweight, translucent MP3 player for Windows.
 
+## Rust desktop app
+
+A native Rust version is in [`rust/`](rust/). Install Rust, then run `cargo run --release` from that folder. See [`rust/README.md`](rust/README.md) for its current features and build details.
+
+## Android
+
+The Android app uses a Kotlin Android shell and bundles the current `index.html` player. Run `android/build-apk.bat` to build a single APK. See [`android/README.md`](android/README.md) for details.
+
 ## Install on Windows
 
 1. Double-click `Musiko.exe` to open the player in its own Microsoft Edge app window. The EXE includes the player page; if copied without `index.html`, it extracts the page into your local app data folder.
