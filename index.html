@@ -11458,6 +11458,58 @@
       swipeToClose('#fullscreen', null, '#closeFullscreen', false)
     })();
   </script>
+<script id="musiko-playback-recovery">
+    // Mobile playback reliability:
+    //  1) the Web Audio context (used for volume / silence trimming) is often left "suspended" or "interrupted" on phones,
+    //     which makes a playing <audio> silent, so it is resumed on every tap, play and when the app comes back to the front;
+    //  2) if a song is still not loaded a few seconds after it was started, it is reloaded (fresh copy from storage) and retried.
+    (() => {
+      const ctxOf = () => { try { return silenceAudioContext } catch { return null } };
+      const resumeCtx = () => { const c = ctxOf(); if (c && c.state !== 'running' && c.state !== 'closed') { try { c.resume().catch(() => { }) } catch { } } };
+      ['touchend', 'pointerup', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, resumeCtx, { capture: true, passive: true }));
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) resumeCtx() });
+      window.addEventListener('pageshow', resumeCtx); window.addEventListener('focus', resumeCtx);
+      try { audioDecks.forEach(d => d.addEventListener('play', resumeCtx)) } catch { }
+
+      let watchId = 0, timers = [];
+      const clearWatch = () => { timers.forEach(clearTimeout); timers = [] };
+      async function freshSource(t) {
+        const old = t.url;
+        try {
+          const r = await dbRequest('tracks', 'get', t.id);
+          if (r && r.blob) { const f = new File([r.blob], r.fileName || t.fileName, { type: audioMime(r.fileName || t.fileName, r.type || r.blob.type) }); t.file = f; t.url = URL.createObjectURL(f); try { URL.revokeObjectURL(old) } catch { } return true }
+        } catch { }
+        if (t.file) { t.url = URL.createObjectURL(fixAudioFile(t.file)); try { URL.revokeObjectURL(old) } catch { } return true }
+        return false
+      }
+      async function recover(i, id, fresh) {
+        const t = tracks[i]; if (!t || id !== watchId || current !== i) return;
+        resumeCtx();
+        if (fresh && !(await freshSource(t))) return;
+        if (id !== watchId || current !== i) return;
+        try { preloadedTrackIndex = -1 } catch { }
+        audio.src = t.url; audio.load(); applyDeckVolume(audio, 1);
+        const p = audio.play(); if (p && p.catch) p.catch(err => { if (err && err.name === 'NotAllowedError' && id === watchId) toast('Tap play to start the song') })
+      }
+      function watch(i) {
+        clearWatch(); const id = ++watchId; if (!tracks[i]) return;
+        // not loaded yet (or errored) after 3s -> reload from storage; after 7s -> plain reload; after 12s -> give up with a message
+        const notLoaded = () => id === watchId && current === i && (audio.error || audio.readyState < 2) && !audio.ended;
+        timers.push(setTimeout(() => { if (notLoaded()) recover(i, id, true) }, 3000));
+        timers.push(setTimeout(() => { if (notLoaded()) recover(i, id, false) }, 7000));
+        timers.push(setTimeout(() => { if (notLoaded()) toast('This song is taking too long to load. Try tapping it again.') }, 12000))
+      }
+      const origPlayTrack = window.playTrack;
+      window.playTrack = function (i) { resumeCtx(); const out = origPlayTrack.apply(this, arguments); watch(i); return out };
+      // a decode/load error on the active deck: if the built-in single retry did not fix it, retry with a fresh copy
+      try {
+        audioDecks.forEach(deck => deck.addEventListener('error', () => {
+          const i = current, id = watchId; if (deck !== audio || i < 0 || !tracks[i]) return;
+          setTimeout(() => { if (id === watchId && current === i && audio.error) recover(i, id, true) }, 700)
+        }))
+      } catch { }
+    })();
+  </script>
 </body>
 
 </html>
