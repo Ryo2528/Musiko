@@ -8404,31 +8404,25 @@
     }
   </style>
   <style id="musiko-hero-lyrics">
-    /* Now Playing hero: lyrics on the right, no cover; the separate lyric card is gone */
-    html body .home-lyric { display: none !important }
-    html body .hero.is-playing .hero-art, html body .hero.is-continue .hero-art { display: none }
+    /* Desktop only: lyrics inside the Now Playing hero, no cover, no separate lyric card. Phones keep the original layout. */
     .hero-lyrics { display: none }
-    html body .hero.has-lyrics.is-playing .hero-lyrics, html body .hero.has-lyrics.is-continue .hero-lyrics {
-      display: flex; flex-direction: column; justify-content: center; gap: 10px;
-      position: absolute; z-index: 2; right: clamp(24px, 4vw, 52px); top: 22px; bottom: 26px; width: min(46%, 640px);
-      padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
-      -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent)
-    }
-    html body .hero.has-lyrics.is-playing .hero-copy, html body .hero.has-lyrics.is-continue .hero-copy { width: min(44%, 460px); max-width: 44%; right: auto }
-    .hero-lyrics span { display: block; overflow: hidden; overflow-wrap: anywhere }
-    .hl-prev, .hl-next { font-size: 16px; line-height: 1.35; color: var(--white); opacity: .4; white-space: nowrap; text-overflow: ellipsis }
-    .hl-prev:empty, .hl-next:empty { visibility: hidden; height: 1.35em }
-    .hl-now { font-size: clamp(24px, 2.8vw, 36px); font-weight: 700; line-height: 1.2; letter-spacing: -.02em; color: var(--white); display: -webkit-box !important; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3 }
-    .hl-now.swap { animation: lyricIn .28s var(--ease) }
-    .hl-now.is-note { font-size: 28px; opacity: .5 }
-    html[data-theme="light"] .hl-prev, html[data-theme="light"] .hl-next, html[data-theme="light"] .hl-now { color: #262128 }
-    @media (max-width: 760px) {
-      html body .hero.has-lyrics.is-playing .hero-copy, html body .hero.has-lyrics.is-continue .hero-copy { width: 100%; max-width: none }
+    @media (min-width: 761px) {
+      html body .home-lyric { display: none !important }
+      html body .hero.is-playing .hero-art, html body .hero.is-continue .hero-art { display: none }
       html body .hero.has-lyrics.is-playing .hero-lyrics, html body .hero.has-lyrics.is-continue .hero-lyrics {
-        position: relative; right: auto; top: auto; bottom: auto; width: 100%; margin-top: 14px; gap: 6px; -webkit-mask-image: none; mask-image: none
+        display: flex; flex-direction: column; justify-content: center; gap: 10px;
+        position: absolute; z-index: 2; right: clamp(24px, 4vw, 52px); top: 22px; bottom: 26px; width: min(46%, 640px);
+        padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+        -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent)
       }
-      .hl-prev { display: none !important }
-      .hl-now { font-size: clamp(20px, 5.4vw, 26px); -webkit-line-clamp: 3 }
+      html body .hero.has-lyrics.is-playing .hero-copy, html body .hero.has-lyrics.is-continue .hero-copy { width: min(44%, 460px); max-width: 44%; right: auto }
+      .hero-lyrics span { display: block; overflow: hidden; overflow-wrap: anywhere }
+      .hl-prev, .hl-next { font-size: 16px; line-height: 1.35; color: var(--white); opacity: .4; white-space: nowrap; text-overflow: ellipsis }
+      .hl-prev:empty, .hl-next:empty { visibility: hidden; height: 1.35em }
+      .hl-now { font-size: clamp(24px, 2.8vw, 36px); font-weight: 700; line-height: 1.2; letter-spacing: -.02em; color: var(--white); display: -webkit-box !important; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3 }
+      .hl-now.swap { animation: lyricIn .28s var(--ease) }
+      .hl-now.is-note { font-size: 28px; opacity: .5 }
+      html[data-theme="light"] .hl-prev, html[data-theme="light"] .hl-next, html[data-theme="light"] .hl-now { color: #262128 }
     }
   </style>
 </head>
@@ -11106,13 +11100,13 @@
       let pickId = null, nonce = 0, sig = '';
       const ago = ms => { const d = Math.floor((Date.now() - ms) / 86400000); return d < 1 ? 'Played earlier today' : d === 1 ? 'Last played yesterday' : d < 14 ? `Last played ${d} days ago` : d < 60 ? `Last played ${Math.round(d / 7)} weeks ago` : `Last played ${Math.round(d / 30)} months ago` };
       function pick() {
-        const pool = tracks.map((t, i) => ({ t, i, last: (listeningStats.tracks[t.id] || {}).lastPlayed || 0 })).sort((a, b) => a.last - b.last).slice(0, 8).filter(x => x.t.id !== pickId);
+        const pool = tracks.map((t, i) => ({ t, i, last: (listeningStats.tracks[t.id] || {}).lastPlayed || 0 })).sort((a, b) => a.last - b.last).slice(0, 8).filter(x => x.t.id !== pickId && !(tracks.length > 1 && current >= 0 && tracks[current] && x.t.id === tracks[current].id));
         const choice = pool[Math.floor(Math.random() * pool.length)]; pickId = choice ? choice.t.id : null
       }
       function render() {
-        const show = activeView === 'Home' && tracks.length > 0 && lyric.hidden;
+        const show = activeView === 'Home' && tracks.length > 0;
         sec.hidden = !show; if (!show) return;
-        if (!pickId || !tracks.some(t => t.id === pickId)) pick();
+        if (!pickId || !tracks.some(t => t.id === pickId) || (tracks.length > 1 && current >= 0 && tracks[current] && tracks[current].id === pickId)) pick();
         const i = tracks.findIndex(t => t.id === pickId); if (i < 0) { sec.hidden = true; return }
         const t = tracks[i], st = listeningStats.tracks[t.id], key = [t.id, t.name, t.artist, t.album, t.art ? 1 : 0, st && st.lastPlayed].join('|');
         if (key === sig) return; sig = key;
