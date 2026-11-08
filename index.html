@@ -9277,6 +9277,7 @@
       let mode = null, artist = null, backTo = null;
       const BACK_VIEWS = ['All tracks', 'Albums', 'Recently added', 'Favorites'];
       window.musikoLibraryAtRoot = () => mode === 'root';
+      window.musikoOpenArtist = name => enter('artist', name);
       const LIB_MODES = ['root', 'playlists', 'artists'];
       const chev = '<svg class="lib-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
       const icons = {
@@ -11278,7 +11279,7 @@
       const lib = el.closest('.lib-card[data-key]');
       if (lib) { const g = getAlbumGroups().find(x => x.key === lib.dataset.key); if (g) return { kind: 'album', g, el: lib } }
       const art = el.closest('.recent-card[data-n]');
-      if (art) { const nm = (art.querySelector('.recent-track') || {}).textContent; if (nm) return { kind: 'artist', name: nm, el: art } }
+      if (art) { const nm = (art.querySelector('.recent-track') || {}).textContent; if (nm) return { kind: 'artist', name: nm, el: art, open: () => window.musikoOpenArtist && window.musikoOpenArtist(nm) } }
       const ar = el.closest('.lib-row[data-artist]');
       if (ar) return { kind: 'artist', name: ar.dataset.artist, el: ar, open: () => ar.click() };
       const qi = el.closest('.queue-item');
@@ -11292,7 +11293,7 @@
       const idx = tracks.map((t, i) => i).filter(i => ((tracks[i].artist || '').trim() || 'Unknown Artist') === info.name);
       const base = albumItems({ indices: idx, album: info.name, key: null });
       base.splice(-2); base[0][0] = 'Play all'; base[1][0] = 'Shuffle';
-      if (info.open) base.push('-', ['Open artist', info.open]);
+      if (info.open) base.push('-', ['Go to artist', info.open]);
       return base;
     }
 
@@ -11397,55 +11398,63 @@
   })();
   </script>
 <script>
-    // Swipe down to close: Lyrics preview, Up Next, Settings and the full screen player (drag from the header/artwork, or from scrollable content when it is at the top)
+    // Swipe to close: Lyrics preview, Up Next and the full screen player close with a swipe down;
+    // Settings closes with a swipe left-to-right (anywhere, or from its left edge)
     (() => {
-      function swipeToClose(panelSel, cardSel, closeSel, fadeSel) {
+      function swipeToClose(panelSel, cardSel, closeSel, fadeSel, dir = 'down') {
         const panel = document.querySelector(panelSel), card = panel && (cardSel ? panel.querySelector(cardSel) : panel), closeBtn = document.querySelector(closeSel), fade = fadeSel === false ? null : fadeSel ? document.querySelector(fadeSel) : panel;
-        if (!panel || !card || !closeBtn || fade === undefined || (fadeSel && !fade)) return;
+        if (!panel || !card || !closeBtn || (fadeSel && !fade)) return;
+        const horiz = dir === 'right', EDGE = 28;
         const parts = () => fade && fade !== card ? [card, fade] : [card];
-        let tracking = false, dragging = false, sx = 0, sy = 0, dy = 0, t0 = 0, timer = 0;
+        const size = () => horiz ? card.offsetWidth : card.offsetHeight;
+        const move = d => card.style.transform = horiz ? `translateX(${d}px)` : `translateY(${d}px)`;
+        let tracking = false, dragging = false, sx = 0, sy = 0, d = 0, t0 = 0, timer = 0;
         // keepAnim: while the panel stays open, leave the entrance animation switched off so it does not replay
         const reset = keepAnim => { clearTimeout(timer); for (const el of parts()) { el.style.transition = ''; if (!keepAnim) el.style.animation = '' } card.style.transform = ''; if (fade) fade.style.opacity = '' };
         new MutationObserver(() => { if (!panel.classList.contains('open')) reset() }).observe(panel, { attributes: true, attributeFilter: ['class'] });
-        const scrolledDown = target => {
+        // true when the touch started inside something that should scroll first (vertical: scrolled down; horizontal: scrolled right)
+        const scrolledAway = target => {
           for (let el = target; el && el !== card; el = el.parentElement) {
-            if (el.scrollHeight > el.clientHeight + 1 && /(auto|scroll)/.test(getComputedStyle(el).overflowY) && el.scrollTop > 0) return true
+            const cs = getComputedStyle(el);
+            if (horiz ? (el.scrollWidth > el.clientWidth + 1 && /(auto|scroll)/.test(cs.overflowX) && el.scrollLeft > 0) : (el.scrollHeight > el.clientHeight + 1 && /(auto|scroll)/.test(cs.overflowY) && el.scrollTop > 0)) return true
           }
           return false
         };
         card.addEventListener('touchstart', e => {
-          if (e.touches.length !== 1 || e.target.closest('.lyrics-close, .full-close, .bar, input, select, textarea') || scrolledDown(e.target)) return;
-          reset(true); tracking = true; dragging = false; sx = e.touches[0].clientX; sy = e.touches[0].clientY; dy = 0; t0 = Date.now()
+          if (e.touches.length !== 1) return;
+          const t = e.touches[0], atEdge = horiz && t.clientX - card.getBoundingClientRect().left <= EDGE;
+          if (!atEdge && e.target.closest('.lyrics-close, .full-close, .bar, input, select, textarea')) return;
+          if (scrolledAway(e.target)) return;
+          reset(true); tracking = true; dragging = false; sx = t.clientX; sy = t.clientY; d = 0; t0 = Date.now()
         }, { passive: true });
         card.addEventListener('touchmove', e => {
           if (!tracking) return;
-          const x = e.touches[0].clientX - sx, y = e.touches[0].clientY - sy;
+          const x = e.touches[0].clientX - sx, y = e.touches[0].clientY - sy, main = horiz ? x : y, cross = horiz ? y : x;
           if (!dragging) {
-            if (y > 8 && y > Math.abs(x)) { dragging = true; for (const el of parts()) { el.style.animation = 'none'; el.style.transition = 'none' } }
-            else if (y < -8 || Math.abs(x) > 12) { tracking = false; return }
+            if (main > 8 && main > Math.abs(cross)) { dragging = true; for (const el of parts()) { el.style.animation = 'none'; el.style.transition = 'none' } }
+            else if (main < -8 || Math.abs(cross) > 12) { tracking = false; return }
             else return
           }
           if (e.cancelable) e.preventDefault();
-          dy = Math.max(0, y);
-          card.style.transform = `translateY(${dy}px)`;
-          if (fade) fade.style.opacity = String(Math.max(.25, 1 - dy / (card.offsetHeight * 1.1)))
+          d = Math.max(0, main); move(d);
+          if (fade) fade.style.opacity = String(Math.max(.25, 1 - d / (size() * 1.1)))
         }, { passive: false });
         const finish = () => {
           if (!tracking) return; tracking = false;
           if (!dragging) return; dragging = false;
-          const speed = dy / Math.max(1, Date.now() - t0), far = dy > Math.min(120, card.offsetHeight * .25);
+          const speed = d / Math.max(1, Date.now() - t0), far = d > Math.min(horiz ? 90 : 120, size() * .25);
           card.style.transition = 'transform .22s cubic-bezier(.2,.7,.2,1)'; if (fade) fade.style.transition = fade === card ? 'transform .22s cubic-bezier(.2,.7,.2,1), opacity .22s ease' : 'opacity .22s ease';
           if (far || speed > .6) {
-            card.style.transform = `translateY(${card.offsetHeight + 40}px)`; if (fade) fade.style.opacity = '0';
+            move(horiz ? Math.max(size(), innerWidth) + 40 : size() + 40); if (fade) fade.style.opacity = '0';
             timer = setTimeout(() => { closeBtn.click(); reset() }, 200)
-          } else { card.style.transform = 'translateY(0)'; if (fade) fade.style.opacity = '1'; timer = setTimeout(() => reset(true), 240) }
+          } else { move(0); if (fade) fade.style.opacity = '1'; timer = setTimeout(() => reset(true), 240) }
         };
         card.addEventListener('touchend', finish);
         card.addEventListener('touchcancel', finish)
       }
       swipeToClose('#lyricsPanel', '.lyrics-card', '#closeLyrics');
       swipeToClose('#queuePanel', '.queue-drawer', '#closeQueue', '#queueBackdrop');
-      swipeToClose('#settingsPanel', '.settings-card', '#closeSettings');
+      swipeToClose('#settingsPanel', '.settings-card', '#closeSettings', undefined, 'right');
       swipeToClose('#fullscreen', null, '#closeFullscreen', false)
     })();
   </script>
