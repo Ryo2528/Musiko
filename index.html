@@ -8404,26 +8404,43 @@
     }
   </style>
   <style id="musiko-hero-lyrics">
-    /* Desktop only: lyrics inside the Now Playing hero, no cover, no separate lyric card. Phones keep the original layout. */
+    /* Now Playing hero: lyrics on the right, no cover; the separate lyric card is gone */
+    html body .home-lyric { display: none !important }
+    html body .hero.is-playing .hero-art, html body .hero.is-continue .hero-art { display: none }
     .hero-lyrics { display: none }
-    @media (min-width: 761px) {
-      html body .home-lyric { display: none !important }
-      html body .hero.is-playing .hero-art, html body .hero.is-continue .hero-art { display: none }
-      html body .hero.has-lyrics.is-playing .hero-lyrics, html body .hero.has-lyrics.is-continue .hero-lyrics {
-        display: flex; flex-direction: column; justify-content: center; gap: 10px;
-        position: absolute; z-index: 2; right: clamp(24px, 4vw, 52px); top: 22px; bottom: 26px; width: min(46%, 640px);
-        padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
-        -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent)
-      }
-      html body .hero.has-lyrics.is-playing .hero-copy, html body .hero.has-lyrics.is-continue .hero-copy { width: min(44%, 460px); max-width: 44%; right: auto }
-      .hero-lyrics span { display: block; overflow: hidden; overflow-wrap: anywhere }
-      .hl-prev, .hl-next { font-size: 16px; line-height: 1.35; color: var(--white); opacity: .4; white-space: nowrap; text-overflow: ellipsis }
-      .hl-prev:empty, .hl-next:empty { visibility: hidden; height: 1.35em }
-      .hl-now { font-size: clamp(24px, 2.8vw, 36px); font-weight: 700; line-height: 1.2; letter-spacing: -.02em; color: var(--white); display: -webkit-box !important; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3 }
-      .hl-now.swap { animation: lyricIn .28s var(--ease) }
-      .hl-now.is-note { font-size: 28px; opacity: .5 }
-      html[data-theme="light"] .hl-prev, html[data-theme="light"] .hl-next, html[data-theme="light"] .hl-now { color: #262128 }
+    html body .hero.has-lyrics.is-playing .hero-lyrics, html body .hero.has-lyrics.is-continue .hero-lyrics {
+      display: flex; flex-direction: column; justify-content: center; gap: 10px;
+      position: absolute; z-index: 2; right: clamp(24px, 4vw, 52px); top: 22px; bottom: 26px; width: min(46%, 640px);
+      padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+      -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent)
     }
+    html body .hero.has-lyrics.is-playing .hero-copy, html body .hero.has-lyrics.is-continue .hero-copy { width: min(44%, 460px); max-width: 44%; right: auto }
+    .hero-lyrics span { display: block; overflow: hidden; overflow-wrap: anywhere }
+    .hl-prev, .hl-next { font-size: 16px; line-height: 1.35; color: var(--white); opacity: .4; white-space: nowrap; text-overflow: ellipsis }
+    .hl-prev:empty, .hl-next:empty { visibility: hidden; height: 1.35em }
+    .hl-now { font-size: clamp(24px, 2.8vw, 36px); font-weight: 700; line-height: 1.2; letter-spacing: -.02em; color: var(--white); display: -webkit-box !important; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3 }
+    .hl-now.swap { animation: lyricIn .28s var(--ease) }
+    .hl-now.is-note { font-size: 28px; opacity: .5 }
+    html[data-theme="light"] .hl-prev, html[data-theme="light"] .hl-next, html[data-theme="light"] .hl-now { color: #262128 }
+    @media (max-width: 760px) {
+      html body .hero.has-lyrics.is-playing .hero-copy, html body .hero.has-lyrics.is-continue .hero-copy { width: 100%; max-width: none }
+      html body .hero.has-lyrics.is-playing .hero-lyrics, html body .hero.has-lyrics.is-continue .hero-lyrics {
+        position: relative; right: auto; top: auto; bottom: auto; width: 100%; margin-top: 14px; gap: 6px; -webkit-mask-image: none; mask-image: none
+      }
+      .hl-prev { display: none !important }
+      .hl-now { font-size: clamp(20px, 5.4vw, 26px); -webkit-line-clamp: 3 }
+    }
+  </style>
+  <style id="lyrics-header-fix">
+    /* long song titles: truncate with an ellipsis instead of pushing the close button out of the card */
+    html body .lyrics-panel .lyrics-header { gap: 14px }
+    html body .lyrics-panel .lyrics-header > div { flex: 1 1 0; min-width: 0 }
+    html body .lyrics-panel .lyrics-song { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+    html body .lyrics-panel .lyrics-close { flex: none }
+    html body .lyrics-panel .lyrics-header { touch-action: none }
+    html body .lyrics-panel .lyrics-body { overscroll-behavior: contain }
+    html body .queue-header, html body .queue-now, html body .settings-header { touch-action: none }
+    html body .queue-list, html body .settings-content, html body .settings-card, html body .fullscreen { overscroll-behavior: contain }
   </style>
 </head>
 
@@ -9094,8 +9111,20 @@
       const sig = tilesHtml + rowsHtml + ranked.map(x => x.t.art ? 1 : 0).join('');
       if (section._sig === sig) return; section._sig = sig;
       const list = document.querySelector('#topSongsList');
-      document.querySelector('#statTiles').innerHTML = tilesHtml; list.innerHTML = rowsHtml;
-      list.querySelectorAll('.stats-cover').forEach((cover, i) => setCover(cover, ranked[i]?.t));
+      if (section._tiles !== tilesHtml) { section._tiles = tilesHtml; document.querySelector('#statTiles').innerHTML = tilesHtml }
+      const struct = ranked.map(x => [x.t.id, x.t.name, x.t.artist, x.t.art ? x.t.art.length : 0].join(':')).join('|') || 'empty';
+      if (list._struct === struct) {
+        list.querySelectorAll('.top-song-row').forEach((row, n) => {
+          const r = ranked[n]; if (!r) return; row.dataset.i = r.i;
+          const pl = row.querySelector('.top-song-plays strong'), du = row.querySelector('.top-song-plays small'), me = row.querySelector('.top-song-meter i');
+          const pt = `${r.stats.plays} ${r.stats.plays === 1 ? 'play' : 'plays'}`; if (pl && pl.textContent !== pt) pl.textContent = pt;
+          const dt = dur(r.stats.seconds); if (du && du.textContent !== dt) du.textContent = dt;
+          if (me) me.style.width = Math.max(4, Math.round(r.stats.plays / max * 100)) + '%'
+        })
+      } else {
+        list._struct = struct; list.innerHTML = rowsHtml;
+        list.querySelectorAll('.stats-cover').forEach((cover, i) => setCover(cover, ranked[i]?.t))
+      }
       if (!list._bound) { list._bound = true; list.addEventListener('click', e => { const row = e.target.closest('[data-i]'); if (row) playTrack(+row.dataset.i) }) }
     }
     function recordPlayStart(track) { if (!track) return; const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.plays++; item.lastPlayed = Date.now(); lastListenTrackId = track.id; lastListenPosition = 0; saveListeningStats(true); renderListeningStats() }
@@ -9603,10 +9632,15 @@
         tracks.forEach((t, i) => { const name = (t.artist || '').trim(), s = listeningStats.tracks[t.id]; if (!name || !s || !s.plays) return; const g = map.get(name) || { name, plays: 0, seconds: 0, art: '', best: i, bestPlays: -1 }; g.plays += s.plays; g.seconds += s.seconds || 0; if (t.art && s.plays > (g.artPlays || 0)) { g.art = t.art; g.artPlays = s.plays } if (s.plays > g.bestPlays) { g.bestPlays = s.plays; g.best = i } map.set(name, g) });
         const list = [...map.values()].sort((a, b) => b.plays - a.plays || b.seconds - a.seconds).slice(0, 5);
         const show = activeView === 'Home' && list.length > 0; artists.hidden = !show; if (!show) return;
-        const sig = JSON.stringify(list.map(g => [g.name, g.plays, g.best, g.art ? 1 : 0]));
-        if (artists.dataset.sig === sig) return; artists.dataset.sig = sig;
+        const struct = JSON.stringify(list.map(g => [g.name, g.art ? g.art.length : 0]));
+        artists._list = list;
+        if (artists.dataset.struct === struct) {
+          artists.querySelectorAll('.recent-card').forEach(el => { const g = list[+el.dataset.n], pl = el.querySelector('.recent-artist'), txt = `${g.plays} ${g.plays === 1 ? 'play' : 'plays'}`; if (pl && pl.textContent !== txt) pl.textContent = txt });
+          return
+        }
+        artists.dataset.struct = struct;
         artists.innerHTML = `<div class="section-head"><div><h2>Most played artists</h2></div></div><div class="recent-grid">${list.map((g, n) => `<div class="recent-card" role="button" tabindex="0" data-n="${n}"><div class="recent-art artist-avatar">${g.art ? `<img src="${g.art}" alt="" draggable="false" loading="lazy">` : '<span class="artist-initial">' + escapeHtml((g.name[0] || '♫').toUpperCase()) + '</span>'}</div><div class="recent-track">${escapeHtml(g.name)}</div><div class="recent-artist">${g.plays} ${g.plays === 1 ? 'play' : 'plays'}</div></div>`).join('')}</div>`;
-        artists.querySelectorAll('.recent-card').forEach(el => { const g = list[+el.dataset.n]; const av = el.querySelector('.recent-art'); av.classList.remove('has-art'); av.style.backgroundImage = ''; const go = () => { playTrack(g.best); setTimeout(refresh, 200) }; el.onclick = go; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } } });
+        artists.querySelectorAll('.recent-card').forEach(el => { const av = el.querySelector('.recent-art'); av.classList.remove('has-art'); av.style.backgroundImage = ''; const go = () => { const g = artists._list[+el.dataset.n]; if (g) playTrack(g.best); setTimeout(refresh, 200) }; el.onclick = go; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } } });
       }
 
       let raf = 0;
@@ -11052,8 +11086,6 @@
     @media (min-width: 1500px) {
       html body main:has(> .hero:not([hidden])) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px; align-content: start }
       html body main:has(> .hero:not([hidden])) > * { grid-column: 1 / -1 }
-      html body main:has(> .hero:not([hidden])) > :is(.home-lyric, .home-discover):not([hidden]):has(~ .home-artists:not([hidden])) { grid-column: 1 }
-      html body main:has(> .hero:not([hidden])) > :is(.home-lyric, .home-discover):not([hidden]) ~ .home-artists:not([hidden]) { grid-column: 2; align-self: start }
     }
 
     @media (max-width: 760px) {
@@ -11061,66 +11093,6 @@
       html body .hero { margin-bottom: 20px }
     }
   </style>
-  <style id="musiko-discover">
-    .home-discover[hidden] { display: none !important }
-    .home-discover { margin: 0 0 36px }
-    .discover-card {
-      position: relative; display: block; padding: 18px 22px 20px; overflow: hidden;
-      border: 1px solid var(--hair); border-radius: var(--r-lg);
-      background: linear-gradient(135deg, color-mix(in srgb, var(--ambient-a) 20%, transparent), var(--fill-1) 62%)
-    }
-    .discover-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px }
-    .discover-kicker { display: inline-flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--muted) }
-    .discover-kicker svg { width: 15px; height: 15px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
-    .discover-another { border: 0; background: none; padding: 4px 6px; margin: -4px -6px; border-radius: 8px; color: var(--accent); font: 600 13px 'DM Sans', system-ui, sans-serif; cursor: pointer }
-    .discover-another:hover { background: color-mix(in srgb, var(--accent) 12%, transparent) }
-    .discover-body { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 18px; align-items: center }
-    .discover-art { width: 96px; height: 96px; display: grid; place-items: center; border-radius: 12px; background: linear-gradient(145deg, #cf6876, #58465f) center / cover no-repeat; color: #fff9; font-size: 30px; box-shadow: 0 10px 26px rgba(0, 0, 0, .3); outline: 1px solid var(--hair); outline-offset: -1px }
-    .discover-copy { min-width: 0 }
-    .discover-title { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: clamp(20px, 2.6vw, 26px); font-weight: 650; letter-spacing: -.02em; line-height: 1.2 }
-    .discover-sub { display: block; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--muted) }
-    .discover-reason { display: block; margin-top: 10px; font-size: 13px; color: var(--muted); opacity: .85 }
-    .discover-actions { display: flex; align-items: center; gap: 10px; margin-top: 14px }
-    @media (max-width: 760px) {
-      .home-discover { margin-bottom: 28px }
-      .discover-card { padding: 16px 16px 18px }
-      .discover-body { grid-template-columns: 76px minmax(0, 1fr); gap: 14px }
-      .discover-art { width: 76px; height: 76px }
-    }
-  </style>
-  <script>
-    // Home: when no lyric highlight is showing, suggest a song to rediscover
-    (() => {
-      const $ = q => document.querySelector(q), lyric = $('#lyricSection'); if (!lyric) return;
-      const sec = document.createElement('section');
-      sec.className = 'recent-section home-discover'; sec.id = 'discoverSection'; sec.hidden = true; sec.setAttribute('aria-label', 'Rediscover a song');
-      sec.innerHTML = '<div class="discover-card"><div class="discover-head"><span class="discover-kicker"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 17v4M17 19h4"/></svg>REDISCOVER</span><button type="button" class="discover-another">Another ↻</button></div><div class="discover-body"><div class="discover-art">♫</div><div class="discover-copy"><span class="discover-title"></span><span class="discover-sub"></span><span class="discover-reason"></span><div class="discover-actions"><button type="button" class="glass-btn add-btn discover-play">▶&nbsp; Play</button><button type="button" class="glass-btn discover-queue">＋ Up Next</button></div></div></div></div>';
-      lyric.after(sec);
-      const art = sec.querySelector('.discover-art'), title = sec.querySelector('.discover-title'), sub = sec.querySelector('.discover-sub'), reason = sec.querySelector('.discover-reason');
-      let pickId = null, nonce = 0, sig = '';
-      const ago = ms => { const d = Math.floor((Date.now() - ms) / 86400000); return d < 1 ? 'Played earlier today' : d === 1 ? 'Last played yesterday' : d < 14 ? `Last played ${d} days ago` : d < 60 ? `Last played ${Math.round(d / 7)} weeks ago` : `Last played ${Math.round(d / 30)} months ago` };
-      function pick() {
-        const pool = tracks.map((t, i) => ({ t, i, last: (listeningStats.tracks[t.id] || {}).lastPlayed || 0 })).sort((a, b) => a.last - b.last).slice(0, 8).filter(x => x.t.id !== pickId && !(tracks.length > 1 && current >= 0 && tracks[current] && x.t.id === tracks[current].id));
-        const choice = pool[Math.floor(Math.random() * pool.length)]; pickId = choice ? choice.t.id : null
-      }
-      function render() {
-        const show = activeView === 'Home' && tracks.length > 0;
-        sec.hidden = !show; if (!show) return;
-        if (!pickId || !tracks.some(t => t.id === pickId) || (tracks.length > 1 && current >= 0 && tracks[current] && tracks[current].id === pickId)) pick();
-        const i = tracks.findIndex(t => t.id === pickId); if (i < 0) { sec.hidden = true; return }
-        const t = tracks[i], st = listeningStats.tracks[t.id], key = [t.id, t.name, t.artist, t.album, t.art ? 1 : 0, st && st.lastPlayed].join('|');
-        if (key === sig) return; sig = key;
-        setCover(art, t); title.textContent = t.name; sub.textContent = `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}`;
-        reason.textContent = st && st.lastPlayed ? ago(st.lastPlayed) : 'You haven\u2019t played this one yet'
-      }
-      sec.querySelector('.discover-play').onclick = () => { const i = tracks.findIndex(t => t.id === pickId); if (i >= 0) playTrack(i) };
-      sec.querySelector('.discover-queue').onclick = () => { const i = tracks.findIndex(t => t.id === pickId); if (i >= 0) enqueueTrack(i) };
-      sec.querySelector('.discover-another').onclick = () => { pick(); sig = ''; render() };
-      const origRender = window.render;
-      window.render = function () { const out = origRender.apply(this, arguments); requestAnimationFrame(render); return out };
-      setInterval(render, 800); render();
-    })();
-  </script>
   <style id="musiko-lyric-card-polish">
     /* ===== Home lyric card: stable height, cover + title footer, quieter intro state ===== */
     html body .lyric-card { padding: 20px 26px 18px; border-radius: 24px; cursor: pointer }
@@ -11423,6 +11395,59 @@
       else if (e.key === 'ArrowUp') { e.preventDefault(); items[(at - 1 + items.length) % items.length].focus() }
     }, true);
   })();
+  </script>
+<script>
+    // Swipe down to close: Lyrics preview, Up Next, Settings and the full screen player (drag from the header/artwork, or from scrollable content when it is at the top)
+    (() => {
+      function swipeToClose(panelSel, cardSel, closeSel, fadeSel) {
+        const panel = document.querySelector(panelSel), card = panel && (cardSel ? panel.querySelector(cardSel) : panel), closeBtn = document.querySelector(closeSel), fade = fadeSel === false ? null : fadeSel ? document.querySelector(fadeSel) : panel;
+        if (!panel || !card || !closeBtn || fade === undefined || (fadeSel && !fade)) return;
+        const parts = () => fade && fade !== card ? [card, fade] : [card];
+        let tracking = false, dragging = false, sx = 0, sy = 0, dy = 0, t0 = 0, timer = 0;
+        // keepAnim: while the panel stays open, leave the entrance animation switched off so it does not replay
+        const reset = keepAnim => { clearTimeout(timer); for (const el of parts()) { el.style.transition = ''; if (!keepAnim) el.style.animation = '' } card.style.transform = ''; if (fade) fade.style.opacity = '' };
+        new MutationObserver(() => { if (!panel.classList.contains('open')) reset() }).observe(panel, { attributes: true, attributeFilter: ['class'] });
+        const scrolledDown = target => {
+          for (let el = target; el && el !== card; el = el.parentElement) {
+            if (el.scrollHeight > el.clientHeight + 1 && /(auto|scroll)/.test(getComputedStyle(el).overflowY) && el.scrollTop > 0) return true
+          }
+          return false
+        };
+        card.addEventListener('touchstart', e => {
+          if (e.touches.length !== 1 || e.target.closest('.lyrics-close, .full-close, .bar, input, select, textarea') || scrolledDown(e.target)) return;
+          reset(true); tracking = true; dragging = false; sx = e.touches[0].clientX; sy = e.touches[0].clientY; dy = 0; t0 = Date.now()
+        }, { passive: true });
+        card.addEventListener('touchmove', e => {
+          if (!tracking) return;
+          const x = e.touches[0].clientX - sx, y = e.touches[0].clientY - sy;
+          if (!dragging) {
+            if (y > 8 && y > Math.abs(x)) { dragging = true; for (const el of parts()) { el.style.animation = 'none'; el.style.transition = 'none' } }
+            else if (y < -8 || Math.abs(x) > 12) { tracking = false; return }
+            else return
+          }
+          if (e.cancelable) e.preventDefault();
+          dy = Math.max(0, y);
+          card.style.transform = `translateY(${dy}px)`;
+          if (fade) fade.style.opacity = String(Math.max(.25, 1 - dy / (card.offsetHeight * 1.1)))
+        }, { passive: false });
+        const finish = () => {
+          if (!tracking) return; tracking = false;
+          if (!dragging) return; dragging = false;
+          const speed = dy / Math.max(1, Date.now() - t0), far = dy > Math.min(120, card.offsetHeight * .25);
+          card.style.transition = 'transform .22s cubic-bezier(.2,.7,.2,1)'; if (fade) fade.style.transition = fade === card ? 'transform .22s cubic-bezier(.2,.7,.2,1), opacity .22s ease' : 'opacity .22s ease';
+          if (far || speed > .6) {
+            card.style.transform = `translateY(${card.offsetHeight + 40}px)`; if (fade) fade.style.opacity = '0';
+            timer = setTimeout(() => { closeBtn.click(); reset() }, 200)
+          } else { card.style.transform = 'translateY(0)'; if (fade) fade.style.opacity = '1'; timer = setTimeout(() => reset(true), 240) }
+        };
+        card.addEventListener('touchend', finish);
+        card.addEventListener('touchcancel', finish)
+      }
+      swipeToClose('#lyricsPanel', '.lyrics-card', '#closeLyrics');
+      swipeToClose('#queuePanel', '.queue-drawer', '#closeQueue', '#queueBackdrop');
+      swipeToClose('#settingsPanel', '.settings-card', '#closeSettings');
+      swipeToClose('#fullscreen', null, '#closeFullscreen', false)
+    })();
   </script>
 </body>
 
