@@ -4582,7 +4582,7 @@
       }
     }
   </style>
-  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .32 ? '#101114' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 4, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, customBackground: '', customDim: 60, customBlur: 0 }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent)) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground; if (Number.isFinite(saved.customDim)) value.customDim = Math.min(90, Math.max(0, saved.customDim)); if (Number.isFinite(saved.customBlur)) value.customBlur = Math.min(24, Math.max(0, saved.customBlur)) } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); root.style.setProperty('--custom-dim', value.customDim / 100); root.style.setProperty('--custom-blur', value.customBlur + 'px'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
+  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .32 ? '#101114' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff', '#f5f5f5', '#4f7cff', '#6fd3a4', '#ff8a3d', '#f2c230', '#2ec4c4', '#e86ae0'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 4, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, customBackground: '', customDim: 60, customBlur: 0 }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent)) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground; if (Number.isFinite(saved.customDim)) value.customDim = Math.min(90, Math.max(0, saved.customDim)); if (Number.isFinite(saved.customBlur)) value.customBlur = Math.min(24, Math.max(0, saved.customBlur)) } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); root.style.setProperty('--custom-dim', value.customDim / 100); root.style.setProperty('--custom-blur', value.customBlur + 'px'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
   <style>
     .queue-panel {
       position: fixed;
@@ -6619,7 +6619,7 @@
     html body aside .nav button.active {
       background: var(--tint);
       color: var(--accent);
-      box-shadow: inset 3px 0 0 var(--accent)
+      box-shadow: none
     }
 
     html body aside .nav button.active svg {
@@ -6765,7 +6765,7 @@
       display: none
     }
 
-    html.lib-empty body main:has(.hero:not([hidden])) .home-empty {
+    html.library-empty body main:has(.hero:not([hidden])) .home-empty {
       display: flex
     }
 
@@ -8403,6 +8403,34 @@
       html body .top-song-rank { width: 16px; font-size: 12px }
     }
   </style>
+  <style id="musiko-hero-lyrics">
+    /* Now Playing hero: lyrics on the right, no cover; the separate lyric card is gone */
+    html body .home-lyric { display: none !important }
+    html body .hero.is-playing .hero-art, html body .hero.is-continue .hero-art { display: none }
+    .hero-lyrics { display: none }
+    html body .hero.has-lyrics.is-playing .hero-lyrics, html body .hero.has-lyrics.is-continue .hero-lyrics {
+      display: flex; flex-direction: column; justify-content: center; gap: 10px;
+      position: absolute; z-index: 2; right: clamp(24px, 4vw, 52px); top: 22px; bottom: 26px; width: min(46%, 640px);
+      padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+      -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent)
+    }
+    html body .hero.has-lyrics.is-playing .hero-copy, html body .hero.has-lyrics.is-continue .hero-copy { width: min(44%, 460px); max-width: 44%; right: auto }
+    .hero-lyrics span { display: block; overflow: hidden; overflow-wrap: anywhere }
+    .hl-prev, .hl-next { font-size: 16px; line-height: 1.35; color: var(--white); opacity: .4; white-space: nowrap; text-overflow: ellipsis }
+    .hl-prev:empty, .hl-next:empty { visibility: hidden; height: 1.35em }
+    .hl-now { font-size: clamp(24px, 2.8vw, 36px); font-weight: 700; line-height: 1.2; letter-spacing: -.02em; color: var(--white); display: -webkit-box !important; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3 }
+    .hl-now.swap { animation: lyricIn .28s var(--ease) }
+    .hl-now.is-note { font-size: 28px; opacity: .5 }
+    html[data-theme="light"] .hl-prev, html[data-theme="light"] .hl-next, html[data-theme="light"] .hl-now { color: #262128 }
+    @media (max-width: 760px) {
+      html body .hero.has-lyrics.is-playing .hero-copy, html body .hero.has-lyrics.is-continue .hero-copy { width: 100%; max-width: none }
+      html body .hero.has-lyrics.is-playing .hero-lyrics, html body .hero.has-lyrics.is-continue .hero-lyrics {
+        position: relative; right: auto; top: auto; bottom: auto; width: 100%; margin-top: 14px; gap: 6px; -webkit-mask-image: none; mask-image: none
+      }
+      .hl-prev { display: none !important }
+      .hl-now { font-size: clamp(20px, 5.4vw, 26px); -webkit-line-clamp: 3 }
+    }
+  </style>
 </head>
 
 <body>
@@ -8454,8 +8482,7 @@
             aria-label="Open settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <circle cx="12" cy="12" r="3" />
               <path
-                d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.5.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.5-.9l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-1.8l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.5-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.5.9l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 1.8Z"
-                transform="translate(-1 -1)" />
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
             </svg></button><input class="file-input" id="files" type="file"
             accept="audio/*,.mp3,.wav,.ogg,.oga,.opus,.m4a,.m4b,.flac,.aac,.weba,.aif,.aiff,.lrc,text/plain" multiple><input class="file-input"
             id="folderFiles" type="file" accept="audio/*,.mp3,.wav,.ogg,.oga,.opus,.m4a,.m4b,.flac,.aac,.weba,.aif,.aiff,.lrc,text/plain" webkitdirectory
@@ -8468,8 +8495,8 @@
         </div>
         <div class="hero-art" id="heroArt"></div>
         <div class="hero-copy">
-          <div class="eyebrow" id="heroEyebrow">YOUR MUSIC, YOUR WAY</div>
-          <h1 id="heroTitle">A soundtrack that’s yours.</h1>
+          <div class="eyebrow" id="heroEyebrow"></div>
+          <h1 id="heroTitle"></h1>
           <p id="heroSubtitle"></p><button class="hero-cta"
             id="heroAdd">＋&nbsp; Add your music</button><button class="hero-cta" id="autoMixHero">♫&nbsp; Auto
             Mix</button>
@@ -8659,7 +8686,7 @@
           <div>
             <h3>Theme</h3>
           </div>
-          <div class="theme-choices" role="group" aria-label="Theme"><button type="button"
+          <div class="theme-choices" role="group" aria-label="Theme"><button type="button" data-skin="black"><i></i><span>Default</span></button><button type="button" data-skin="mono"><i></i><span>Mono</span></button><button type="button"
               data-skin="midnight"><i></i><span>Midnight</span></button><button type="button"
               data-skin="rose"><i></i><span>Rose</span></button><button type="button"
               data-skin="strawberry"><i></i><span>Strawberry</span></button><button type="button"
@@ -8667,7 +8694,6 @@
               data-skin="forest"><i></i><span>Forest</span></button><button type="button"
               data-skin="glass"><i></i><span>Prism</span></button><button type="button"
               data-skin="prism-dark"><i></i><span>Prism Dark</span></button><button type="button"
-              data-skin="black"><i></i><span>Black</span></button><button type="button"
               data-skin="terminal"><i></i><span>Terminal</span></button><button type="button"
               data-skin="cloud"><i></i><span>Cloud</span></button><button type="button"
               data-skin="custom"><i></i><span>Custom</span></button></div>
@@ -8698,7 +8724,7 @@
               aria-label="Coral" title="Coral"><span></span></button><button type="button" data-accent="#8b70ff"
               aria-label="Violet" title="Violet"><span></span></button><button type="button" data-accent="#328fe8"
               aria-label="Blue" title="Blue"><span></span></button><button type="button" data-accent="#20a77a"
-              aria-label="Green" title="Green"><span></span></button></div>
+              aria-label="Green" title="Green"><span></span></button><button type="button" data-accent="#ff7198" aria-label="Pink" title="Pink"><span></span></button><button type="button" data-accent="#ff8a3d" aria-label="Orange" title="Orange"><span></span></button><button type="button" data-accent="#f2c230" aria-label="Gold" title="Gold"><span></span></button><button type="button" data-accent="#45ed82" aria-label="Mint" title="Mint"><span></span></button><button type="button" data-accent="#2ec4c4" aria-label="Teal" title="Teal"><span></span></button><button type="button" data-accent="#e86ae0" aria-label="Magenta" title="Magenta"><span></span></button></div>
         </section>
         <section class="setting-group">
           <div>
@@ -9052,9 +9078,9 @@
     function getAlbumGroups() { const groups = new Map(); tracks.forEach((track, index) => { const key = albumIdentity(track); let group = groups.get(key); if (!group) { group = { key, album: track.album || 'Unknown Album', artist: track.artist || 'Unknown Artist', art: track.art || '', indices: [] }; groups.set(key, group) } if (!group.art && track.art) group.art = track.art; group.indices.push(index) }); return [...groups.values()].sort((a, b) => a.album.localeCompare(b.album) || a.artist.localeCompare(b.artist)) }
     function renderAlbums() { const section = document.querySelector('#albumsSection'), grid = document.querySelector('#albumGrid'); if (!section || !grid) return; section.hidden = activeView !== 'Albums'; if (activeView !== 'Albums') return; const groups = getAlbumGroups(); grid.innerHTML = groups.length ? groups.map((group, index) => `<button type="button" class="album-card" data-album-index="${index}"><span class="album-art">♫</span><span class="album-name">${escapeHtml(group.album)}</span><span class="album-artist">${escapeHtml(group.artist)}</span><span class="album-count">${group.indices.length} ${group.indices.length === 1 ? 'song' : 'songs'}</span></button>`).join('') : '<div class="stats-empty">Add music to your library to browse albums.</div>'; grid.querySelectorAll('[data-album-index]').forEach((card, index) => { const group = groups[index]; setCover(card.querySelector('.album-art'), { art: group.art }); card.onclick = () => openAlbumView(group.key) }) }
     function openAlbumView(key) { const album = getAlbumGroups().find(group => group.key === key); if (!album) return; activeView = 'Album'; activeAlbumKey = key; activePlaylistId = null; document.querySelector('.hero').hidden = true; document.querySelector('#albumsSection').hidden = true; document.querySelector('.track-section-head').hidden = false; document.querySelector('#tracklist').hidden = false; document.querySelector('#viewKicker').textContent = 'ALBUM'; document.querySelector('#viewTitle').textContent = album.album; document.querySelector('#listTitle').textContent = album.album; document.querySelector('#listKicker').textContent = 'ALBUM'; document.querySelector('#playlistDescription').textContent = album.artist; document.querySelector('#playlistDescription').hidden = false; document.querySelector('#editActivePlaylist').hidden = true; document.querySelector('#backToAlbums').hidden = false; document.querySelectorAll('.nav button[data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === 'Albums')); renderPlaylists(); render(); preloadedTrackIndex = -1; prepareNextTrack() }
-    function renderRecent() { const section = document.querySelector('#recentSection'), grid = document.querySelector('#recentGrid'); section.hidden = true; document.documentElement.classList.toggle('lib-empty', !tracks.length); return;
+    function renderRecent() { const section = document.querySelector('#recentSection'), grid = document.querySelector('#recentGrid'); section.hidden = true; document.documentElement.classList.toggle('library-empty', !tracks.length); return;
 }
-    function updateAmbient(t) { if (!t?.art) { document.documentElement.style.setProperty('--ambient-a', '#33405f'); document.documentElement.style.setProperty('--ambient-b', '#633c57'); return } const img = new Image(); img.onload = () => { if (current < 0 || tracks[current]?.id !== t.id) return; try { const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d', { willReadFrequently: true }); canvas.width = 24; canvas.height = 24; ctx.drawImage(img, 0, 0, 24, 24); const pixels = ctx.getImageData(0, 0, 24, 24).data, bins = new Map(); for (let i = 0; i < pixels.length; i += 4) { const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3]; if (a < 160 || (r > 242 && g > 242 && b > 242) || (r < 18 && g < 18 && b < 18)) continue; const key = [r >> 5, g >> 5, b >> 5].join(','), bin = bins.get(key) || { count: 0, r: 0, g: 0, b: 0 }; bin.count++; bin.r += r; bin.g += g; bin.b += b; bins.set(key, bin) } const top = [...bins.values()].sort((a, b) => b.count - a.count).slice(0, 2); if (!top.length) return; const color = x => `rgb(${Math.round(x.r / x.count)}, ${Math.round(x.g / x.count)}, ${Math.round(x.b / x.count)})`; document.documentElement.style.setProperty('--ambient-a', color(top[0])); document.documentElement.style.setProperty('--ambient-b', color(top[1] || top[0])) } catch { } }; img.onerror = () => { }; img.src = t.art } function syncHero(t) { updateAmbient(t); document.querySelector('#heroEyebrow').textContent = t ? 'NOW PLAYING' : 'YOUR MUSIC, YOUR WAY'; document.querySelector('#heroTitle').textContent = t ? t.name : 'A soundtrack that’s yours.'; document.querySelector('#heroSubtitle').textContent = t ? `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}` : ''; setCover(document.querySelector('#heroArt'), t) }
+    function updateAmbient(t) { if (!t?.art) { document.documentElement.style.setProperty('--ambient-a', '#33405f'); document.documentElement.style.setProperty('--ambient-b', '#633c57'); return } const img = new Image(); img.onload = () => { if (current < 0 || tracks[current]?.id !== t.id) return; try { const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d', { willReadFrequently: true }); canvas.width = 24; canvas.height = 24; ctx.drawImage(img, 0, 0, 24, 24); const pixels = ctx.getImageData(0, 0, 24, 24).data, bins = new Map(); for (let i = 0; i < pixels.length; i += 4) { const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3]; if (a < 160 || (r > 242 && g > 242 && b > 242) || (r < 18 && g < 18 && b < 18)) continue; const key = [r >> 5, g >> 5, b >> 5].join(','), bin = bins.get(key) || { count: 0, r: 0, g: 0, b: 0 }; bin.count++; bin.r += r; bin.g += g; bin.b += b; bins.set(key, bin) } const top = [...bins.values()].sort((a, b) => b.count - a.count).slice(0, 2); if (!top.length) return; const color = x => `rgb(${Math.round(x.r / x.count)}, ${Math.round(x.g / x.count)}, ${Math.round(x.b / x.count)})`; document.documentElement.style.setProperty('--ambient-a', color(top[0])); document.documentElement.style.setProperty('--ambient-b', color(top[1] || top[0])) } catch { } }; img.onerror = () => { }; img.src = t.art } function syncHero(t) { updateAmbient(t); document.querySelector('#heroEyebrow').textContent = t ? 'NOW PLAYING' : ''; document.querySelector('#heroTitle').textContent = t ? t.name : ''; document.querySelector('#heroSubtitle').textContent = t ? `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}` : ''; setCover(document.querySelector('#heroArt'), t) }
     function saveListeningStats(force = false) { const now = Date.now(); if (!force && now - lastStatsSavedAt < 5000) return; lastStatsSavedAt = now; try { localStorage.setItem('musiko-listening-stats', JSON.stringify(listeningStats)) } catch { } }
     function renderListeningStats() {
       const section = document.querySelector('#listeningStats'); if (!section) return;
@@ -9142,7 +9168,7 @@
     function openSettings() { const panel = document.querySelector('#settingsPanel'); syncSettingsButtons(); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); document.querySelector('#closeSettings').focus() }
     function closeSleepQuickMenu(restoreFocus = true) { const panel = document.querySelector('#sleepQuickPanel'); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); if (restoreFocus && sleepQuickOpener?.isConnected) sleepQuickOpener.focus(); sleepQuickOpener = null }
     function toggleSleepQuickMenu(button) { const panel = document.querySelector('#sleepQuickPanel'); if (panel.classList.contains('open') && sleepQuickOpener === button) { closeSleepQuickMenu(); return } sleepQuickOpener = button; panel.classList.toggle('docked', button.id === 'miniSleepShortcut' && innerWidth > 760); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); const buttonRect = button.getBoundingClientRect(), panelRect = panel.getBoundingClientRect(), gap = 9; let left = Math.max(12, Math.min(innerWidth - panelRect.width - 12, buttonRect.left + buttonRect.width / 2 - panelRect.width / 2)), top = buttonRect.top - panelRect.height - gap; if (top < 8) top = Math.min(innerHeight - panelRect.height - 8, buttonRect.bottom + gap); panel.style.left = `${left}px`; panel.style.top = `${Math.max(8, top)}px`; panel.querySelector(`[data-sleep-choice="${sleepTimerChoice}"]`)?.focus() }
-    const brandLogo = document.querySelector('.brand'); brandLogo.setAttribute('role', 'button'); brandLogo.setAttribute('tabindex', '0'); brandLogo.setAttribute('aria-label', 'Musiko home animation'); const playLogoAnimation = () => { brandLogo.classList.remove('brand-animating'); void brandLogo.offsetWidth; brandLogo.classList.add('brand-animating'); setTimeout(() => brandLogo.classList.remove('brand-animating'), 760) }; brandLogo.addEventListener('click', playLogoAnimation); brandLogo.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playLogoAnimation() } }); document.querySelectorAll('.strawberry-float').forEach(berry => berry.addEventListener('click', e => { e.stopPropagation(); const dark = document.documentElement.dataset.skin === 'strawberry-dark', animation = dark ? 'berry-dark-clicking' : 'berry-clicking'; berry.classList.remove('berry-clicking', 'berry-dark-clicking'); void berry.offsetWidth; berry.classList.add(animation); setTimeout(() => berry.classList.remove(animation), 950) })); document.querySelector('#miniQueueShortcut').onclick = openQueue; document.querySelector('#closeQueue').onclick = closeQueue; document.querySelector('#queueBackdrop').onclick = closeQueue; document.querySelector('#clearQueue').onclick = () => { queue = []; preloadedTrackIndex = -1; renderQueue(); prepareNextTrack(); toast('Up Next cleared') }; document.querySelector('#openSettings').onclick = openSettings; document.querySelector('#closeSettings').onclick = closeSettings; document.querySelector('#miniSleepShortcut').onclick = e => toggleSleepQuickMenu(e.currentTarget); document.querySelector('#fullSleepShortcut').onclick = e => toggleSleepQuickMenu(e.currentTarget); document.querySelector('#closeSleepQuick').onclick = () => closeSleepQuickMenu(); document.querySelectorAll('[data-sleep-choice]').forEach(button => button.onclick = () => { setSleepTimer(button.dataset.sleepChoice); closeSleepQuickMenu() }); document.addEventListener('pointerdown', e => { const panel = document.querySelector('#sleepQuickPanel'); if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.sleep-shortcut')) closeSleepQuickMenu(false) }); window.addEventListener('resize', () => closeSleepQuickMenu(false)); document.addEventListener('scroll', () => closeSleepQuickMenu(false), true); document.querySelector('#settingsPanel').onclick = e => { if (e.target.id === 'settingsPanel') closeSettings() }; document.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => { const settings = window.MusikoAppearance, currentSkin = settings.value.skin; settings.value.mode = button.dataset.mode; if (settings.value.mode === 'light') settings.value.skin = currentSkin === 'strawberry-dark' ? 'strawberry' : 'cloud'; else settings.value.skin = currentSkin === 'strawberry' ? 'strawberry-dark' : 'black'; if (settings.value.mode === 'dark') settings.value.darkSkin = settings.value.skin; saveAppearance() }); document.querySelectorAll('.theme-choices [data-skin]').forEach(button => button.onclick = () => { const settings = window.MusikoAppearance, skin = button.dataset.skin; settings.value.skin = skin; if (skin === 'cloud' || skin === 'strawberry') settings.value.mode = 'light'; else { settings.value.mode = 'dark'; settings.value.darkSkin = skin } settings.value.accent = ({ midnight: '#ff5368', rose: '#ff7198', strawberry: '#e53939', 'strawberry-dark': '#fd5f5f', ocean: '#53b8ee', forest: '#61c59a', glass: '#91caff', 'prism-dark': '#8b70ff', black: '#ff5368', terminal: '#45ed82', custom: '#8b70ff', cloud: '#ff5368' })[skin]; saveAppearance() }); document.querySelectorAll('[data-accent]').forEach(button => button.onclick = () => { window.MusikoAppearance.value.accent = button.dataset.accent; saveAppearance() }); syncSettingsButtons(); syncSleepShortcuts();
+    document.querySelectorAll('.strawberry-float').forEach(berry => berry.addEventListener('click', e => { e.stopPropagation(); const dark = document.documentElement.dataset.skin === 'strawberry-dark', animation = dark ? 'berry-dark-clicking' : 'berry-clicking'; berry.classList.remove('berry-clicking', 'berry-dark-clicking'); void berry.offsetWidth; berry.classList.add(animation); setTimeout(() => berry.classList.remove(animation), 950) })); document.querySelector('#miniQueueShortcut').onclick = openQueue; document.querySelector('#closeQueue').onclick = closeQueue; document.querySelector('#queueBackdrop').onclick = closeQueue; document.querySelector('#clearQueue').onclick = () => { queue = []; preloadedTrackIndex = -1; renderQueue(); prepareNextTrack(); toast('Up Next cleared') }; document.querySelector('#openSettings').onclick = openSettings; document.querySelector('#closeSettings').onclick = closeSettings; document.querySelector('#miniSleepShortcut').onclick = e => toggleSleepQuickMenu(e.currentTarget); document.querySelector('#fullSleepShortcut').onclick = e => toggleSleepQuickMenu(e.currentTarget); document.querySelector('#closeSleepQuick').onclick = () => closeSleepQuickMenu(); document.querySelectorAll('[data-sleep-choice]').forEach(button => button.onclick = () => { setSleepTimer(button.dataset.sleepChoice); closeSleepQuickMenu() }); document.addEventListener('pointerdown', e => { const panel = document.querySelector('#sleepQuickPanel'); if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.sleep-shortcut')) closeSleepQuickMenu(false) }); window.addEventListener('resize', () => closeSleepQuickMenu(false)); document.addEventListener('scroll', () => closeSleepQuickMenu(false), true); document.querySelector('#settingsPanel').onclick = e => { if (e.target.id === 'settingsPanel') closeSettings() }; document.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => { const settings = window.MusikoAppearance, currentSkin = settings.value.skin; settings.value.mode = button.dataset.mode; if (settings.value.mode === 'light') settings.value.skin = currentSkin === 'strawberry-dark' ? 'strawberry' : 'cloud'; else settings.value.skin = currentSkin === 'strawberry' ? 'strawberry-dark' : 'black'; if (settings.value.mode === 'dark') settings.value.darkSkin = settings.value.skin; saveAppearance() }); document.querySelectorAll('.theme-choices [data-skin]').forEach(button => button.onclick = () => { const settings = window.MusikoAppearance, skin = button.dataset.skin; settings.value.skin = skin; if (skin === 'cloud' || skin === 'strawberry') settings.value.mode = 'light'; else { settings.value.mode = 'dark'; settings.value.darkSkin = skin } settings.value.accent = ({ midnight: '#ff5368', rose: '#ff7198', strawberry: '#e53939', 'strawberry-dark': '#fd5f5f', ocean: '#53b8ee', forest: '#6fd3a4', glass: '#91caff', 'prism-dark': '#8b70ff', black: '#ff5368', mono: '#f5f5f5', terminal: '#45ed82', custom: '#8b70ff', cloud: '#4f7cff' })[skin]; saveAppearance() }); document.querySelectorAll('[data-accent]').forEach(button => button.onclick = () => { window.MusikoAppearance.value.accent = button.dataset.accent; saveAppearance() }); syncSettingsButtons(); syncSleepShortcuts();
     function openLyrics() { document.querySelector('#lyricsPanel').classList.add('open'); renderLyrics() } function closeLyrics() { document.querySelector('#lyricsPanel').classList.remove('open') }; document.querySelector('#openLyrics').onclick = openLyrics; document.querySelector('#fullLyrics').onclick = () => setFullLyrics(!document.querySelector('#fullscreen').classList.contains('lyrics-on')); document.querySelector('#closeLyrics').onclick = closeLyrics; document.querySelector('#lyricsPanel').onclick = e => { if (e.target.id === 'lyricsPanel') closeLyrics() };
     document.querySelector('#next').onclick = playNext; document.querySelector('#prev').onclick = () => { if (audio.currentTime > 3) { audio.currentTime = 0; return } if (shuffle) { while (playHistory.length) { const id = playHistory.pop(), idx = tracks.findIndex(t => t.id === id); if (idx >= 0 && idx !== current) { skipHistoryPush = true; playTrack(idx); return } } } const shown = visibleTracks(); if (shown.length) { const at = shown.findIndex(x => x.i === current); playTrack(shown[(at - 1 + shown.length) % shown.length].i) } };
     document.querySelector('#shuffle').onclick = () => { shuffle = !shuffle; preloadedTrackIndex = -1; prepareNextTrack(); syncPlaybackModeButtons(); toast(shuffle ? 'Shuffle on' : 'Shuffle off') }; document.querySelector('#repeat').onclick = () => { repeat = !repeat; audioDecks.forEach(deck => deck.loop = repeat); syncPlaybackModeButtons(); toast(repeat ? 'Repeat on' : 'Repeat off') }; syncPlaybackModeButtons(); document.querySelector('#volume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#fullVolume').value = e.target.value }; document.querySelector('#fullVolume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#volume').value = e.target.value }; audioDecks.forEach(deck => { deck.volume = .8; deck.playbackRate = window.MusikoAppearance.value.playbackRate; deck.loop = repeat }); document.querySelector('#playbackRate').value = String(audio.playbackRate); document.querySelector('#playbackRate').onchange = e => { const rate = Number(e.target.value); audioDecks.forEach(deck => deck.playbackRate = rate); window.MusikoAppearance.value.playbackRate = rate; window.MusikoAppearance.save(); toast('Playback speed ' + rate + '×') }; document.querySelector('#crossfadeDuration').value = String(window.MusikoAppearance.value.crossfadeSeconds); document.querySelector('#crossfadeDuration').onchange = e => { window.MusikoAppearance.value.crossfadeSeconds = Number(e.target.value); window.MusikoAppearance.save(); toast(window.MusikoAppearance.value.crossfadeSeconds ? 'Crossfade set to ' + e.target.value + ' seconds' : 'Crossfade off') }; document.querySelector('#gaplessPlayback').checked = window.MusikoAppearance.value.gapless; document.querySelector('#glassEffect').checked = window.MusikoAppearance.value.glassy; document.querySelector('#searchAnimation').checked = window.MusikoAppearance.value.searchAnimation; document.querySelector('#largerMobileControls').checked = window.MusikoAppearance.value.largerMobileControls; document.querySelector('#trimSilence').checked = window.MusikoAppearance.value.trimSilence; document.querySelector('#lowEndMode').checked = window.MusikoAppearance.value.lowEnd; document.querySelector('#crossfadeDuration').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#gaplessPlayback').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#lowEndMode').onchange = e => { const settings = window.MusikoAppearance; settings.value.lowEnd = e.target.checked; document.querySelector('#crossfadeDuration').disabled = e.target.checked; document.querySelector('#gaplessPlayback').disabled = e.target.checked; if (e.target.checked) { if (isCrossfading) cancelCrossfade(); audioDecks.forEach(deck => { if (deck !== audio) { deck.pause(); deck.preload = 'none' } }); preloadedTrackIndex = -1 } else prepareNextTrack(); saveAppearance(); toast(e.target.checked ? 'Ultra low-end mode on' : 'Ultra low-end mode off') }; document.querySelector('#trimSilence').onchange = e => { window.MusikoAppearance.value.trimSilence = e.target.checked; window.MusikoAppearance.save(); silentSince = 0; if (e.target.checked) startSilenceMonitor(); else { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } toast(e.target.checked ? 'Silence skipping on' : 'Silence skipping off') }; document.querySelector('#largerMobileControls').onchange = e => { window.MusikoAppearance.value.largerMobileControls = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Larger mobile player buttons on' : 'Larger mobile player buttons off') }; document.querySelector('#searchAnimation').onchange = e => { window.MusikoAppearance.value.searchAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Search animation on' : 'Search animation off') }; document.querySelector('#glassEffect').onchange = e => { window.MusikoAppearance.value.glassy = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Glass effect on' : 'Glass effect off') }; document.querySelector('#gaplessPlayback').onchange = e => { window.MusikoAppearance.value.gapless = e.target.checked; window.MusikoAppearance.save(); preloadedTrackIndex = -1; prepareNextTrack(); toast(e.target.checked ? 'Gapless playback on' : 'Gapless playback off') }; document.querySelector('#sleepTimerSelect').onchange = e => setSleepTimer(e.target.value);
@@ -9398,6 +9424,31 @@
       refresh();
     })();
   </script>
+  <style id="musiko-artist-avatars">
+    /* ===== Most played artists: round avatars, full cover art, consistent edge ===== */
+    html body .home-artists .recent-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px 18px }
+    html body .home-artists .recent-card { text-align: center }
+    html body .home-artists .recent-art.artist-avatar {
+      position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%; overflow: hidden;
+      display: grid; place-items: center; background: linear-gradient(145deg, #5b536d, #26334a);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, .32)
+    }
+    html body .home-artists .recent-art.artist-avatar img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;
+      -webkit-user-drag: none; user-select: none
+    }
+    /* thin inner ring so very dark / very white covers still read as a circle */
+    html body .home-artists .recent-art.artist-avatar::after {
+      content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--white) 18%, transparent)
+    }
+    html body .home-artists .artist-initial { font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: #ffffffcc }
+    html body .home-artists .recent-track, html body .home-artists .recent-artist { text-align: center }
+    html body .home-artists .recent-card:hover .recent-art { transform: translateY(-3px) }
+    @media (max-width: 900px) { html body .home-artists .recent-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 12px } }
+    @media (max-width: 760px) { html body .home-artists .recent-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 10px } }
+    @media (max-width: 430px) { html body .home-artists .recent-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+  </style>
   <style id="home-extras">
     .home-continue[hidden],
     .home-artists[hidden] {
@@ -9555,13 +9606,13 @@
 
       function renderArtists() {
         const map = new Map();
-        tracks.forEach((t, i) => { const name = (t.artist || '').trim(), s = listeningStats.tracks[t.id]; if (!name || !s || !s.plays) return; const g = map.get(name) || { name, plays: 0, seconds: 0, art: '', best: i, bestPlays: -1 }; g.plays += s.plays; g.seconds += s.seconds || 0; if (!g.art && t.art) g.art = t.art; if (s.plays > g.bestPlays) { g.bestPlays = s.plays; g.best = i } map.set(name, g) });
+        tracks.forEach((t, i) => { const name = (t.artist || '').trim(), s = listeningStats.tracks[t.id]; if (!name || !s || !s.plays) return; const g = map.get(name) || { name, plays: 0, seconds: 0, art: '', best: i, bestPlays: -1 }; g.plays += s.plays; g.seconds += s.seconds || 0; if (t.art && s.plays > (g.artPlays || 0)) { g.art = t.art; g.artPlays = s.plays } if (s.plays > g.bestPlays) { g.bestPlays = s.plays; g.best = i } map.set(name, g) });
         const list = [...map.values()].sort((a, b) => b.plays - a.plays || b.seconds - a.seconds).slice(0, 5);
         const show = activeView === 'Home' && list.length > 0; artists.hidden = !show; if (!show) return;
         const sig = JSON.stringify(list.map(g => [g.name, g.plays, g.best, g.art ? 1 : 0]));
         if (artists.dataset.sig === sig) return; artists.dataset.sig = sig;
-        artists.innerHTML = `<div class="section-head"><div><h2>Most played artists</h2></div></div><div class="recent-grid">${list.map((g, n) => `<div class="recent-card" role="button" tabindex="0" data-n="${n}"><div class="recent-art">♫</div><div class="recent-track">${escapeHtml(g.name)}</div><div class="recent-artist">${g.plays} ${g.plays === 1 ? 'play' : 'plays'}</div></div>`).join('')}</div>`;
-        artists.querySelectorAll('.recent-card').forEach(el => { const g = list[+el.dataset.n]; setCover(el.querySelector('.recent-art'), { art: g.art }); const go = () => { playTrack(g.best); setTimeout(refresh, 200) }; el.onclick = go; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } } });
+        artists.innerHTML = `<div class="section-head"><div><h2>Most played artists</h2></div></div><div class="recent-grid">${list.map((g, n) => `<div class="recent-card" role="button" tabindex="0" data-n="${n}"><div class="recent-art artist-avatar">${g.art ? `<img src="${g.art}" alt="" draggable="false" loading="lazy">` : '<span class="artist-initial">' + escapeHtml((g.name[0] || '♫').toUpperCase()) + '</span>'}</div><div class="recent-track">${escapeHtml(g.name)}</div><div class="recent-artist">${g.plays} ${g.plays === 1 ? 'play' : 'plays'}</div></div>`).join('')}</div>`;
+        artists.querySelectorAll('.recent-card').forEach(el => { const g = list[+el.dataset.n]; const av = el.querySelector('.recent-art'); av.classList.remove('has-art'); av.style.backgroundImage = ''; const go = () => { playTrack(g.best); setTimeout(refresh, 200) }; el.onclick = go; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } } });
       }
 
       let raf = 0;
@@ -9882,9 +9933,14 @@
       /* ---------- lyric highlight ---------- */
       const sec = document.createElement('section');
       sec.className = 'recent-section home-lyric'; sec.id = 'lyricSection'; sec.hidden = true; sec.setAttribute('aria-label', 'Lyric highlight');
-      sec.innerHTML = '<button type="button" class="lyric-card" title="Open lyrics"><span class="lyric-head"><span class="lyric-kicker"><i class="lyric-eq" aria-hidden="true"><u></u><u></u><u></u></i>LYRICS</span><span class="lyric-open">Open lyrics ›</span></span><span class="lyric-prev"></span><span class="lyric-now"></span><span class="lyric-next"></span><span class="lyric-meta"><span class="lyric-song"></span></span></button>';
+      sec.innerHTML = '<button type="button" class="lyric-card" title="Open lyrics"><span class="lyric-head"><span class="lyric-kicker"><i class="lyric-eq" aria-hidden="true"><u></u><u></u><u></u></i>LYRICS</span></span><span class="lyric-prev"></span><span class="lyric-now"></span><span class="lyric-next"></span></button>';
       (document.querySelector('#continueSection') || document.querySelector('#recentSection')).before(sec);
-      const nowEl = sec.querySelector('.lyric-now'), nextEl = sec.querySelector('.lyric-next'), prevEl = sec.querySelector('.lyric-prev'), songEl = sec.querySelector('.lyric-song');
+      const heroLyrics = document.createElement('button'); heroLyrics.type = 'button'; heroLyrics.className = 'hero-lyrics'; heroLyrics.title = 'Open lyrics'; heroLyrics.setAttribute('aria-label', 'Open lyrics');
+      heroLyrics.innerHTML = '<span class="hl-prev"></span><span class="hl-now"></span><span class="hl-next"></span>';
+      hero.append(heroLyrics);
+      heroLyrics.onclick = () => { const o = $('#openLyrics'); if (o) o.click() };
+      const hlPrev = heroLyrics.querySelector('.hl-prev'), hlNow = heroLyrics.querySelector('.hl-now'), hlNext = heroLyrics.querySelector('.hl-next');
+      const nowEl = sec.querySelector('.lyric-now'), nextEl = sec.querySelector('.lyric-next'), prevEl = sec.querySelector('.lyric-prev');
       sec.querySelector('.lyric-card').onclick = () => { const o = $('#openLyrics'); if (o) o.click() };
       const hash = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h) };
       let lyricSig = '';
@@ -9901,9 +9957,10 @@
             if (lines.length) { line = lines[hash(t.id) % lines.length]; key = t.id + '|p' }
           }
         }
-        sec.hidden = !line; if (!line) { lyricSig = ''; return }
+        sec.hidden = !line; hero.classList.toggle('has-lyrics', !!line); if (!line) { lyricSig = ''; return }
         if (key === lyricSig) return; lyricSig = key;
-        nowEl.textContent = line; nextEl.textContent = next; prevEl.textContent = prev; songEl.textContent = `${t.name} · ${t.artist}`;
+        hlPrev.textContent = prev; hlNext.textContent = next; hlNow.textContent = line; hlNow.classList.toggle('is-note', line === '♪'); hlNow.classList.remove('swap'); void hlNow.offsetWidth; hlNow.classList.add('swap');
+        nowEl.textContent = line; nextEl.textContent = next; prevEl.textContent = prev; nowEl.classList.toggle('is-note', line === '♪');
         nowEl.classList.remove('swap'); void nowEl.offsetWidth; nowEl.classList.add('swap')
       }
 
@@ -9916,6 +9973,74 @@
       refresh();
     })();
   </script>
+  <style id="musiko-topbar-align">
+    html body .top-actions { align-items: center }
+    html body .top-actions > * { margin-top: 0; margin-bottom: 0 }
+  </style>
+  <style id="musiko-settings-button">
+    /* ===== Settings button: round glass icon button, gear spins (not the whole button) ===== */
+    html body .settings-trigger {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .16);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .05));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 2px 8px rgba(0, 0, 0, .18);
+      color: inherit;
+      transform: none;
+      transition: background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .15s ease
+    }
+    html body .settings-trigger svg {
+      width: 19px;
+      height: 19px;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: .92;
+      transition: transform .55s cubic-bezier(.3, .8, .3, 1), opacity .2s ease
+    }
+    html body .settings-trigger:hover {
+      transform: none;
+      color: var(--accent);
+      border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 22%, transparent), color-mix(in srgb, var(--accent) 9%, transparent));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 4px 16px color-mix(in srgb, var(--accent) 28%, transparent)
+    }
+    html body .settings-trigger:hover svg { opacity: 1 }
+    html body .settings-trigger:active { transform: scale(.92) }
+    html body .settings-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px }
+    /* stays lit while the settings drawer is open */
+    html:has(.settings-panel.open) body .settings-trigger {
+      color: var(--accent);
+      border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+      background: color-mix(in srgb, var(--accent) 16%, transparent)
+    }
+    /* no hover animation on the settings and close buttons */
+    html body .settings-trigger, html body .settings-trigger svg,
+    html body .lyrics-close, html body #closeQueue,
+    html body .lyrics-close::before, html body .lyrics-close::after,
+    html body #closeQueue::before, html body #closeQueue::after { transition: none !important }
+    html body .settings-trigger:hover, html body .settings-trigger:active,
+    html body .lyrics-close:active, html body #closeQueue:active { transform: none !important }
+    html body .lyrics-close:hover::before, html body #closeQueue:hover::before { transform: rotate(45deg) }
+    html body .lyrics-close:hover::after, html body #closeQueue:hover::after { transform: rotate(-45deg) }
+
+    html[data-theme="light"] body .settings-trigger {
+      border-color: rgba(40, 32, 44, .14);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .85), rgba(255, 255, 255, .5));
+      box-shadow: inset 0 1px 0 #fff, 0 2px 8px rgba(40, 30, 60, .1);
+      color: #3a333e
+    }
+    html[data-theme="light"] body .settings-trigger:hover {
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, white)
+    }
+    @media (max-width: 430px) { html body .settings-trigger { width: 38px; height: 38px } }
+    @media (prefers-reduced-motion: reduce) { html body .settings-trigger svg { transition: none } }
+    html[data-performance="low"] body .settings-trigger { box-shadow: none; background: rgba(255, 255, 255, .08) }
+  </style>
   <style id="musiko-mobile-search">
     /* ===== Search button: clear button, tidy native UI, "has query" state ===== */
     .searchbox input::-webkit-search-cancel-button, .searchbox input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none }
@@ -10148,7 +10273,7 @@
   </style>
   <style id="musiko-no-hints">
     /* explanatory text removed: hide any leftover empty hint elements */
-    .setting-group p:empty, #heroSubtitle:empty, .sleep-quick-status:empty, .now-artist:empty, .full-artist:empty, .stat-sub:empty { display: none }
+    .setting-group p:empty, #heroSubtitle:empty, #heroEyebrow:empty, #heroTitle:empty, .sleep-quick-status:empty, .now-artist:empty, .full-artist:empty, .stat-sub:empty { display: none }
     .lyrics-hint, .pl-hint, .settings-footer, .side-bottom { display: none !important }
   </style>
   <style id="musiko-queue-align">
@@ -10575,6 +10700,735 @@
       new MutationObserver(show).observe(root, { attributes: true, attributeFilter: ['style', 'data-skin'] });
       show()
     })();
+  </script>
+  <style id="musiko-mono-theme">
+    /* ===== Mono theme: pure black & white ===== */
+    .theme-choices [data-skin="mono"] {
+      --theme-preview: linear-gradient(140deg, #000 0 52%, #fff 53%);
+      --theme-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='1.8'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M12 4a8 8 0 0 1 0 16Z' fill='%23888'/%3E%3C/svg%3E")
+    }
+    html[data-theme="dark"][data-skin="mono"] {
+      --accent: #f5f5f5;
+      --accent-ink: #0a0a0a;
+      --ambient-a: #262626 !important;
+      --ambient-b: #171717 !important;
+      --skin-backdrop: radial-gradient(ellipse at 15% 8%, #1c1c1c 0, transparent 40%), radial-gradient(ellipse at 88% 92%, #161616 0, transparent 42%), #000;
+      --skin-app: #060606e6;
+      --skin-aside: #000000d9;
+      --skin-hero: linear-gradient(110deg, #181818, #0c0c0c 55%, #1a1a1a);
+      --skin-list: #0d0d0d99;
+      --skin-player: #121212e6;
+      --skin-border: #ffffff1c
+    }
+    /* white accent: anything that put white text on the accent now uses dark text */
+    html[data-skin="mono"] .add-btn,
+    html[data-skin="mono"] .hero-cta,
+    html[data-skin="mono"] .continue-go,
+    html[data-skin="mono"] .mobile-nav button.active,
+    html[data-skin="mono"] .playlist-modal-card #savePlaylistButton { color: var(--accent-ink); text-shadow: none }
+    html[data-skin="mono"] .hero-cta#autoMixHero { color: var(--white) }
+    html[data-skin="mono"] .brand-icon { background: #f5f5f5; color: #0a0a0a; box-shadow: none }
+    html[data-skin="mono"] .hero-art,
+    html[data-skin="mono"] .recent-art,
+    html[data-skin="mono"] .cover { background: linear-gradient(145deg, #4a4a4a, #151515) }
+    html[data-skin="mono"] .hero-glow { background: radial-gradient(ellipse at 74% 46%, #ffffff12, transparent 58%) }
+    html[data-skin="mono"] .setting-switch input:checked + span:after { background: #0a0a0a }
+    html[data-skin="mono"] .fullscreen .full-ambient { opacity: .25 }
+  </style>
+  <style id="musiko-mono-hover">
+    /* Mono hover: strong white invert for pills and icon buttons, quiet highlight for lists */
+    html[data-skin="mono"] body :is(.settings-trigger, .lyrics-close, #closeQueue, .glass-btn, .hero-cta, .lyrics-toggle, .side-toggle, .search-clear, .search-cancel, .playlist-head-actions > button, .queue-header-actions button, .sleep-quick-options button, .setting-segment button, .theme-choices button, .playlist-create-from-picker, .metadata-cover-choose, .add-btn, #autoMix, #newPlaylist):hover,
+    html[data-skin="mono"] body :is(.settings-trigger, .lyrics-close, #closeQueue):focus-visible {
+      background: #f5f5f5 !important;
+      color: #0a0a0a !important;
+      border-color: #f5f5f5 !important;
+      box-shadow: none !important;
+      filter: none !important
+    }
+    html[data-skin="mono"] body :is(.settings-trigger, .glass-btn, .hero-cta, .side-toggle, .search-clear):hover svg { color: #0a0a0a; stroke: currentColor }
+    html[data-skin="mono"] body :is(.lyrics-close, #closeQueue):hover::before,
+    html[data-skin="mono"] body :is(.lyrics-close, #closeQueue):hover::after { background: #0a0a0a }
+    html[data-skin="mono"] body .theme-choices button:hover i { border-color: #0a0a0a55 }
+
+    /* list-style items: soft white wash, white text */
+    html[data-skin="mono"] body :is(.nav button, .lib-row, .playlist-choice, .queue-item, .top-song-row, #tracklist .track, .mobile-tabs button):hover {
+      background: #ffffff1a !important;
+      color: #fff !important
+    }
+    html[data-skin="mono"] body :is(.nav button, .lib-row):hover svg { color: #fff; stroke: currentColor }
+    html[data-skin="mono"] body .nav button.active:hover { background: #ffffff26 !important }
+
+    /* small row actions: white icon on a round wash */
+    html[data-skin="mono"] body :is(.track-action, .queue-item > button, .metadata-edit, .heart, .playlist-edit, .playlist-delete):hover {
+      background: #ffffff2e !important;
+      color: #fff !important;
+      border-radius: 50%
+    }
+    html[data-skin="mono"] body .track-action.favorite-on:hover { color: #fff !important }
+
+    /* links: underline instead of a fill */
+    html[data-skin="mono"] body .text-link:hover { background: none !important; color: #fff !important; text-decoration: underline; text-underline-offset: 3px }
+
+    /* player controls */
+    html[data-skin="mono"] body :is(.player, .full-buttons) .icon-btn:not(.play):hover { background: #ffffff2e; color: #fff; border-radius: 50% }
+    html[data-skin="mono"] body .play:hover { background: #1a1a1a !important; color: #f5f5f5 !important; box-shadow: inset 0 0 0 1.5px #f5f5f5 }
+
+    /* smooth the colour change (settings + close stay instant) */
+    html[data-skin="mono"] body :is(.nav button, .lib-row, .glass-btn, .hero-cta, .track-action, .icon-btn, .text-link, .queue-item, #tracklist .track, .top-song-row) {
+      transition: background-color .14s ease, color .14s ease, border-color .14s ease, box-shadow .14s ease
+    }
+  </style>
+  <style id="musiko-theme-previews">
+    /* ===== Theme picker: each tile is a tiny preview of the theme (sidebar, text lines, accent) ===== */
+    .theme-choices [data-skin="black"] { --pv-bg: #0b0b0d; --pv-side: #000; --pv-card: #1c1c20; --pv-acc: #ff5368 }
+    .theme-choices [data-skin="mono"] { --pv-bg: #080808; --pv-side: #000; --pv-card: #262626; --pv-acc: #f5f5f5 }
+    .theme-choices [data-skin="midnight"] { --pv-bg: #1a171d; --pv-side: #100e13; --pv-card: #2d2433; --pv-acc: #ff5368 }
+    .theme-choices [data-skin="rose"] { --pv-bg: #2b1722; --pv-side: #1d1018; --pv-card: #4d2a3d; --pv-acc: #ff7198 }
+    .theme-choices [data-skin="strawberry"] { --pv-bg: #fff1f1; --pv-side: #ffb7b7; --pv-card: #ffd0d0; --pv-acc: #e53939 }
+    .theme-choices [data-skin="ocean"] { --pv-bg: #10202f; --pv-side: #0a1520; --pv-card: #21415c; --pv-acc: #53b8ee }
+    .theme-choices [data-skin="forest"] { --pv-bg: #13211b; --pv-side: #0c1511; --pv-card: #264a3a; --pv-acc: #61c59a }
+    .theme-choices [data-skin="glass"] { --pv-bg: #3f6590; --pv-side: #2c4a72; --pv-card: #7391cf; --pv-acc: #cfe6ff }
+    .theme-choices [data-skin="prism-dark"] { --pv-bg: #0c1220; --pv-side: #070b13; --pv-card: #202f4a; --pv-acc: #8b70ff }
+    .theme-choices [data-skin="cloud"] { --pv-bg: #f3f1f6; --pv-side: #ffffff; --pv-card: #dedbe6; --pv-acc: #ff5368 }
+    .theme-choices [data-skin="custom"] { --pv-bg: #1d2030; --pv-side: #10121b; --pv-card: #2e3246; --pv-acc: #8b70ff }
+    html body .theme-choices { gap: 10px }
+    html body .theme-choices button { gap: 11px; padding: 9px 11px 9px 9px; border-radius: 14px; font-size: 12px; font-weight: 600; transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease }
+    html body .theme-choices button i {
+      position: relative; display: block; width: 48px; height: 36px; flex: none; border-radius: 9px; overflow: hidden;
+      border: 1px solid rgba(128, 128, 128, .35);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+      background:
+        linear-gradient(var(--pv-acc), var(--pv-acc)) 19px 8px / 17px 4px no-repeat,
+        linear-gradient(var(--pv-card), var(--pv-card)) 19px 16px / 25px 5px no-repeat,
+        linear-gradient(var(--pv-card), var(--pv-card)) 19px 24px / 19px 5px no-repeat,
+        linear-gradient(var(--pv-acc), var(--pv-acc)) 4px 8px / 5px 3px no-repeat,
+        linear-gradient(var(--pv-card), var(--pv-card)) 4px 15px / 5px 3px no-repeat,
+        linear-gradient(var(--pv-card), var(--pv-card)) 4px 22px / 5px 3px no-repeat,
+        linear-gradient(var(--pv-side), var(--pv-side)) 0 0 / 13px 100% no-repeat,
+        var(--pv-bg)
+    }
+    html body .theme-choices button i::after {
+      content: ""; position: absolute; right: 5px; bottom: 5px; width: 9px; height: 9px; border-radius: 50%;
+      background: var(--pv-acc); filter: none; box-shadow: 0 0 0 2px color-mix(in srgb, var(--pv-acc) 28%, transparent)
+    }
+    html body .theme-choices button:hover i { border-color: rgba(128, 128, 128, .6) }
+    html body .theme-choices button.active i { border-color: var(--accent) }
+    html body .theme-choices button.active { background: color-mix(in srgb, var(--accent) 10%, transparent) }
+    html[data-skin="mono"] body .theme-choices button:hover i { border-color: rgba(128, 128, 128, .6) }
+  </style>
+  <style id="musiko-theme-previews-fit">
+    /* tiles stack preview over label, so long names (Strawberry, Prism Dark) can never spill out */
+    html body .theme-choices { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+    html body .theme-choices button {
+      flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 6px 10px; min-width: 0; text-align: center
+    }
+    html body .theme-choices button span {
+      display: block; max-width: 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-size: 12px; line-height: 1.2; text-align: center
+    }
+    @media (max-width: 430px) {
+      html body .theme-choices { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    }
+  </style>
+  <style id="musiko-theme-polish">
+    /* ===================== STRAWBERRY (light) ===================== */
+    html[data-theme="light"][data-skin="strawberry"] { --white: #3b1419; --muted: #a0666e; --line: #e5394a26 }
+    html[data-theme="light"][data-skin="strawberry"] body .backdrop {
+      background: radial-gradient(ellipse at 8% 6%, #ffc3c8 0, transparent 42%), radial-gradient(ellipse at 94% 14%, #ffdcd0 0, transparent 38%), radial-gradient(ellipse at 80% 96%, #ffb4bd 0, transparent 46%), linear-gradient(150deg, #fff7f5, #ffeceb 55%, #fff4f1)
+    }
+    html[data-theme="light"][data-skin="strawberry"] body .app { background: #fff9f7d9; border-color: #f2a6ad88; box-shadow: 0 24px 70px #d9304a22 }
+    html[data-theme="light"][data-skin="strawberry"] body aside { background: linear-gradient(180deg, #ffdedfc4, #ffeee9a0); border-color: #f2a6ad66 }
+    html[data-theme="light"][data-skin="strawberry"] body .hero {
+      background: radial-gradient(ellipse at 85% 20%, #ffffff66, transparent 40%), linear-gradient(115deg, #ffc7cc 0%, #ff9ba7 55%, #ffd8d0 100%);
+      border-color: #f08a96aa; box-shadow: inset 0 1px #ffffffaa, 0 14px 34px #e5394a1f
+    }
+    html[data-theme="light"][data-skin="strawberry"] body .hero h1 { color: #4a0f1a }
+    html[data-theme="light"][data-skin="strawberry"] body .hero p { color: #7c2f3b }
+    html[data-theme="light"][data-skin="strawberry"] body .eyebrow { color: #b3283c }
+    html[data-theme="light"][data-skin="strawberry"] body .hero-art { background: radial-gradient(circle at 32% 28%, #ff8b97, #e0364f 50%, #9b1a2e); border-color: #ffffff88; box-shadow: 0 18px 40px #b3283c40 }
+    html[data-theme="light"][data-skin="strawberry"] body .hero-time { color: #7c2f3b }
+    html[data-theme="light"][data-skin="strawberry"] body .tracklist { background: #ffffffa6; border-color: #f2a6ad66 }
+    html[data-theme="light"][data-skin="strawberry"] body #tracklist .track { border-color: #f2a6ad40 }
+    html[data-theme="light"][data-skin="strawberry"] body #tracklist .track:hover { background: #ffe3e47a }
+    html[data-theme="light"][data-skin="strawberry"] body #tracklist .track.current { background: #ffd8dc99 }
+    html[data-theme="light"][data-skin="strawberry"] body .nav button { color: #7a4a52 }
+    html[data-theme="light"][data-skin="strawberry"] body .nav button.active { background: #ffffffb0; color: var(--accent); box-shadow: 0 2px 10px #e5394a1c }
+    html[data-theme="light"][data-skin="strawberry"] body .player { background: #fff3f1f2; border-color: #f2a6ad99; box-shadow: 0 14px 40px #d9304a2b }
+    html[data-theme="light"][data-skin="strawberry"] body .lyric-card { background: linear-gradient(135deg, #ffd1d5aa, #ffffff99 65%) }
+
+    /* ===================== FOREST (dark) ===================== */
+    html[data-theme="dark"][data-skin="forest"] {
+      --skin-backdrop: radial-gradient(ellipse at 10% 4%, #266a4d 0, transparent 40%), radial-gradient(ellipse at 92% 82%, #4d5d2f 0, transparent 42%), radial-gradient(ellipse at 50% 118%, #133c2c 0, transparent 55%), linear-gradient(150deg, #09130f, #0f1f18 55%, #0b1510);
+      --skin-app: #0a1510d1;
+      --skin-aside: #0d1b14b8;
+      --skin-hero: linear-gradient(115deg, #1d5a42f2, #2f6f4fc4 52%, #3b4d2cd6);
+      --skin-list: #14301f85;
+      --skin-player: #12261bee;
+      --skin-border: #c3ecd428
+    }
+    html[data-theme="dark"][data-skin="forest"] body .hero-art { background: radial-gradient(circle at 34% 28%, #a6efc6, #4a9a70 50%, #1b382b); box-shadow: 0 20px 48px #2c8a5a40, inset 0 0 28px #ffffff1a }
+    html[data-theme="dark"][data-skin="forest"] body .hero-glow { background: radial-gradient(ellipse at 74% 46%, #6fd3a440, transparent 58%) }
+    html[data-theme="dark"][data-skin="forest"] body .nav button.active { background: #6fd3a41f; color: #8be0b8 }
+    html[data-theme="dark"][data-skin="forest"] body #tracklist .track.current { background: #6fd3a414 }
+    html[data-theme="dark"][data-skin="forest"] body .eyebrow { color: #b5ecd0 }
+
+    /* ===================== CLOUD (light) ===================== */
+    html[data-theme="light"][data-skin="cloud"] { --white: #1e2236; --muted: #6b7290; --line: #5d6fb326 }
+    html[data-theme="light"][data-skin="cloud"] body .backdrop {
+      background: radial-gradient(ellipse at 8% 4%, #d6e3ff 0, transparent 44%), radial-gradient(ellipse at 94% 92%, #eadcfa 0, transparent 46%), radial-gradient(ellipse at 62% 38%, #ffffff 0, transparent 52%), linear-gradient(160deg, #f6f8fd, #edf1f9 60%, #f7f4fb)
+    }
+    html[data-theme="light"][data-skin="cloud"] body .app { background: #ffffffc9; border-color: #8396d033; box-shadow: 0 24px 70px #4a5a9a1c }
+    html[data-theme="light"][data-skin="cloud"] body aside { background: #f3f6fdb8; border-color: #8396d02b }
+    html[data-theme="light"][data-skin="cloud"] body .hero {
+      background: radial-gradient(ellipse at 88% 10%, #ffffffcc, transparent 42%), linear-gradient(115deg, #dce7ff, #e8e1fb 55%, #fbe7ef);
+      border-color: #8396d040; box-shadow: inset 0 1px #fff, 0 14px 34px #4a5a9a14
+    }
+    html[data-theme="light"][data-skin="cloud"] body .hero h1 { color: #1c2142 }
+    html[data-theme="light"][data-skin="cloud"] body .hero p { color: #596089 }
+    html[data-theme="light"][data-skin="cloud"] body .eyebrow { color: #4f6bd6 }
+    html[data-theme="light"][data-skin="cloud"] body .hero-art { background: radial-gradient(circle at 32% 26%, #ffffff, #c4d3f6 56%, #9fb0ec); border-color: #ffffffcc; box-shadow: 0 18px 40px #5a6cb53a }
+    html[data-theme="light"][data-skin="cloud"] body .hero-time { color: #596089 }
+    html[data-theme="light"][data-skin="cloud"] body .tracklist { background: #ffffffb8; border-color: #8396d03a }
+    html[data-theme="light"][data-skin="cloud"] body #tracklist .track { border-color: #8396d02e }
+    html[data-theme="light"][data-skin="cloud"] body #tracklist .track:hover { background: #eef2fd }
+    html[data-theme="light"][data-skin="cloud"] body #tracklist .track.current { background: #e3eafd }
+    html[data-theme="light"][data-skin="cloud"] body .nav button { color: #5b6285 }
+    html[data-theme="light"][data-skin="cloud"] body .nav button.active { background: #ffffff; color: var(--accent); box-shadow: 0 2px 10px #4f7cff1f }
+    html[data-theme="light"][data-skin="cloud"] body .player { background: #ffffffef; border-color: #8396d040; box-shadow: 0 14px 40px #4a5a9a26 }
+    html[data-theme="light"][data-skin="cloud"] body .lyric-card { background: linear-gradient(135deg, #dce7ffaa, #ffffff99 65%) }
+
+    /* picker previews follow the new accents */
+    .theme-choices [data-skin="forest"] { --pv-bg: #0e1d16; --pv-side: #09130f; --pv-card: #25503b; --pv-acc: #6fd3a4 }
+    .theme-choices [data-skin="cloud"] { --pv-bg: #eef2fb; --pv-side: #ffffff; --pv-card: #d5def3; --pv-acc: #4f7cff }
+  </style>
+  <style id="musiko-accent-more">
+    .accent-options [data-accent="#ff7198"] { --swatch: #ff7198 }
+    .accent-options [data-accent="#ff8a3d"] { --swatch: #ff8a3d }
+    .accent-options [data-accent="#f2c230"] { --swatch: #f2c230 }
+    .accent-options [data-accent="#45ed82"] { --swatch: #45ed82 }
+    .accent-options [data-accent="#2ec4c4"] { --swatch: #2ec4c4 }
+    .accent-options [data-accent="#e86ae0"] { --swatch: #e86ae0 }
+    .accent-options { flex-wrap: wrap; justify-content: flex-end; max-width: 178px; row-gap: 8px }
+    .brand { cursor: default }
+  </style>
+  <style id="musiko-logo-static">
+    /* logo is fixed: no hover, click or focus animation */
+    html body .brand, html body .brand-icon, html body .brand-icon svg,
+    html body .brand:hover, html body .brand:hover .brand-icon, html body .brand:active .brand-icon,
+    html body .brand.brand-animating, html body .brand.brand-animating .brand-icon, html body .brand.brand-animating .brand-icon svg {
+      animation: none !important; transition: none !important
+    }
+    html body .brand:hover .brand-icon, html body .brand:active .brand-icon { transform: none !important; box-shadow: 0 5px 18px #ff456133 }
+    html[data-skin="mono"] body .brand:hover .brand-icon { box-shadow: none }
+  </style>
+  <style id="musiko-buttons-polish">
+    /* ===== Buttons: one consistent family (primary / secondary / icon), no hover lift ===== */
+    html body :is(.glass-btn, .hero-cta, .add-btn, .lyrics-toggle, .playlist-head-actions > button, .playlist-create-from-picker):hover,
+    html body :is(.glass-btn, .hero-cta, .add-btn, .lyrics-toggle):active { transform: none; filter: none }
+
+    /* primary: accent fill, soft top highlight, readable text on any accent */
+    html body :is(.add-btn, .hero-cta:not(#autoMixHero)) {
+      border: 1px solid color-mix(in srgb, var(--accent) 70%, #fff 12%);
+      border-radius: 999px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 100%, #fff 14%), var(--accent));
+      color: var(--accent-ink, #fff);
+      font-weight: 650;
+      letter-spacing: .01em;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 4px 14px color-mix(in srgb, var(--accent) 30%, transparent)
+    }
+    html body :is(.add-btn, .hero-cta:not(#autoMixHero)):hover {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 100%, #fff 26%), color-mix(in srgb, var(--accent) 100%, #fff 8%));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .34), 0 6px 18px color-mix(in srgb, var(--accent) 38%, transparent)
+    }
+    html body :is(.add-btn, .hero-cta):active { box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25) }
+
+    /* secondary: quiet glass pill */
+    html body :is(.glass-btn:not(.add-btn), .hero-cta#autoMixHero, .lyrics-toggle, .playlist-head-actions > button) {
+      border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, currentColor 7%, transparent);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+      font-weight: 600
+    }
+    html body :is(.glass-btn:not(.add-btn), .hero-cta#autoMixHero, .lyrics-toggle, .playlist-head-actions > button):hover {
+      background: color-mix(in srgb, currentColor 14%, transparent);
+      border-color: color-mix(in srgb, currentColor 30%, transparent);
+      color: inherit
+    }
+
+    /* icon buttons in the player: round, calm hover wash */
+    html body .player .icon-btn:not(.play), html body .full-buttons .icon-btn:not(.play) {
+      border-radius: 50%; transition: background-color .15s ease, color .15s ease
+    }
+    html body .player .icon-btn:not(.play):hover, html body .full-buttons .icon-btn:not(.play):hover {
+      background: color-mix(in srgb, currentColor 12%, transparent); color: var(--accent)
+    }
+    html body .icon-btn.play {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .3), inset 0 -1px 0 rgba(0, 0, 0, .08);
+      transition: background-color .15s ease, color .15s ease, box-shadow .15s ease
+    }
+    html body .icon-btn.play:hover { transform: none; box-shadow: 0 6px 18px rgba(0, 0, 0, .38) }
+
+    /* small row actions and links */
+    html body .track-action, html body .queue-item > button { border-radius: 50% }
+    html body .text-link { border-radius: 8px; padding: 4px 6px; margin: -4px -6px }
+    html body .text-link:hover { background: color-mix(in srgb, var(--accent) 12%, transparent) }
+
+    /* sidebar nav + mobile tabs: tidy pill shape */
+    html body aside .nav button { border-radius: 12px }
+    html body .setting-segment button { border-radius: 999px }
+    html body .setting-segment { border-radius: 999px }
+
+    /* keyboard focus on every button */
+    html body :is(.glass-btn, .hero-cta, .icon-btn, .text-link, .track-action, .lyrics-toggle):focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px
+    }
+  </style>
+  <style id="musiko-mono-button-fix">
+    /* Mono: primary buttons start as a solid white fill, so hover never fades up from transparent (that showed as a black flash) */
+    html[data-skin="mono"] body :is(.add-btn, .hero-cta:not(#autoMixHero)) {
+      background: #f5f5f5; background-image: none; color: #0a0a0a; border-color: #f5f5f5; box-shadow: none; transition: none
+    }
+    html[data-skin="mono"] body :is(.add-btn, .hero-cta:not(#autoMixHero)):hover {
+      background: #ffffff !important; background-image: none !important; color: #000 !important; border-color: #fff !important; box-shadow: none !important; transition: none
+    }
+    /* every Mono button swaps colours instantly, no fade through black */
+    html[data-skin="mono"] body :is(.glass-btn, .hero-cta, .lyrics-toggle, .playlist-head-actions > button) { transition: none }
+  </style>
+  <style id="musiko-lyrics-placement">
+    /* ===== Lyrics preview: docked above the mini player (right-aligned like Up Next) ===== */
+    @media (min-width: 761px) {
+      html body .lyrics-panel {
+        align-items: flex-end;
+        justify-content: flex-end;
+        padding: 24px calc((100% - var(--side-w, 0px) - min(1080px, 100% - var(--side-w, 0px) - 106px)) / 2) 112px 24px;
+        background: #05060b40
+      }
+      html body .lyrics-panel .lyrics-card {
+        width: min(430px, 100%);
+        height: min(660px, calc(100dvh - 140px));
+        border-radius: 22px;
+        transform-origin: bottom right
+      }
+      html body .lyrics-panel .lyrics-header { padding: 18px 20px 14px }
+      html body .lyrics-panel .lyrics-body { padding: 22px 24px 40px }
+      html body .lyrics-panel .lyric-line { font-size: clamp(18px, 1.8vw, 24px) }
+    }
+    @media (min-width: 761px) and (max-width: 1100px) {
+      html body .lyrics-panel { padding-right: 20px }
+    }
+    /* phones: bottom sheet that sits above the player and tab bar */
+    @media (max-width: 760px) {
+      html body .lyrics-panel { align-items: flex-end; justify-content: center; padding: 0; background: #05060b55 }
+      html body .lyrics-panel .lyrics-card {
+        width: 100%;
+        height: min(78dvh, 640px);
+        border-radius: 24px 24px 0 0;
+        padding-bottom: env(safe-area-inset-bottom, 0px)
+      }
+      html body .lyrics-panel .lyrics-card::before {
+        content: ""; position: absolute; left: 50%; top: 8px; width: 38px; height: 4px; margin-left: -19px;
+        border-radius: 2px; background: currentColor; opacity: .25; pointer-events: none
+      }
+      html body .lyrics-panel .lyrics-header { padding-top: 22px }
+    }
+  </style>
+  <style id="musiko-home-layout">
+    /* ===== Home layout: steady vertical rhythm, side-by-side stats on wide screens, round artist covers ===== */
+    html body .hero { margin-bottom: 24px }
+    html body :is(.home-lyric, .home-artists, .listening-stats) { margin: 0 0 36px }
+    html body .home-artists .section-head, html body .listening-stats .section-head { margin: 0 2px 14px }
+
+    /* wide screens: stat tiles stack on the left, top songs take the rest */
+    @media (min-width: 1000px) {
+      html body .listening-stats:not([hidden]) {
+        display: grid;
+        grid-template-columns: minmax(220px, 270px) minmax(0, 1fr);
+        column-gap: 20px;
+        align-items: start
+      }
+      html body .listening-stats .stats-heading { grid-column: 1 / -1 }
+      html body .listening-stats .stat-tiles { grid-column: 1; grid-template-columns: 1fr; margin: 0; gap: 12px }
+      html body .listening-stats .stat-tile.is-wide { grid-column: auto }
+      html body .listening-stats .top-songs-card { grid-column: 2; grid-row: 2 }
+    }
+
+    /* very wide screens: lyric highlight and artists share a row */
+    @media (min-width: 1500px) {
+      html body main:has(> .hero:not([hidden])) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px; align-content: start }
+      html body main:has(> .hero:not([hidden])) > * { grid-column: 1 / -1 }
+      html body main:has(> .hero:not([hidden])) > :is(.home-lyric, .home-discover):not([hidden]):has(~ .home-artists:not([hidden])) { grid-column: 1 }
+      html body main:has(> .hero:not([hidden])) > :is(.home-lyric, .home-discover):not([hidden]) ~ .home-artists:not([hidden]) { grid-column: 2; align-self: start }
+    }
+
+    @media (max-width: 760px) {
+      html body :is(.home-lyric, .home-artists, .listening-stats) { margin-bottom: 28px }
+      html body .hero { margin-bottom: 20px }
+    }
+  </style>
+  <style id="musiko-discover">
+    .home-discover[hidden] { display: none !important }
+    .home-discover { margin: 0 0 36px }
+    .discover-card {
+      position: relative; display: block; padding: 18px 22px 20px; overflow: hidden;
+      border: 1px solid var(--hair); border-radius: var(--r-lg);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--ambient-a) 20%, transparent), var(--fill-1) 62%)
+    }
+    .discover-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px }
+    .discover-kicker { display: inline-flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--muted) }
+    .discover-kicker svg { width: 15px; height: 15px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
+    .discover-another { border: 0; background: none; padding: 4px 6px; margin: -4px -6px; border-radius: 8px; color: var(--accent); font: 600 13px 'DM Sans', system-ui, sans-serif; cursor: pointer }
+    .discover-another:hover { background: color-mix(in srgb, var(--accent) 12%, transparent) }
+    .discover-body { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 18px; align-items: center }
+    .discover-art { width: 96px; height: 96px; display: grid; place-items: center; border-radius: 12px; background: linear-gradient(145deg, #cf6876, #58465f) center / cover no-repeat; color: #fff9; font-size: 30px; box-shadow: 0 10px 26px rgba(0, 0, 0, .3); outline: 1px solid var(--hair); outline-offset: -1px }
+    .discover-copy { min-width: 0 }
+    .discover-title { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: clamp(20px, 2.6vw, 26px); font-weight: 650; letter-spacing: -.02em; line-height: 1.2 }
+    .discover-sub { display: block; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--muted) }
+    .discover-reason { display: block; margin-top: 10px; font-size: 13px; color: var(--muted); opacity: .85 }
+    .discover-actions { display: flex; align-items: center; gap: 10px; margin-top: 14px }
+    @media (max-width: 760px) {
+      .home-discover { margin-bottom: 28px }
+      .discover-card { padding: 16px 16px 18px }
+      .discover-body { grid-template-columns: 76px minmax(0, 1fr); gap: 14px }
+      .discover-art { width: 76px; height: 76px }
+    }
+  </style>
+  <script>
+    // Home: when no lyric highlight is showing, suggest a song to rediscover
+    (() => {
+      const $ = q => document.querySelector(q), lyric = $('#lyricSection'); if (!lyric) return;
+      const sec = document.createElement('section');
+      sec.className = 'recent-section home-discover'; sec.id = 'discoverSection'; sec.hidden = true; sec.setAttribute('aria-label', 'Rediscover a song');
+      sec.innerHTML = '<div class="discover-card"><div class="discover-head"><span class="discover-kicker"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 17v4M17 19h4"/></svg>REDISCOVER</span><button type="button" class="discover-another">Another ↻</button></div><div class="discover-body"><div class="discover-art">♫</div><div class="discover-copy"><span class="discover-title"></span><span class="discover-sub"></span><span class="discover-reason"></span><div class="discover-actions"><button type="button" class="glass-btn add-btn discover-play">▶&nbsp; Play</button><button type="button" class="glass-btn discover-queue">＋ Up Next</button></div></div></div></div>';
+      lyric.after(sec);
+      const art = sec.querySelector('.discover-art'), title = sec.querySelector('.discover-title'), sub = sec.querySelector('.discover-sub'), reason = sec.querySelector('.discover-reason');
+      let pickId = null, nonce = 0, sig = '';
+      const ago = ms => { const d = Math.floor((Date.now() - ms) / 86400000); return d < 1 ? 'Played earlier today' : d === 1 ? 'Last played yesterday' : d < 14 ? `Last played ${d} days ago` : d < 60 ? `Last played ${Math.round(d / 7)} weeks ago` : `Last played ${Math.round(d / 30)} months ago` };
+      function pick() {
+        const pool = tracks.map((t, i) => ({ t, i, last: (listeningStats.tracks[t.id] || {}).lastPlayed || 0 })).sort((a, b) => a.last - b.last).slice(0, 8).filter(x => x.t.id !== pickId);
+        const choice = pool[Math.floor(Math.random() * pool.length)]; pickId = choice ? choice.t.id : null
+      }
+      function render() {
+        const show = activeView === 'Home' && tracks.length > 0 && lyric.hidden;
+        sec.hidden = !show; if (!show) return;
+        if (!pickId || !tracks.some(t => t.id === pickId)) pick();
+        const i = tracks.findIndex(t => t.id === pickId); if (i < 0) { sec.hidden = true; return }
+        const t = tracks[i], st = listeningStats.tracks[t.id], key = [t.id, t.name, t.artist, t.album, t.art ? 1 : 0, st && st.lastPlayed].join('|');
+        if (key === sig) return; sig = key;
+        setCover(art, t); title.textContent = t.name; sub.textContent = `${t.artist}${t.album && t.album !== 'Local files' ? ' · ' + t.album : ''}`;
+        reason.textContent = st && st.lastPlayed ? ago(st.lastPlayed) : 'You haven\u2019t played this one yet'
+      }
+      sec.querySelector('.discover-play').onclick = () => { const i = tracks.findIndex(t => t.id === pickId); if (i >= 0) playTrack(i) };
+      sec.querySelector('.discover-queue').onclick = () => { const i = tracks.findIndex(t => t.id === pickId); if (i >= 0) enqueueTrack(i) };
+      sec.querySelector('.discover-another').onclick = () => { pick(); sig = ''; render() };
+      const origRender = window.render;
+      window.render = function () { const out = origRender.apply(this, arguments); requestAnimationFrame(render); return out };
+      setInterval(render, 800); render();
+    })();
+  </script>
+  <style id="musiko-lyric-card-polish">
+    /* ===== Home lyric card: stable height, cover + title footer, quieter intro state ===== */
+    html body .lyric-card { padding: 20px 26px 18px; border-radius: 24px; cursor: pointer }
+    html body .lyric-card:hover { border-color: var(--hair) }
+    .lyric-head { margin-bottom: 18px }
+
+    /* previous / next lines fade out toward the edges and always reserve their row, so the card never jumps */
+    html body .lyric-prev, html body .lyric-next {
+      display: block; min-height: 1.4em; opacity: .5;
+      -webkit-mask-image: linear-gradient(90deg, #000 70%, transparent); mask-image: linear-gradient(90deg, #000 70%, transparent)
+    }
+    html body .lyric-prev:empty, html body .lyric-next:empty { display: block; visibility: hidden }
+    html body .lyric-prev { margin-bottom: 10px }
+    html body .lyric-next { margin-top: 12px }
+    html body .lyric-now { min-height: 2.44em; align-content: center; text-shadow: 0 0 36px color-mix(in srgb, var(--accent) 22%, transparent) }
+
+    /* instrumental / intro: a soft accent note instead of a big white glyph */
+    html body .lyric-now.is-note {
+      min-height: 2.44em; display: flex; align-items: center; gap: 10px;
+      font-size: 15px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-shadow: none
+    }
+    html body .lyric-now.is-note::before { content: "♪"; font-size: 30px; line-height: 1; letter-spacing: 0; text-transform: none; color: var(--accent) }
+    html body .lyric-now.is-note::after { content: "Instrumental"; }
+
+    /* footer: small cover + title / artist */
+    html body .lyric-meta { align-items: center; gap: 12px; margin-top: 18px; padding-top: 14px; flex-wrap: nowrap }
+    .lyric-cover { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 8px; background: linear-gradient(145deg, #cf6876, #58465f) center / cover no-repeat; color: #fff9; font-size: 15px; outline: 1px solid var(--hair); outline-offset: -1px }
+    html body .lyric-meta .lyric-song { display: grid; gap: 2px; min-width: 0 }
+    html body .lyric-meta .lyric-song b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 650; color: var(--white) }
+    html body .lyric-meta .lyric-song small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--muted) }
+    @media (max-width: 760px) {
+      html body .lyric-card { padding: 16px 18px 16px; border-radius: 20px }
+      html body .lyric-head { margin-bottom: 12px }
+    }
+  </style>
+  <style id="musiko-lyric-card-fixed">
+    /* fixed card size: the current line is capped at two lines and long lyrics are trimmed with "…" instead of growing the card */
+    html body .lyric-card { height: auto; display: flex; flex-direction: column }
+    html body .lyric-now {
+      -webkit-line-clamp: 2; line-clamp: 2; height: 2.44em; min-height: 0; max-height: 2.44em;
+      overflow: hidden; overflow-wrap: anywhere; flex: none
+    }
+    html body .lyric-now.is-note { height: 2.44em; max-height: 2.44em }
+    html body .lyric-prev, html body .lyric-next { flex: none; height: 1.4em; min-height: 0 }
+    html body .lyric-meta { margin-top: auto; flex: none }
+    @media (max-width: 760px) { html body .lyric-card { height: auto } }
+  </style>
+  <style id="musiko-sidebar-refine">
+    /* ===== Sidebar refinement: fewer pills, clearer hierarchy, real empty state ===== */
+    html body aside .nav button { border-radius: 8px }
+
+    /* active row: quiet tint + slim accent bar instead of a big glowing block */
+    html body aside .nav button.active::before,
+    html body aside .nav .playlist-nav-item.active::before {
+      content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px;
+      border-radius: 0 3px 3px 0; background: var(--accent)
+    }
+    html body aside .nav button.active { background: color-mix(in srgb, var(--accent) 9%, transparent) }
+
+    /* section label: readable, aligned with the rows above it */
+    html body aside .nav-label.playlist-label {
+      display: flex; align-items: center; gap: 4px; padding: 0 4px 0 12px; margin-bottom: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: .12em; opacity: 1; color: var(--muted)
+    }
+    html body aside .playlist-label > span { margin-right: auto }
+
+    /* Auto Mix: plain text action (was a bordered pill) */
+    html body aside #autoMix {
+      height: 26px; padding: 0 8px; margin-left: 0; border: 0; border-radius: 6px; background: transparent;
+      font: 600 12px/1 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      letter-spacing: 0; text-transform: none; color: var(--muted); cursor: pointer
+    }
+    html body aside #autoMix:hover { background: var(--fill-2); color: var(--accent); border-color: transparent }
+
+    /* new playlist: square icon button (was a bordered circle) */
+    html body aside #newPlaylist {
+      width: 26px; height: 26px; border: 0; border-radius: 6px; background: transparent;
+      color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer
+    }
+    html body aside #newPlaylist:hover { background: var(--fill-2); color: var(--white) }
+
+    /* collapse toggle: borderless until hovered */
+    html body aside .side-toggle { border-color: transparent; background: transparent; border-radius: 8px }
+    html body aside .side-toggle:hover { background: var(--fill-2); border-color: transparent }
+
+    /* playlist rows: compact, dot becomes a small rounded swatch */
+    html body aside #playlistNav { gap: 2px }
+    html body aside .playlist-nav-item { height: 36px; font-size: 13.5px; font-weight: 500; color: var(--muted) }
+    html body aside .playlist-nav-item:hover, html body aside .playlist-nav-item.active { color: var(--white) }
+    html body aside .playlist-nav-item.active { background: color-mix(in srgb, var(--playlist-color, var(--accent)) 12%, transparent) }
+    html body aside .nav .playlist-nav-item.active::before { background: var(--playlist-color, var(--accent)) }
+    html body aside .playlist-dot { width: 8px; height: 8px; border-radius: 2px; box-shadow: none }
+    html body aside .playlist-edit, html body aside .playlist-delete { font-size: 13px; padding: 4px }
+
+    /* empty state when there are no playlists yet */
+    html body aside #playlistNav:empty::before {
+      content: "No playlists yet. Use + to create one."; display: block; white-space: normal;
+      padding: 4px 12px 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); opacity: .75
+    }
+    html body aside .nav .playlist-nav-item.active { color: var(--white) !important; background: color-mix(in srgb, var(--playlist-color, var(--accent)) 12%, transparent) !important; box-shadow: none !important }
+    html body aside .nav-label.playlist-label #autoMix { font-size: 12px !important; color: var(--muted) !important }
+    html body aside .nav-label.playlist-label #autoMix:hover { color: var(--accent) !important }
+    html.side-collapsed body aside #playlistNav:empty::before { display: none }
+    html.side-collapsed body aside .nav button.active::before { display: none }
+  </style>
+  <style id="musiko-context-menu">
+    /* ===== Right-click / long-press menu for songs and albums ===== */
+    .ctx-menu { position: fixed; z-index: 100000; min-width: 210px; max-width: 280px; padding: 6px; border-radius: 10px;
+      background: #1c1c21; color: #f2f2f5; border: 1px solid #ffffff1f; box-shadow: 0 18px 50px #000a, 0 2px 8px #0006;
+      font: 500 13.5px 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; opacity: 0; transform: scale(.97);
+      transform-origin: top left; transition: opacity .12s ease, transform .12s ease }
+    .ctx-menu.show { opacity: 1; transform: none }
+    .ctx-head { padding: 8px 10px 7px; border-bottom: 1px solid #ffffff14; margin-bottom: 5px }
+    .ctx-head b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+    .ctx-head span { display: block; margin-top: 2px; font-size: 12px; color: #a5a5b0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+    .ctx-item { display: flex; align-items: center; justify-content: space-between; gap: 18px; width: 100%; height: 34px; padding: 0 10px;
+      border: 0; border-radius: 6px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer }
+    .ctx-item:hover, .ctx-item:focus-visible { background: #ffffff14 }
+    html body .ctx-menu .ctx-item:focus, html body .ctx-menu .ctx-item:focus-visible { outline: none !important; box-shadow: none !important }
+    .ctx-item small { font-size: 11.5px; color: #8f8f9b }
+    .ctx-item.danger { color: #ff7b8b }
+    .ctx-sep { height: 1px; margin: 5px 4px; background: #ffffff14 }
+    html[data-theme="light"] .ctx-menu { background: #fffffff2; color: #1a1a1d; border-color: #00000018; box-shadow: 0 18px 50px #0003, 0 2px 8px #0002 }
+    html[data-theme="light"] .ctx-head { border-bottom-color: #0000001a }
+    html[data-theme="light"] .ctx-head span, html[data-theme="light"] .ctx-item small { color: #6a6a74 }
+    html[data-theme="light"] .ctx-item:hover, html[data-theme="light"] .ctx-item:focus-visible { background: #0000000d }
+    /* no border while the menu is open; list rows just keep their hover tint */
+    .ctx-target { outline: none !important }
+    .track.ctx-target { background: color-mix(in srgb, var(--white, #fff) 6%, transparent) }
+    .track, .album-card, .lib-card { -webkit-touch-callout: none }
+    /* touch screens: holding a song/album must not start text selection (the blue highlight) or flash the tap colour */
+    @media (hover: none), (pointer: coarse) {
+      .track, .track *, .album-card, .album-card *, .lib-card, .lib-card *, .lib-row, .lib-row *, .recent-card, .recent-card *,
+      .queue-item, .queue-item *, .player .now, .player .now *, .ctx-menu, .ctx-menu * {
+        -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent
+      }
+    }
+    /* same liquid glass as the mini player (copied from #musiko-miniplayer-glass) */
+    html body .ctx-menu { border-radius: 18px; padding: 7px }
+    html body .ctx-menu .ctx-item { border-radius: 10px }
+    html:not([data-glass="off"]):not([data-performance="low"]) body .ctx-menu {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 55%),
+        rgba(24, 14, 22, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      backdrop-filter: blur(26px) saturate(190%) brightness(.92);
+      border: 1px solid rgba(255, 255, 255, .16);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .22),
+        inset 0 0 22px rgba(0, 0, 0, .28),
+        0 10px 36px rgba(0, 0, 0, .28);
+      color: #f5f4f7
+    }
+    html[data-theme="light"]:not([data-glass="off"]):not([data-performance="low"]) body .ctx-menu {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, .08) 60%),
+        rgba(255, 255, 255, .22);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      backdrop-filter: blur(26px) saturate(190%);
+      border-color: rgba(255, 255, 255, .55);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 10px 32px rgba(40, 30, 60, .16);
+      color: #29242c
+    }
+    /* glass off / low performance: solid like the other panels */
+    html[data-theme="light"][data-glass="off"] body .ctx-menu, html[data-theme="light"][data-performance="low"] body .ctx-menu { background: #fbf9fa }
+    @media (prefers-reduced-motion: reduce) { .ctx-menu { transition: none } }
+  </style>
+  <script id="musiko-context-menu-js">
+  (() => {
+    let menu = null, targetEl = null, swallowClickUntil = 0;
+    const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random());
+    const entry = i => ({ qid: uid(), trackId: tracks[i].id });
+    const refreshQueue = () => { try { preloadedTrackIndex = -1 } catch { } renderQueue(); try { prepareNextTrack() } catch { } };
+    const plural = n => n + (n === 1 ? ' song' : ' songs');
+
+    function close() { if (!menu) return; menu.remove(); menu = null; if (targetEl) targetEl.classList.remove('ctx-target'); targetEl = null }
+
+    function resolve(el) {
+      const row = el.closest('.track[data-i]');
+      if (row) { const i = +row.dataset.i; if (tracks[i]) return { kind: 'song', i, el: row } }
+      const card = el.closest('.album-card[data-album-index]');
+      if (card) { const g = getAlbumGroups()[+card.dataset.albumIndex]; if (g) return { kind: 'album', g, el: card } }
+      const lib = el.closest('.lib-card[data-key]');
+      if (lib) { const g = getAlbumGroups().find(x => x.key === lib.dataset.key); if (g) return { kind: 'album', g, el: lib } }
+      const art = el.closest('.recent-card[data-n]');
+      if (art) { const nm = (art.querySelector('.recent-track') || {}).textContent; if (nm) return { kind: 'artist', name: nm, el: art } }
+      const ar = el.closest('.lib-row[data-artist]');
+      if (ar) return { kind: 'artist', name: ar.dataset.artist, el: ar, open: () => ar.click() };
+      const qi = el.closest('.queue-item');
+      if (qi) { const b = qi.querySelector('[data-play-queued]'), q = b && queue.find(x => x.qid === b.dataset.playQueued), i = q ? tracks.findIndex(t => t.id === q.trackId) : -1; if (i >= 0) return { kind: 'queued', i, qid: q.qid, el: qi } }
+      const now = el.closest('.player .now');
+      if (now && current >= 0 && tracks[current]) return { kind: 'song', i: current, el: now, playing: true };
+      return null;
+    }
+
+    function artistItems(info) {
+      const idx = tracks.map((t, i) => i).filter(i => ((tracks[i].artist || '').trim() || 'Unknown Artist') === info.name);
+      const base = albumItems({ indices: idx, album: info.name, key: null });
+      base.splice(-2); base[0][0] = 'Play all'; base[1][0] = 'Shuffle';
+      if (info.open) base.push('-', ['Open artist', info.open]);
+      return base;
+    }
+
+    function queuedItems(info) {
+      const i = info.i, t = tracks[i];
+      return [
+        ['Play now', () => playQueued(info.qid)],
+        ['Move to top of Up Next', () => { const at = queue.findIndex(x => x.qid === info.qid); if (at > 0) { const [it] = queue.splice(at, 1); queue.unshift(it); refreshQueue(); toast('Playing next: ' + t.name) } }],
+        '-',
+        ['Add to playlist…', () => addToPlaylist(i)],
+        [t.favorite ? 'Remove from favorites' : 'Add to favorites', () => toggleFavorite(i)],
+        '-',
+        ['Remove from Up Next', () => { queue = queue.filter(x => x.qid !== info.qid); refreshQueue() }, 'danger']
+      ];
+    }
+
+    function songItems(i, playing) {
+      const t = tracks[i], items = [];
+      if (!playing) items.push(['Play now', () => playTrack(i)]);
+      items.push(['Play next', () => { queue.unshift(entry(i)); refreshQueue(); toast('Playing next: ' + t.name) }]);
+      items.push(['Add to Up Next', () => enqueueTrack(i)]);
+      items.push('-');
+      items.push(['Add to playlist…', () => addToPlaylist(i)]);
+      items.push([t.favorite ? 'Remove from favorites' : 'Add to favorites', () => toggleFavorite(i)]);
+      items.push('-');
+      if (t.album && !(activeView === 'Album' && activeAlbumKey === albumIdentity(t))) items.push(['Go to album', () => openAlbumView(albumIdentity(t))]);
+      items.push(['Edit details', () => openTrackMetadata(t.id)]);
+      if (activePlaylistId) items.push(['Remove from this playlist', () => removeTrack(i), 'danger']);
+      return items;
+    }
+
+    function albumItems(g) {
+      const idx = g.indices.filter(i => tracks[i]);
+      const playGroup = shuf => { const ids = idx.slice(); if (shuf) for (let n = ids.length - 1; n > 0; n--) { const r = Math.floor(Math.random() * (n + 1)); [ids[n], ids[r]] = [ids[r], ids[n]] } const first = ids.shift(); queue = ids.map(entry); renderQueue(); playTrack(first) };
+      return [
+        ['Play album', () => playGroup(false)],
+        ['Shuffle album', () => playGroup(true)],
+        '-',
+        ['Play next', () => { queue.unshift(...idx.map(entry)); refreshQueue(); toast('Playing next: ' + g.album) }],
+        ['Add to Up Next', () => { queue.push(...idx.map(entry)); refreshQueue(); toast('Added ' + plural(idx.length) + ' to Up Next') }],
+        '-',
+        ['Open album', () => openAlbumView(g.key)]
+      ];
+    }
+
+    function open(info, x, y) {
+      close();
+      const isSong = info.kind === 'song' || info.kind === 'queued';
+      const head = isSong ? [tracks[info.i].name, tracks[info.i].artist] : info.kind === 'artist' ? [info.name, 'Artist'] : [info.g.album, info.g.artist + ' · ' + plural(info.g.indices.length)];
+      const items = info.kind === 'song' ? songItems(info.i, info.playing) : info.kind === 'queued' ? queuedItems(info) : info.kind === 'artist' ? artistItems(info) : albumItems(info.g);
+      try { getSelection().removeAllRanges() } catch { }
+      menu = document.createElement('div'); menu.className = 'ctx-menu'; menu.setAttribute('role', 'menu');
+      const h = document.createElement('div'); h.className = 'ctx-head';
+      const b = document.createElement('b'); b.textContent = head[0]; const sp = document.createElement('span'); sp.textContent = head[1] || ''; h.append(b, sp); menu.append(h);
+      items.forEach(it => {
+        if (it === '-') { const d = document.createElement('div'); d.className = 'ctx-sep'; menu.append(d); return }
+        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'ctx-item' + (it[2] ? ' ' + it[2] : ''); btn.setAttribute('role', 'menuitem'); btn.textContent = it[0];
+        btn.onclick = e => { e.stopPropagation(); close(); it[1]() };
+        menu.append(btn);
+      });
+      document.body.append(menu);
+      targetEl = info.el; targetEl.classList.add('ctx-target');
+      const r = menu.getBoundingClientRect();
+      menu.style.left = Math.max(8, Math.min(x, innerWidth - r.width - 8)) + 'px';
+      menu.style.top = Math.max(8, Math.min(y, innerHeight - r.height - 8)) + 'px';
+      requestAnimationFrame(() => menu && menu.classList.add('show'));
+    }
+
+    /* right click (and the keyboard context-menu key) */
+    document.addEventListener('contextmenu', e => {
+      const info = resolve(e.target); if (!info) { close(); return }
+      e.preventDefault();
+      if (Date.now() < swallowClickUntil) return;           /* long-press already opened it */
+      open(info, e.clientX, e.clientY);
+    });
+
+    /* long press on touch screens */
+    let timer = 0, sx = 0, sy = 0;
+    const cancel = () => { clearTimeout(timer); timer = 0 };
+    document.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1) { cancel(); return }
+      const info = resolve(e.target); if (!info) return;
+      const t = e.touches[0]; sx = t.clientX; sy = t.clientY;
+      timer = setTimeout(() => { timer = 0; swallowClickUntil = Date.now() + 700; if (navigator.vibrate) try { navigator.vibrate(12) } catch { } open(info, sx, sy) }, 480);
+    }, { passive: true });
+    document.addEventListener('touchmove', e => { const t = e.touches[0]; if (timer && (Math.abs(t.clientX - sx) > 8 || Math.abs(t.clientY - sy) > 8)) cancel() }, { passive: true });
+    ['touchend', 'touchcancel'].forEach(n => document.addEventListener(n, cancel, { passive: true }));
+    /* the finger lifting after a long press must not also play the song / open the album */
+    document.addEventListener('click', e => { if (Date.now() < swallowClickUntil && !e.target.closest('.ctx-menu')) { e.preventDefault(); e.stopPropagation() } }, true);
+
+    /* dismiss */
+    document.addEventListener('pointerdown', e => { if (menu && !e.target.closest('.ctx-menu')) close() }, true);
+    window.addEventListener('blur', close); window.addEventListener('resize', close);
+    document.addEventListener('scroll', close, true);
+    document.addEventListener('keydown', e => {
+      if (!menu) return;
+      const items = [...menu.querySelectorAll('.ctx-item')], at = items.indexOf(document.activeElement);
+      if (e.key === 'Escape') { e.preventDefault(); close() }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); items[(at + 1) % items.length].focus() }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); items[(at - 1 + items.length) % items.length].focus() }
+    }, true);
+  })();
   </script>
 </body>
 
