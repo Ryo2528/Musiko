@@ -917,6 +917,11 @@
       cursor: pointer
     }
 
+    .full-close { display: grid; place-items: center; padding: 0 }
+    html body .full-close, html[data-theme="light"] body .full-close { border: 0; background: transparent; box-shadow: none; border-radius: 0; backdrop-filter: none; -webkit-backdrop-filter: none }
+    html body .full-close:hover { background: transparent; opacity: .8 }
+    .full-close svg { width: 20px; height: 20px; display: block }
+
     .full-content {
       position: relative;
       z-index: 1;
@@ -4582,7 +4587,7 @@
       }
     }
   </style>
-  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .32 ? '#101114' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff', '#f5f5f5', '#4f7cff', '#6fd3a4', '#ff8a3d', '#f2c230', '#2ec4c4', '#e86ae0'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 4, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, fullBgAnimation: true, customBackground: '', customDim: 60, customBlur: 0 }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent)) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.fullBgAnimation === 'boolean') value.fullBgAnimation = saved.fullBgAnimation; if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground; if (Number.isFinite(saved.customDim)) value.customDim = Math.min(90, Math.max(0, saved.customDim)); if (Number.isFinite(saved.customBlur)) value.customBlur = Math.min(24, Math.max(0, saved.customBlur)) } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.dataset.fullAnimation = value.fullBgAnimation ? 'on' : 'off'; root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); root.style.setProperty('--custom-dim', value.customDim / 100); root.style.setProperty('--custom-blur', value.customBlur + 'px'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
+  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .32 ? '#101114' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff', '#f5f5f5', '#4f7cff', '#6fd3a4', '#ff8a3d', '#f2c230', '#2ec4c4', '#e86ae0'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 4, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, fullBgAnimation: true, customBackground: '', customDim: 60, customBlur: 0 }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent) || /^#[0-9a-f]{6}$/i.test(saved.accent || '')) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.fullBgAnimation === 'boolean') value.fullBgAnimation = saved.fullBgAnimation; if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground; if (Number.isFinite(saved.customDim)) value.customDim = Math.min(90, Math.max(0, saved.customDim)); if (Number.isFinite(saved.customBlur)) value.customBlur = Math.min(24, Math.max(0, saved.customBlur)) } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.dataset.fullAnimation = value.fullBgAnimation ? 'on' : 'off'; root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); root.style.setProperty('--custom-dim', value.customDim / 100); root.style.setProperty('--custom-blur', value.customBlur + 'px'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
   <style>
     .queue-panel {
       position: fixed;
@@ -8476,6 +8481,17 @@
       .fullscreen.open .full-flow .ff { animation: none !important; will-change: auto }
     }
   </style>
+  <style id="musiko-hero-compact">
+    /* Now Playing hero on phones: compact stack  NOW PLAYING / TITLE / ARTIST · ALBUM / time,
+       no space reserved for the cover badge (the cover is hidden while a song plays) */
+    @media (max-width: 760px) {
+      html body .hero.is-playing, html body .hero.is-continue { min-height: 0; justify-content: flex-start; padding: 18px 18px 22px }
+      html body .hero.is-playing .hero-copy, html body .hero.is-continue .hero-copy { align-content: flex-start; gap: 6px 10px }
+      html body .hero.is-playing .hero-copy .eyebrow, html body .hero.is-continue .hero-copy .eyebrow { min-height: 0; padding-right: 0; display: block }
+      html body .hero.is-playing .hero-copy > h1, html body .hero.is-continue .hero-copy > h1 { margin: 2px 0 0 }
+      html body .hero.is-playing .hero-copy > p, html body .hero.is-continue .hero-copy > p { margin: 0 }
+    }
+  </style>
 </head>
 
 <body>
@@ -8662,7 +8678,7 @@
     <div class="full-bg" id="fullBg"></div>
     <div class="full-ambient" aria-hidden="true"></div>
     <div class="full-flow" aria-hidden="true"><i class="ff ff1"></i><i class="ff ff2"></i><i class="ff ff3"></i><i class="ff ff4"></i></div>
-    <div class="full-shade"></div><button class="full-close" id="closeFullscreen" title="Close full screen">×</button>
+    <div class="full-shade"></div><button class="full-close" id="closeFullscreen" title="Exit full screen" aria-label="Exit full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v6H3M15 3v6h6M3 15h6v6M15 21v-6h6"/></svg></button>
     <div class="full-content">
       <div class="full-art-wrap" id="fullArtWrap">
         <div class="no-art">♫</div>
@@ -8770,7 +8786,7 @@
               aria-label="Coral" title="Coral"><span></span></button><button type="button" data-accent="#8b70ff"
               aria-label="Violet" title="Violet"><span></span></button><button type="button" data-accent="#328fe8"
               aria-label="Blue" title="Blue"><span></span></button><button type="button" data-accent="#20a77a"
-              aria-label="Green" title="Green"><span></span></button><button type="button" data-accent="#ff7198" aria-label="Pink" title="Pink"><span></span></button><button type="button" data-accent="#ff8a3d" aria-label="Orange" title="Orange"><span></span></button><button type="button" data-accent="#f2c230" aria-label="Gold" title="Gold"><span></span></button><button type="button" data-accent="#45ed82" aria-label="Mint" title="Mint"><span></span></button><button type="button" data-accent="#2ec4c4" aria-label="Teal" title="Teal"><span></span></button><button type="button" data-accent="#e86ae0" aria-label="Magenta" title="Magenta"><span></span></button></div>
+              aria-label="Green" title="Green"><span></span></button><button type="button" data-accent="#ff7198" aria-label="Pink" title="Pink"><span></span></button><button type="button" data-accent="#ff8a3d" aria-label="Orange" title="Orange"><span></span></button><button type="button" data-accent="#f2c230" aria-label="Gold" title="Gold"><span></span></button><button type="button" data-accent="#45ed82" aria-label="Mint" title="Mint"><span></span></button><button type="button" data-accent="#2ec4c4" aria-label="Teal" title="Teal"><span></span></button><button type="button" data-accent="#e86ae0" aria-label="Magenta" title="Magenta"><span></span></button><button type="button" data-accent="#f5f5f5" aria-label="White" title="White"><span></span></button><label class="accent-custom" title="Custom color"><input type="color" id="customAccent" aria-label="Custom accent color" value="#ff5368"></label></div>
         </section>
         <section class="setting-group">
           <div>
@@ -9053,7 +9069,74 @@
       return result } catch { return {} } }
     function parseLrc(text) { const out = []; for (const raw of text.replace(/^\ufeff/, '').split(/\r?\n/)) { const stamps = [...raw.matchAll(/\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]/g)]; if (!stamps.length) continue; const line = raw.replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]/g, '').trim(); if (!line) continue; for (const m of stamps) { const frac = m[3] || '0'; out.push({ time: +m[1] * 60 + +m[2] + (+frac / 10 ** frac.length), text: line }) } } return out.sort((a, b) => a.time - b.time) }
     let lyricsQueue = Promise.resolve(), lyricsNextAt = 0, lyricsRetryAt = 0;
-    function lookupLyrics(t) { if (!t || t.lyricLines?.length || t.lyricsLookup === 'loading' || t.lyricsLookup === 'done' || t.lyricsLookup === 'unavailable') return; if (!t.name || !t.artist || t.artist === 'Local audio' || !Number.isFinite(t.duration) || t.duration < 1 || t.duration > 3600) { t.lyricsLookup = 'unavailable'; return } t.lyricsLookup = 'loading'; if (lyricsVisible()) renderLyrics(); const task = lyricsQueue.then(async () => { const wait = Math.max(lyricsNextAt, lyricsRetryAt) - Date.now(); if (wait > 0) await new Promise(resolve => setTimeout(resolve, wait)); const q = new URLSearchParams({ track_name: t.name, artist_name: t.artist, duration: String(Math.round(t.duration)) }); if (t.album && t.album !== 'Local files') q.set('album_name', t.album); const response = await fetch(`https://lrclib.net/api/get?${q}`, { headers: { 'X-User-Agent': 'Musiko/1.0 (local music player)' }, referrerPolicy: 'no-referrer' }); lyricsNextAt = Date.now() + 350; if (response.status === 429) { lyricsRetryAt = Date.now() + Math.max(1, Number(response.headers.get('Retry-After')) || 3) * 1000; throw new Error('Lyrics service is busy') } if (response.status === 404) { t.lyricsLookup = 'done'; await saveTrack(t); if (current >= 0 && tracks[current].id === t.id && lyricsVisible()) renderLyrics(); return } if (!response.ok) throw new Error('Lyrics lookup failed'); const result = await response.json(); if (result.syncedLyrics) { const lines = parseLrc(result.syncedLyrics); if (lines.length) { t.lyricLines = lines; t.lyrics = lines.map(line => line.text).join('\n'); t.lyricsSource = 'LRCLIB' } } if (!t.lyricLines.length && result.plainLyrics) { t.lyrics = result.plainLyrics; t.lyricsSource = 'LRCLIB' } t.lyricsLookup = 'done'; await saveTrack(t); if (current >= 0 && tracks[current].id === t.id && lyricsVisible()) renderLyrics() }); lyricsQueue = task.catch(() => { }); task.catch(err => { lyricsNextAt = Date.now() + 350; if (err && err.message === 'Lyrics service is busy' && (t._lyricsRetries = (t._lyricsRetries || 0) + 1) <= 3) { t.lyricsLookup = ''; setTimeout(() => lookupLyrics(t), Math.max(1000, lyricsRetryAt - Date.now()) + 250); return } t.lyricsLookup = 'failed'; if (current >= 0 && tracks[current].id === t.id && lyricsVisible()) renderLyrics() }) }
+    function lookupLyrics(t) {
+      if (!t || t.lyricLines?.length || t.lyricsLookup === 'loading' || t.lyricsLookup === 'done2' || t.lyricsLookup === 'unavailable') return;
+      if (!t.name || !t.artist || t.artist === 'Local audio' || !Number.isFinite(t.duration) || t.duration < 1 || t.duration > 3600) { t.lyricsLookup = 'unavailable'; return }
+      t.lyricsLookup = 'loading'; if (lyricsVisible()) renderLyrics();
+      const cleanTitle = s => String(s || '').replace(/\s*[\(\[][^\)\]]*[\)\]]/g, '').replace(/\s+(feat\.?|ft\.?|featuring)\s.*$/i, '').replace(/\s+-\s+(remaster(ed)?.*|\d{4}.*|live.*|single version.*|mono.*|stereo.*)$/i, '').replace(/\s+/g, ' ').trim();
+      const artistList = s => String(s || '').split(/\s*(?:,|;|\/|&|\bfeat\.?\s|\bft\.?\s|\bwith\b|\bx\b)\s*/i).map(x => x.trim()).filter(Boolean);
+      const firstArtist = s => artistList(s)[0] || '';
+      const call = async (path, params) => {
+        const wait = Math.max(lyricsNextAt, lyricsRetryAt) - Date.now(); if (wait > 0) await new Promise(resolve => setTimeout(resolve, wait));
+        const response = await fetch(`https://lrclib.net/api/${path}?${new URLSearchParams(params)}`, { headers: { 'X-User-Agent': 'Musiko/1.0 (local music player)' }, referrerPolicy: 'no-referrer' });
+        lyricsNextAt = Date.now() + 350;
+        if (response.status === 429) { lyricsRetryAt = Date.now() + Math.max(1, Number(response.headers.get('Retry-After')) || 3) * 1000; throw new Error('Lyrics service is busy') }
+        if (response.status === 404) return null;
+        if (!response.ok) throw new Error('Lyrics lookup failed');
+        return response.json()
+      };
+      const hasLyrics = r => r && !r.instrumental && (r.syncedLyrics || r.plainLyrics);
+      const task = lyricsQueue.then(async () => {
+        const dur = Math.round(t.duration), q = { track_name: t.name, artist_name: t.artist, duration: String(dur) };
+        if (t.album && t.album !== 'Local files') q.album_name = t.album;
+        // 1) exact match (fast path)
+        let result = await call('get', q);
+        // 2) same, without the album (album tags often differ from LRCLIB's)
+        if (!hasLyrics(result) && q.album_name) { const q2 = { ...q }; delete q2.album_name; result = await call('get', q2) }
+        // 3) searches: fuzzy title / first artist; pick the closest length (within 8s), preferring synced lyrics
+        if (!hasLyrics(result)) {
+          const title = cleanTitle(t.name) || t.name, artists = artistList(t.artist).slice(0, 4), artist = artists[0] || t.artist;
+          const attempts = [{ params: { track_name: t.name, artist_name: t.artist } }];
+          for (const a of artists) attempts.push({ params: { track_name: title, artist_name: a } });
+          attempts.push({ params: { q: `${title} ${artist}` }, byArtist: true });
+          attempts.push({ params: { track_name: title }, strictTitle: true });   // artist tag may be a label / wrong: title + very close length
+          for (const at of attempts) {
+            const list = await call('search', at.params);
+            if (!Array.isArray(list)) continue;
+            const names = artists.map(x => x.toLowerCase().slice(0, 12));
+            const ok = list.filter(r => hasLyrics(r)
+              && (!Number.isFinite(r.duration) || Math.abs(r.duration - t.duration) <= (at.strictTitle ? 3 : 8))
+              && (!at.byArtist || names.some(n => String(r.artistName || '').toLowerCase().includes(n)))
+              && (!at.strictTitle || String(r.trackName || '').toLowerCase().trim() === title.toLowerCase().trim()));
+            ok.sort((a, b) => (!!b.syncedLyrics - !!a.syncedLyrics) || (Math.abs((a.duration || dur) - t.duration) - Math.abs((b.duration || dur) - t.duration)));
+            if (ok.length) { result = ok[0]; break }
+          }
+        }
+        if (hasLyrics(result)) {
+          if (result.syncedLyrics) { const lines = parseLrc(result.syncedLyrics); if (lines.length) { t.lyricLines = lines; t.lyrics = lines.map(line => line.text).join('\n'); t.lyricsSource = 'LRCLIB' } }
+          if (!t.lyricLines?.length && result.plainLyrics) { t.lyrics = result.plainLyrics; t.lyricsSource = 'LRCLIB' }
+        }
+        // 4) second source when LRCLIB has nothing: lyrics.ovh (plain, untimed lyrics)
+        if (!t.lyricLines?.length && !t.lyrics) {
+          const title = cleanTitle(t.name) || t.name;
+          const pairs = [[t.artist, t.name], ...artistList(t.artist).slice(0, 4).map(a => [a, title])].filter((p, i, a) => a.findIndex(x => x[0] === p[0] && x[1] === p[1]) === i);
+          for (const [a, n] of pairs) {
+            try {
+              const wait = lyricsNextAt - Date.now(); if (wait > 0) await new Promise(resolve => setTimeout(resolve, wait));
+              const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 8000);
+              const response = await fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(a)}/${encodeURIComponent(n)}`, { referrerPolicy: 'no-referrer', signal: ctl.signal }).finally(() => clearTimeout(timer));
+              lyricsNextAt = Date.now() + 350;
+              if (!response.ok) continue;
+              const data = await response.json(), text = String(data && data.lyrics || '').replace(/\r\n/g, '\n').replace(/^Paroles de la chanson[^\n]*\n/i, '').trim();
+              if (text.length > 20) { t.lyrics = text; t.lyricsSource = 'lyrics.ovh'; break }
+            } catch { /* source unreachable: just move on */ }
+          }
+        }
+        t.lyricsLookup = 'done2'; await saveTrack(t); if (current >= 0 && tracks[current].id === t.id && lyricsVisible()) renderLyrics()
+      });
+      lyricsQueue = task.catch(() => { });
+      task.catch(err => { lyricsNextAt = Date.now() + 350; if (err && err.message === 'Lyrics service is busy' && (t._lyricsRetries = (t._lyricsRetries || 0) + 1) <= 3) { t.lyricsLookup = ''; setTimeout(() => lookupLyrics(t), Math.max(1000, lyricsRetryAt - Date.now()) + 250); return } t.lyricsLookup = 'failed'; if (current >= 0 && tracks[current].id === t.id && lyricsVisible()) renderLyrics() })
+    }
     function fileBase(name) { return (name || '').replace(/\.[^.]+$/, '').trim().toLowerCase() }
     async function addFiles(fileList) { const selected = [...fileList]; await libraryLoaded; const known = new Set(tracks.map(t => `${t.fileName}|${t.file ? t.file.size : 0}`)); let skipped = 0; const incoming = selected.filter(f => (f.type.startsWith('audio/') || /\.(mp3|wav|ogg|oga|opus|m4a|m4b|flac|aac|weba|aif|aiff)$/i.test(f.name)) && (() => { const key = `${f.name}|${f.size}`; if (known.has(key)) { skipped++; return false } known.add(key); return true })()), lrcFiles = selected.filter(f => /\.lrc$/i.test(f.name)); if (!incoming.length && !lrcFiles.length) { toast(skipped ? 'Those tracks are already in your library' : 'No audio or LRC lyric files found'); return } toast('Adding music and reading tags…'); const added = await Promise.all(incoming.map(async f0 => { const f = fixAudioFile(f0); const tags = /\.mp3$/i.test(f.name) ? await readId3(f) : {}; return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, file: f, fileName: f.name, type: f.type, url: URL.createObjectURL(f), art: tags.art || '', customArtBlob: null, name: tags.title || f.name.replace(/\.[^.]+$/, ''), artist: tags.artist || 'Local audio', album: tags.album || 'Local files', duration: 0, favorite: false, lyrics: tags.lyrics || '', lyricLines: [], lyricsSource: tags.lyrics ? 'MP3 tags' : '', lyricsLookup: '' } })); tracks.push(...added); let attached = 0; for (const lyricFile of lrcFiles) { const lines = parseLrc(await lyricFile.text()); if (!lines.length) continue; const base = fileBase(lyricFile.name), target = added.find(t => fileBase(t.fileName) === base) || tracks.find(t => fileBase(t.fileName) === base) || tracks.find(t => fileBase(t.name) === base); if (target) { target.lyricLines = lines; target.lyrics = lines.map(x => x.text).join('\n'); target.lyricsSource = 'LRC file'; target.lyricsLookup = ''; await saveTrack(target); attached++ } } await Promise.all(added.map(saveTrack)); render(); const summary = added.length ? `Added ${added.length} ${added.length === 1 ? 'track' : 'tracks'}` : 'Checked lyric files'; toast(`${summary}${attached ? ` · lyrics loaded for ${attached}` : lrcFiles.length ? ' · no matching lyrics were found' : ''}${skipped ? ` · ${skipped} duplicate${skipped === 1 ? '' : 's'} skipped` : ''}`); files.value = '' }
     function setCover(el, t) { el.classList.toggle('has-art', !!t?.art); el.style.backgroundImage = t?.art ? `url("${t.art}")` : ''; el.textContent = t?.art ? '' : '♫' }
@@ -9061,7 +9144,7 @@
     function fullLyricsOn() { const f = document.querySelector('#fullscreen'); return f.classList.contains('open') && f.classList.contains('lyrics-on') }
     function lyricsTargets() { const list = []; if (document.querySelector('#lyricsPanel').classList.contains('open')) list.push({ body: document.querySelector('#lyricsBody'), modal: true }); if (fullLyricsOn()) list.push({ body: document.querySelector('#fullLyricsBody'), modal: false }); return list }
     function lyricsVisible() { return lyricsTargets().length > 0 }
-    function lyricsEmptyHtml(t) { const box = (title, text) => `<div class="lyrics-empty"><strong>${title}</strong></div>`; if (t.lyricsLookup === 'loading') return box('Finding synced lyrics…', 'This can take a moment.'); if (t.lyricsLookup === 'unavailable') return box('Add artist details to this track', 'Musiko needs an artist and duration to find timed lyrics.'); if (t.lyricsLookup === 'done') return box('No timed lyrics were found', 'You can still add a matching .lrc file beside the track in Musiko.'); if (t.lyricsLookup === 'failed') return box('Lyrics could not be reached', 'Check your connection; Musiko will try again next time this track plays.'); return box('Play this track to sync lyrics', 'Musiko will look up timed lyrics automatically.') }
+    function lyricsEmptyHtml(t) { const box = (title, text) => `<div class="lyrics-empty"><strong>${title}</strong></div>`; if (t.lyricsLookup === 'loading') return box('Finding synced lyrics…', 'This can take a moment.'); if (t.lyricsLookup === 'unavailable') return box('Add artist details to this track', 'Musiko needs an artist and duration to find timed lyrics.'); if (t.lyricsLookup === 'done' || t.lyricsLookup === 'done2') return box('No timed lyrics were found', 'You can still add a matching .lrc file beside the track in Musiko.'); if (t.lyricsLookup === 'failed') return box('Lyrics could not be reached', 'Check your connection; Musiko will try again next time this track plays.'); return box('Play this track to sync lyrics', 'Musiko will look up timed lyrics automatically.') }
     function renderLyrics() {
       const t = tracks[current];
       lyricsTargets().forEach(({ body, modal }) => {
@@ -9069,7 +9152,7 @@
         if (modal) {
           const hint = document.querySelector('#lyricsHint');
           document.querySelector('#lyricsSong').textContent = t ? `${t.name} · ${t.artist}` : 'Nothing playing';
-          hint.textContent = !t ? '' : t.lyricsSource === 'LRCLIB' ? (t.lyricLines?.length ? 'Synced lyrics from LRCLIB.' : 'Lyrics from LRCLIB · timing was unavailable.') : t.lyricsSource === 'LRC file' ? 'Synced lyrics from your LRC file.' : t.lyricsLookup === 'loading' ? 'Searching for timed lyrics using this track’s details…' : 'When local lyrics are unavailable, Musiko looks up the track title, artist, album, and duration on LRCLIB.'
+          hint.textContent = !t ? '' : t.lyricsSource === 'LRCLIB' ? (t.lyricLines?.length ? 'Synced lyrics from LRCLIB.' : 'Lyrics from LRCLIB · timing was unavailable.') : t.lyricsSource === 'lyrics.ovh' ? 'Lyrics from lyrics.ovh · not timed.' : t.lyricsSource === 'LRC file' ? 'Synced lyrics from your LRC file.' : t.lyricsLookup === 'loading' ? 'Searching for timed lyrics using this track’s details…' : 'When local lyrics are unavailable, Musiko looks up the track details on LRCLIB, then on lyrics.ovh.'
         }
         if (!t) { body.innerHTML = '<div class="lyrics-empty"><strong>Choose a track</strong></div>'; return }
         if (t.lyricLines?.length) { t.lyricLines.forEach((line, i) => { const el = document.createElement('div'); el.className = 'lyric-line'; el.textContent = line.text || '♪'; el.dataset.line = i; el.onclick = () => { audio.currentTime = line.time }; body.append(el) }) }
@@ -9226,7 +9309,7 @@
     (() => { const meta = document.querySelector('meta[name=viewport]'), base = meta ? meta.content : ''; let fixing = false; const reset = () => { if (fixing) return; fixing = true; if (window.scrollX || window.scrollY) window.scrollTo(0, 0); if (meta) { meta.content = 'width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no'; setTimeout(() => { meta.content = base; fixing = false }, 120) } else fixing = false }; const vv = window.visualViewport; if (vv) { const check = () => { if (vv.scale > 1.01 || Math.abs(vv.offsetLeft) > 1) reset() }; vv.addEventListener('resize', check); vv.addEventListener('scroll', check) } window.addEventListener('scroll', () => { if (window.scrollX) window.scrollTo(0, window.scrollY) }, { passive: true }); window.addEventListener('orientationchange', () => setTimeout(reset, 350)) })();
     (() => { if (!('mediaSession' in navigator)) return; const ms = navigator.mediaSession, set = (a, f) => { try { ms.setActionHandler(a, f) } catch { } }; const sync = () => { const t = tracks[current]; if (!t) { ms.metadata = null; return } try { ms.metadata = new MediaMetadata({ title: t.name, artist: t.artist, album: t.album && t.album !== 'Local files' ? t.album : '', artwork: t.art ? [{ src: t.art, sizes: '512x512' }] : [] }) } catch { } }; document.addEventListener('musiko:track', sync); const pos = () => { try { if (Number.isFinite(audio.duration) && audio.duration > 0) ms.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }) } catch { } }; audioDecks.forEach(d => { d.addEventListener('play', () => { if (d === audio) { ms.playbackState = 'playing'; pos() } }); d.addEventListener('pause', () => { if (d === audio) ms.playbackState = 'paused' }); d.addEventListener('loadedmetadata', () => { if (d === audio) pos() }); d.addEventListener('seeked', () => { if (d === audio) pos() }) }); set('play', () => { if (current < 0) toggle(); else audio.play() }); set('pause', () => audio.pause()); set('previoustrack', () => document.querySelector('#prev').click()); set('nexttrack', () => playNext(false, true)); set('seekto', e => { if (e.seekTime != null && Number.isFinite(audio.duration)) { audio.currentTime = Math.max(0, Math.min(audio.duration, e.seekTime)); pos() } }); set('seekbackward', e => { audio.currentTime = Math.max(0, audio.currentTime - (e.seekOffset || 10)) }); set('seekforward', e => { audio.currentTime = Math.min(audio.duration || 1e9, audio.currentTime + (e.seekOffset || 10)) }) })();
 
-    function syncSettingsButtons() { const settings = window.MusikoAppearance; document.querySelectorAll('[data-mode]').forEach(button => { const active = button.dataset.mode === settings.value.mode; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }); document.querySelectorAll('.theme-choices [data-skin]').forEach(button => { const active = button.dataset.skin === settings.value.skin; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }); document.querySelectorAll('[data-accent]').forEach(button => { const active = button.dataset.accent === settings.value.accent; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }) }
+    function syncSettingsButtons() { const settings = window.MusikoAppearance; document.querySelectorAll('[data-mode]').forEach(button => { const active = button.dataset.mode === settings.value.mode; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }); document.querySelectorAll('.theme-choices [data-skin]').forEach(button => { const active = button.dataset.skin === settings.value.skin; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }); document.querySelectorAll('[data-accent]').forEach(button => { const active = button.dataset.accent === settings.value.accent; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }) ; if (window.syncCustomAccent) window.syncCustomAccent() }
     function saveAppearance() { const settings = window.MusikoAppearance; document.documentElement.dataset.theme = settings.value.mode; document.documentElement.dataset.skin = settings.value.skin; document.documentElement.dataset.glass = settings.value.glassy ? 'on' : 'off'; document.documentElement.dataset.performance = settings.value.lowEnd ? 'low' : 'normal'; document.documentElement.dataset.searchAnimation = settings.value.searchAnimation ? 'on' : 'off'; document.documentElement.dataset.largeMobileControls = settings.value.largerMobileControls ? 'on' : 'off'; document.documentElement.dataset.fullAnimation = settings.value.fullBgAnimation ? 'on' : 'off'; document.documentElement.style.setProperty('--accent', settings.value.accent); document.documentElement.style.setProperty('--accent-ink', window.MusikoInkFor(settings.value.accent)); document.documentElement.style.setProperty('--custom-background-image', settings.value.customBackground ? 'url(' + settings.value.customBackground + ')' : 'none'); document.documentElement.style.setProperty('--custom-dim', settings.value.customDim / 100); document.documentElement.style.setProperty('--custom-blur', settings.value.customBlur + 'px'); settings.save(); syncSettingsButtons() }
     function closeSettings() { const panel = document.querySelector('#settingsPanel'); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); document.querySelector('#openSettings').focus() }
     function openSettings() { const panel = document.querySelector('#settingsPanel'); syncSettingsButtons(); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); document.querySelector('#closeSettings').focus() }
@@ -9785,6 +9868,11 @@
     html body .hero.is-continue #heroAdd { display: none }
     html body .hero.is-paused #heroPlay,
     html body .hero.is-continue #heroPlay { display: inline-flex; align-items: center; justify-content: center; min-width: 108px }
+    /* once Resume has been clicked on "Continue listening", the hero button is gone for good */
+    html body .hero.resume-used #heroPlay { display: none !important }
+    html body .hero.resume-used .hero-time { margin-left: 0 }
+    /* hero time (e.g. 1:27 / 3:43, "2:16 left") removed */
+    html body .hero .hero-time { display: none !important }
     .hero-time { display: none; margin-left: 14px; font-size: 12px; color: #e0d8dd; font-variant-numeric: tabular-nums; opacity: .8; vertical-align: middle }
     html body .hero.is-playing .hero-time:not(:empty),
     html body .hero.is-continue .hero-time:not(:empty) { display: inline-block }
@@ -9981,7 +10069,7 @@
       const heroBar = document.createElement('div'); heroBar.className = 'hero-progress'; heroBar.innerHTML = '<i></i>';
       btn.before(heroPlay); btn.after(heroTime); hero.append(heroBar);
       const heroFill = heroBar.firstChild;
-      heroPlay.onclick = () => { const R = window.musikoResume; if (current < 0 && R) { const i = R.index(); if (i >= 0) { R.start(i); return } } $('#play').click() };
+      heroPlay.onclick = () => { const R = window.musikoResume; if (current < 0 && R) { const i = R.index(); if (i >= 0) { hero.classList.add('resume-used'); R.start(i); return } } $('#play').click() };
       $('#heroArt').addEventListener('click', () => { if (current >= 0 && tracks[current]) $('#openFullscreen').click(); else if (hero.classList.contains('is-continue')) heroPlay.onclick() });
       function syncHeroPlaying() {
         const on = current >= 0 && !!tracks[current];
@@ -10185,6 +10273,35 @@
     #fullSeek.scrubbing { height: 10px }
     #fullSeek.scrubbing .fill:after { transform: scale(1.35); box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent, #ff5368) 28%, transparent) }
     #seek.scrubbing .fill:after { transform: scale(1.5); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent, #ff5368) 28%, transparent) }
+    /* knob always vertically centred on the bar, whatever the bar height is on this screen size */
+    html body .player #seek .fill:after,
+    html body #fullSeek .fill:after { top: 50%; margin-top: -6px; width: 12px; height: 12px; right: -6px; box-sizing: border-box }
+    /* PC only: knob hidden until you hover the bar (or drag / focus it) */
+    @media (hover: hover) and (pointer: fine) and (min-width: 761px) {
+      html body .player #seek .fill:after,
+      html body #fullSeek .fill:after { opacity: 0; transition: opacity .14s ease, transform .14s ease, box-shadow .14s ease }
+      html body .player #seek:hover .fill:after,
+      html body #fullSeek:hover .fill:after,
+      html body .player #seek.scrubbing .fill:after,
+      html body #fullSeek.scrubbing .fill:after,
+      html body .player #seek:focus-visible .fill:after,
+      html body #fullSeek:focus-visible .fill:after { opacity: 1 }
+    }
+    /* PC only: volume sliders keep their filled bar, but the knob shows only on hover / drag / focus */
+    @media (hover: hover) and (pointer: fine) and (min-width: 761px) {
+      html body #volume, html body #fullVolume { -webkit-appearance: none; appearance: none; background: transparent; height: 14px; cursor: pointer; --vol: 80% }
+      html body :is(#volume, #fullVolume)::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: linear-gradient(to right, var(--accent) var(--vol), #ffffff27 var(--vol)) }
+      html body :is(#volume, #fullVolume)::-moz-range-track { height: 4px; border-radius: 4px; background: #ffffff27 }
+      html body :is(#volume, #fullVolume)::-moz-range-progress { height: 4px; border-radius: 4px; background: var(--accent) }
+      html body :is(#volume, #fullVolume)::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; margin-top: -4px; border: 0; border-radius: 50%; background: #fff; opacity: 0; transition: opacity .14s ease }
+      html body :is(#volume, #fullVolume)::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 50%; background: #fff; opacity: 0; transition: opacity .14s ease }
+      html body :is(#volume, #fullVolume):is(:hover, :active, :focus-visible)::-webkit-slider-thumb { opacity: 1 }
+      html body :is(#volume, #fullVolume):is(:hover, :active, :focus-visible)::-moz-range-thumb { opacity: 1 }
+      html body #volume:focus, html body #fullVolume:focus { outline: none }
+    }
+    @media (max-width: 760px) {
+      html body .player #seek .fill:after { width: 10px; height: 10px; right: -5px; margin-top: -5px }
+    }
     #seek:focus-visible, #fullSeek:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #ff5368) 45%, transparent) }
     .scrub-time { font-variant-numeric: tabular-nums }
   </style>
@@ -10979,6 +11096,7 @@
     .accent-options [data-accent="#45ed82"] { --swatch: #45ed82 }
     .accent-options [data-accent="#2ec4c4"] { --swatch: #2ec4c4 }
     .accent-options [data-accent="#e86ae0"] { --swatch: #e86ae0 }
+    .accent-options [data-accent="#f5f5f5"] { --swatch: #f5f5f5; box-shadow: inset 0 0 0 1px #00000026 }
     .accent-options { flex-wrap: wrap; justify-content: flex-end; max-width: 178px; row-gap: 8px }
     .brand { cursor: default }
   </style>
@@ -11617,6 +11735,143 @@
           return origPrepare.apply(this, arguments)
         };
       }
+    })();
+  </script>
+    <style id="musiko-hero-desktop-tight">
+    /* Desktop Now Playing hero: only the text block moves, vertically centred in the hero (hero size unchanged) */
+    @media (min-width: 761px) {
+      html body .hero.is-playing .hero-copy, html body .hero.is-continue .hero-copy { top: 50%; bottom: auto; transform: translateY(-50%) }
+    }
+  </style>
+  <style id="musiko-custom-accent">
+    .accent-options .accent-custom { position: relative; width: 25px; height: 25px; padding: 3px; box-sizing: border-box; border: 1px solid transparent; border-radius: 50%; cursor: pointer; flex: none }
+    .accent-options .accent-custom::before { content: ""; display: block; width: 100%; height: 100%; border-radius: 50%; background: var(--custom, conic-gradient(#ff5368, #f2c230, #45ed82, #2ec4c4, #328fe8, #8b70ff, #e86ae0, #ff5368)) }
+    .accent-options .accent-custom.active { border-color: #fff }
+    html[data-theme="light"] .accent-options .accent-custom.active { border-color: #28232b }
+    .accent-options .accent-custom input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; opacity: 0; cursor: pointer; border: 0 }
+    .accent-options .accent-custom:focus-within { outline: 2px solid var(--accent); outline-offset: 2px }
+  </style>
+<script>
+    // custom accent colour picker (any colour; the preset swatches keep working)
+    (() => {
+      const input = document.querySelector('#customAccent'); if (!input) return;
+      const label = input.closest('.accent-custom');
+      window.syncCustomAccent = () => {
+        const a = window.MusikoAppearance.value.accent;
+        const preset = [...document.querySelectorAll('.accent-options button[data-accent]')].some(b => b.dataset.accent === a);
+        label.classList.toggle('active', !preset);
+        if (!preset) label.style.setProperty('--custom', a); else label.style.removeProperty('--custom');
+        if (/^#[0-9a-f]{6}$/i.test(a)) input.value = a
+      };
+      input.addEventListener('input', () => { window.MusikoAppearance.value.accent = input.value; saveAppearance() });
+      window.syncCustomAccent()
+    })();
+  </script>
+  <style id="musiko-seek-hover">
+    /* PC: hovering the progress bar shows a time tooltip + a lighter "preview" fill up to the pointer */
+    .bar .seek-hover { position: absolute; left: 0; top: 0; height: 100%; width: 0; border-radius: inherit; background: #ffffff45; pointer-events: none; opacity: 0; transition: opacity .12s ease }
+    .bar .seek-tip { position: absolute; left: 0; bottom: calc(100% + 12px); transform: translateX(-50%); padding: 5px 9px; border-radius: 6px; background: #2a2a2e; color: #fff; font-weight: 600; font-size: 12px; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .12s ease; z-index: 5; box-shadow: 0 4px 14px #0006 }
+    html[data-theme="light"] .bar .seek-tip { background: #28232b; color: #fff }
+    @media (hover: hover) and (pointer: fine) {
+      .bar.seek-hovering .seek-hover, .bar.seek-hovering .seek-tip { opacity: 1 }
+    }
+    @media not all and (hover: hover) and (pointer: fine) { .bar .seek-hover, .bar .seek-tip { display: none } }
+  </style>
+<script>
+    // hover preview on the seek bars (time tooltip + lighter fill)
+    (() => {
+      const ready = () => Number.isFinite(audio.duration) && audio.duration > 0;
+      [document.querySelector('#seek'), document.querySelector('#fullSeek')].filter(Boolean).forEach(bar => {
+        const hover = document.createElement('div'); hover.className = 'seek-hover';
+        const tip = document.createElement('div'); tip.className = 'seek-tip'; tip.setAttribute('aria-hidden', 'true');
+        bar.insertBefore(hover, bar.firstChild); bar.appendChild(tip);
+        const show = e => {
+          if (e.pointerType && e.pointerType !== 'mouse') return;
+          if (!ready()) { bar.classList.remove('seek-hovering'); return }
+          const r = bar.getBoundingClientRect(); if (!r.width) return;
+          const x = Math.max(0, Math.min(r.width, e.clientX - r.left)), ratio = x / r.width;
+          hover.style.width = x + 'px';
+          tip.textContent = fmt(ratio * audio.duration);
+          const half = tip.offsetWidth / 2;
+          tip.style.left = Math.max(half - 10, Math.min(r.width - half + 10, x)) + 'px';
+          bar.classList.add('seek-hovering')
+        };
+        bar.addEventListener('pointerenter', show);
+        bar.addEventListener('pointermove', show);
+        bar.addEventListener('pointerleave', () => { if (!bar.classList.contains('scrubbing')) bar.classList.remove('seek-hovering') });
+        bar.addEventListener('pointerup', e => { if (e.pointerType === 'mouse' && !bar.matches(':hover')) bar.classList.remove('seek-hovering') })
+      })
+    })();
+  </script>
+  <style id="musiko-drag-drop">
+    /* drag a song onto a playlist in the sidebar */
+    body.dragging-track #playlistNav .playlist-nav-item { outline: 1px dashed #ffffff33; outline-offset: -1px }
+    body.dragging-track #playlistNav .playlist-nav-item.drop-ok { outline: 2px dashed var(--playlist-color, var(--accent)); outline-offset: -2px; background: color-mix(in srgb, var(--playlist-color, var(--accent)) 24%, transparent) }
+    body.dragging-track #playlistNav .playlist-nav-item.drop-no { opacity: .4; cursor: not-allowed }
+    [data-i].is-dragging { opacity: .45 }
+    .musiko-drag-ghost { position: fixed; left: -9999px; top: -9999px; max-width: 240px; padding: 8px 14px; border-radius: 999px; background: var(--accent); color: var(--accent-ink, #fff); font: 600 13px/1.2 system-ui, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 6px 20px #0006 }
+  </style>
+<script>
+    // Drag & drop: drag a song (any row with data-i) onto a manual playlist in the sidebar to add it
+    (() => {
+      const TYPE = 'application/x-musiko-track';
+      const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+      const main = document.querySelector('main'), nav = document.querySelector('#playlistNav');
+      if (!main || !nav) return;
+      const isManual = p => !p.rule || p.rule === 'manual';
+      // make song rows draggable (desktop / mouse only, so touch long-press keeps working)
+      let queued = false;
+      const mark = () => { queued = false; if (!finePointer.matches) return; main.querySelectorAll('[data-i]:not([draggable])').forEach(el => el.setAttribute('draggable', 'true')) };
+      new MutationObserver(() => { if (!queued) { queued = true; requestAnimationFrame(mark) } }).observe(main, { childList: true, subtree: true });
+      mark();
+
+      let ghost = null, dragRow = null;
+      const clearUi = () => { document.body.classList.remove('dragging-track'); nav.querySelectorAll('.drop-ok,.drop-no').forEach(el => el.classList.remove('drop-ok', 'drop-no')); if (dragRow) dragRow.classList.remove('is-dragging'); dragRow = null; if (ghost) { ghost.remove(); ghost = null } };
+      main.addEventListener('dragstart', e => {
+        const row = e.target.closest && e.target.closest('[data-i]'); if (!row) return;
+        const t = tracks[+row.dataset.i]; if (!t) return;
+        e.dataTransfer.setData(TYPE, String(t.id)); e.dataTransfer.setData('text/plain', t.name || ''); e.dataTransfer.effectAllowed = 'copy';
+        ghost = document.createElement('div'); ghost.className = 'musiko-drag-ghost'; ghost.textContent = '♪  ' + (t.name || 'Song'); document.body.appendChild(ghost);
+        try { e.dataTransfer.setDragImage(ghost, 16, 16) } catch (err) { }
+        dragRow = row; row.classList.add('is-dragging'); document.body.classList.add('dragging-track')
+      });
+      document.addEventListener('dragend', clearUi);
+      document.addEventListener('drop', () => setTimeout(clearUi, 0));
+
+      const target = e => { const el = e.target.closest && e.target.closest('[data-pid]'); return el && nav.contains(el) ? el : null };
+      const has = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes(TYPE);
+      nav.addEventListener('dragover', e => {
+        if (!has(e)) return;
+        const el = target(e); if (!el) return;
+        const pl = playlists.find(x => x.id === el.dataset.pid), ok = pl && isManual(pl);
+        e.dataTransfer.dropEffect = ok ? 'copy' : 'none';
+        if (ok) e.preventDefault();
+        nav.querySelectorAll('.drop-ok,.drop-no').forEach(x => { if (x !== el) x.classList.remove('drop-ok', 'drop-no') });
+        el.classList.add(ok ? 'drop-ok' : 'drop-no'); el.classList.remove(ok ? 'drop-no' : 'drop-ok')
+      });
+      nav.addEventListener('dragleave', e => { const el = target(e); if (el && !el.contains(e.relatedTarget)) el.classList.remove('drop-ok', 'drop-no') });
+      nav.addEventListener('drop', async e => {
+        if (!has(e)) return;
+        const el = target(e); if (!el) return; e.preventDefault();
+        const pl = playlists.find(x => x.id === el.dataset.pid), id = e.dataTransfer.getData(TYPE);
+        clearUi();
+        if (!pl) return;
+        if (!isManual(pl)) { toast(`“${pl.name}” fills itself automatically`); return }
+        const t = tracks.find(x => String(x.id) === id); if (!t) return;
+        if ((pl.trackIds || []).includes(t.id)) { toast(`Already in ${pl.name}`); return }
+        (pl.trackIds = pl.trackIds || []).push(t.id);
+        try { await dbRequest('playlists', 'put', pl); toast(`Added to ${pl.name}`) } catch (err) { pl.trackIds = pl.trackIds.filter(x => x !== t.id); toast('Could not save playlist change') }
+        render()
+      })
+    })();
+  </script>
+<script>
+    // keeps the filled part of the volume sliders in sync (used by the PC styling that hides the knob until hover)
+    (() => {
+      const els = ['#volume', '#fullVolume'].map(q => document.querySelector(q)).filter(Boolean);
+      const sync = el => { const max = parseFloat(el.max) || 1, min = parseFloat(el.min) || 0; el.style.setProperty('--vol', ((el.value - min) / (max - min) * 100) + '%') };
+      els.forEach(el => { el.addEventListener('input', () => sync(el)); sync(el) });
+      setInterval(() => els.forEach(sync), 400);
     })();
   </script>
 </body>
