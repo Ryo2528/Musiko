@@ -7977,25 +7977,6 @@
   </style>
   <style id="musiko-playlist-dialog-2">
     /* type picker: segmented control + rule tiles */
-    .pl-seg { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; gap: 4px; border-radius: 14px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .08) }
-    .pl-seg button { height: 38px; border: 0; border-radius: 10px; background: transparent; color: #b8b5c2; font: 600 13.5px 'DM Sans', system-ui, sans-serif; cursor: pointer; transition: background .16s, color .16s, box-shadow .16s }
-    .pl-seg button:hover { color: #fff }
-    .pl-seg button[aria-pressed="true"] { background: color-mix(in srgb, var(--pl-color) 88%, #000); color: #fff; box-shadow: 0 4px 14px color-mix(in srgb, var(--pl-color) 35%, transparent) }
-    .pl-seg button:focus-visible, .pl-tiles button:focus-visible { outline: 2px solid var(--pl-color); outline-offset: 2px }
-    .pl-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px }
-    .pl-tiles[hidden] { display: none }
-    .pl-tiles button { display: grid; grid-template-columns: 30px 1fr; grid-template-rows: auto auto; column-gap: 10px; align-items: center; text-align: left; padding: 10px 12px; border-radius: 14px; cursor: pointer; color: #e4e2ea; background: rgba(255, 255, 255, .045); border: 1px solid rgba(255, 255, 255, .09); transition: background .15s, border-color .15s, transform .12s }
-    .pl-tiles button:hover { background: rgba(255, 255, 255, .08) }
-    .pl-tiles button:active { transform: scale(.98) }
-    .pl-tiles button svg { grid-row: 1 / 3; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; color: var(--pl-color) }
-    .pl-tiles button b { font: 600 13px/1.2 'DM Sans', system-ui, sans-serif }
-    .pl-tiles button small { font-size: 11.5px; font-weight: 400; color: #9a97a4; margin-top: 2px }
-    .pl-tiles button[aria-pressed="true"] { border-color: var(--pl-color); background: color-mix(in srgb, var(--pl-color) 16%, transparent) }
-    .pl-tiles button:last-child:nth-child(odd) { grid-column: 1 / -1 }
-    html[data-theme="light"] .pl-seg { background: rgba(40, 32, 44, .06); border-color: rgba(40, 32, 44, .08) }
-    html[data-theme="light"] .pl-seg button { color: #5a525c }
-    html[data-theme="light"] .pl-tiles button { color: #211d23; background: rgba(40, 32, 44, .04); border-color: rgba(40, 32, 44, .1) }
-    html[data-theme="light"] .pl-tiles button small { color: #6a6472 }
     /* sticky footer so Save never scrolls away */
     html body .playlist-modal-card footer { position: sticky; bottom: -24px; margin: 8px -24px -24px; padding: 14px 24px 20px; background: linear-gradient(180deg, transparent, #1d1d27 28%); border-radius: 0 0 24px 24px }
     html[data-theme="light"] body .playlist-modal-card footer { background: linear-gradient(180deg, transparent, #fff 28%) }
@@ -8915,25 +8896,7 @@
       </div><label class="playlist-field"><span>Playlist name <span class="pl-count" id="plNameCount">0/40</span></span><input id="playlistNameInput" maxlength="40"
           required autocomplete="off"></label><label
         class="playlist-field"><span>Description <span class="pl-count" id="plDescCount">optional</span></span><textarea id="playlistDescriptionInput"
-          maxlength="140" rows="2" ></textarea></label><div class="playlist-field" id="plTypeBlock"><span>Playlist type</span>
-        <div class="pl-seg" role="group" aria-label="Playlist kind"><button type="button" data-kind="manual">Regular</button><button type="button" data-kind="smart">Smart</button></div>
-        <div class="pl-tiles" id="plTiles" role="group" aria-label="Smart playlist rule" hidden>
-          <button type="button" data-rule="favorites"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg><b>Favorites</b></button>
-          <button type="button" data-rule="top"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><b>Most played</b></button>
-          <button type="button" data-rule="recent"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><b>Recently added</b></button>
-          <button type="button" data-rule="artist"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20c.6-3.7 3.6-5.7 7.2-5.7s6.6 2 7.2 5.7"/></svg><b>Artist</b></button>
-          <button type="button" data-rule="album"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.6"/></svg><b>Album</b></button>
-        </div></div><label id="plRuleLabel" hidden
-        class="playlist-field">Playlist type<select id="playlistRule" class="playlist-rule-select"
-          aria-label="Playlist type">
-          <option value="manual">Regular playlist</option>
-          <option value="favorites">Smart · Favorites</option>
-          <option value="artist">Smart · Artist</option>
-          <option value="album">Smart · Album</option>
-          <option value="top">Smart · Most played</option>
-          <option value="recent">Smart · Recently added</option>
-        </select><small class="pl-hint" id="plHint"></small></label><label class="playlist-field" id="playlistRuleValueField" hidden>Match<input
-          id="playlistRuleValue" maxlength="160" list="plMatchList" autocomplete="off"><datalist id="plMatchList"></datalist></label><input type="hidden"
+          maxlength="140" rows="2" ></textarea></label><input type="hidden"
         id="playlistColorValue" value="#ff5368">
       <div class="playlist-field"><span>Choose a color</span>
         <div class="playlist-colors" role="group" aria-label="Playlist color"><button type="button"
@@ -9031,7 +8994,7 @@
         out[at] = { id: r.id, file, fileName: file.name, type: file.type, url: URL.createObjectURL(file), art: customArtUrl || tags.art || '', customArtBlob: r.customArtBlob || null, name: r.name || tags.title || file.name.replace(/\.[^.]+$/, ''), artist: r.artist || tags.artist || 'Local audio', album: r.album || tags.album || 'Local files', duration: r.duration || 0, favorite: !!r.favorite, lyrics: r.lyrics || tags.lyrics || '', lyricLines: r.lyricLines || [], lyricsSource: r.lyricsSource || (tags.lyrics ? 'MP3 tags' : ''), lyricsLookup: r.lyricsLookup || '' }
       } catch { failed++ } } };
       await Promise.all(Array.from({ length: 4 }, worker));
-      const restored = out.filter(Boolean); tracks = restored;
+      const restored = out.filter(Boolean); tracks = restored; if (restored.length && !failed) for (const pl of playlists) if (pl.rule && pl.rule !== 'manual') { pl.trackIds = smartTrackIds(pl); pl.rule = 'manual'; pl.ruleValue = ''; delete pl.limit; delete pl.excludedTrackIds; dbRequest('playlists', 'put', pl).catch(() => { }) }
       if (!failed && restored.length) { const keep = new Set(restored.map(t => t.id)); for (const id of Object.keys(listeningStats.tracks)) if (!keep.has(id)) delete listeningStats.tracks[id]; saveListeningStats(true) }
       render(); renderPlaylists(); if (restored.length) askPersist();
       if (restored.length) toast(`Restored ${restored.length} saved ${restored.length === 1 ? 'track' : 'tracks'}${failed ? ` · ${failed} could not be restored` : ''}`); else if (failed) toast(`${failed} saved ${failed === 1 ? 'track' : 'tracks'} could not be restored`)
@@ -9167,8 +9130,24 @@
     let fullLyricsPref = true; try { fullLyricsPref = localStorage.getItem('musiko.fullLyrics') !== '0' } catch { }
     function setFullLyrics(on, save = true) { const f = document.querySelector('#fullscreen'); if (save) { clearTimeout(f._animT); f.classList.add('lyr-anim'); f._animT = setTimeout(() => f.classList.remove('lyr-anim'), 1000) } f.classList.toggle('lyrics-on', on); const b = document.querySelector('#fullLyrics'); b.textContent = on ? 'Hide lyrics' : 'Show lyrics'; b.setAttribute('aria-pressed', String(on)); if (save) { fullLyricsPref = on; try { localStorage.setItem('musiko.fullLyrics', on ? '1' : '0') } catch { } } if (on) { activeLyricLine = -1; renderLyrics(); const t = tracks[current]; if (t) lookupLyrics(t); setTimeout(() => { if (fullLyricsOn()) updateLyricHighlight(true) }, 720) } }
     window.addEventListener('resize', () => { clearTimeout(window._lyrResize); window._lyrResize = setTimeout(() => { if (lyricsVisible()) updateLyricHighlight(true) }, 160) });
-    function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.trackIds || []; let ids = []; if (p.rule === 'favorites') ids = tracks.filter(t => t.favorite).map(t => t.id); else if (p.rule === 'artist') ids = tracks.filter(t => (t.artist || '').toLowerCase() === (p.ruleValue || '').toLowerCase()).map(t => t.id); else if (p.rule === 'album') ids = tracks.filter(t => (t.album || '').toLowerCase() === (p.ruleValue || '').toLowerCase()).map(t => t.id); else if (p.rule === 'recent') ids = tracks.slice(-25).map(t => t.id); else if (p.rule === 'top') ids = [...tracks].sort((a, b) => (listeningStats.tracks[b.id]?.plays || 0) - (listeningStats.tracks[a.id]?.plays || 0) || (listeningStats.tracks[b.id]?.seconds || 0) - (listeningStats.tracks[a.id]?.seconds || 0)).slice(0, 25).map(t => t.id); return ids.filter(id => !(p.excludedTrackIds || []).includes(id)) }
-    function visibleTracks() { let result = tracks.map((t, i) => ({ t, i })); if (activeView === 'Favorites') result = result.filter(x => x.t.favorite); if (activeAlbumKey) result = result.filter(({ t }) => albumIdentity(t) === activeAlbumKey); if (activePlaylistId) { const p = playlists.find(x => x.id === activePlaylistId), ids = smartTrackIds(p); result = result.filter(x => ids.includes(x.t.id)) } if (searchTerm) { const q = searchTerm.toLowerCase(); result = result.filter(({ t }) => `${t.name} ${t.artist} ${t.album}`.toLowerCase().includes(q)) } if (isAzView()) result.sort((x, y) => (x.t.name || '').localeCompare(y.t.name || '', undefined, { sensitivity: 'base', numeric: true }) || x.i - y.i); return result }
+    const RANKED_SMART = ['top', 'played', 'recent', 'rediscover'];
+function smartLimit(v) { if (v === undefined || v === null || v === '') return 25; const n = Number(v); return !Number.isFinite(n) ? 25 : n > 0 ? n : Infinity }
+function artistHas(artist, wanted) { const w = String(wanted || '').trim().toLowerCase(), a = String(artist || '').trim().toLowerCase(); if (!w || !a) return false; return a === w || a.split(/\s*(?:,|;|\/|&|\bfeat\.?\s|\bft\.?\s|\bfeaturing\s)\s*/i).some(x => x.trim() === w) }
+function smartMatch(rule, value, limit) {
+  const lim = smartLimit(limit), v = String(value || '').trim().toLowerCase(), stat = t => listeningStats.tracks[t.id] || { plays: 0, seconds: 0 }, DAY = 864e5; let list = [];
+  if (rule === 'favorites') list = tracks.filter(t => t.favorite);
+  else if (rule === 'artist') list = v ? tracks.filter(t => artistHas(t.artist, v)) : [];
+  else if (rule === 'album') list = v ? tracks.filter(t => (t.album || '').trim().toLowerCase() === v) : [];
+  else if (rule === 'recent') list = tracks.slice(Math.max(0, tracks.length - lim)).reverse();
+  else if (rule === 'top') list = tracks.filter(t => stat(t).plays > 0).sort((a, b) => stat(b).plays - stat(a).plays || stat(b).seconds - stat(a).seconds).slice(0, lim);
+  else if (rule === 'played') list = tracks.filter(t => stat(t).lastPlayed).sort((a, b) => stat(b).lastPlayed - stat(a).lastPlayed).slice(0, lim);
+  else if (rule === 'unplayed') list = tracks.filter(t => !stat(t).plays).slice(0, lim);
+  else if (rule === 'rediscover') list = tracks.filter(t => stat(t).plays > 0 && Date.now() - (stat(t).lastPlayed || 0) > 30 * DAY).sort((a, b) => stat(b).plays - stat(a).plays).slice(0, lim);
+  return list.map(t => t.id)
+}
+function isRankedPlaylist() { const p = activePlaylistId && playlists.find(x => x.id === activePlaylistId); return !!p && RANKED_SMART.includes(p.rule) }
+function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.trackIds || []; return smartMatch(p.rule, p.ruleValue, p.limit).filter(id => !(p.excludedTrackIds || []).includes(id)) }
+    function visibleTracks() { let result = tracks.map((t, i) => ({ t, i })); if (activeView === 'Favorites') result = result.filter(x => x.t.favorite); if (activeAlbumKey) result = result.filter(({ t }) => albumIdentity(t) === activeAlbumKey); if (activePlaylistId) { const p = playlists.find(x => x.id === activePlaylistId), ids = smartTrackIds(p); result = result.filter(x => ids.includes(x.t.id)); if (isRankedPlaylist()) result.sort((x, y) => ids.indexOf(x.t.id) - ids.indexOf(y.t.id)) } if (searchTerm) { const q = searchTerm.toLowerCase(); result = result.filter(({ t }) => `${t.name} ${t.artist} ${t.album}`.toLowerCase().includes(q)) } if (isAzView()) result.sort((x, y) => (x.t.name || '').localeCompare(y.t.name || '', undefined, { sensitivity: 'base', numeric: true }) || x.i - y.i); return result }
     const AZ_LETTERS = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '#']
     let azLockUntil = 0, azRailEl = null, azBubble = null, azPresent = new Set(), azCounts = new Map()
     function ensureAzRail() {
@@ -9207,7 +9186,7 @@
     }
     function renderAzRail(shown) { const rail = ensureAzRail(); azCounts = new Map(); shown.forEach(({ t }) => { const l = azLetter(t.name); azCounts.set(l, (azCounts.get(l) || 0) + 1) }); azPresent = new Set(azCounts.keys()); rail.querySelectorAll('button').forEach(b => b.classList.toggle('has', azPresent.has(b.dataset.l))); rail.dataset.on = shown.length ? '1' : ''; updateAzActive() }
     function updateAzActive() { const rail = azRailEl; if (!rail) return; const listEl = document.querySelector('#tracklist'), show = rail.dataset.on === '1' && listEl && !listEl.hidden; rail.hidden = !show; listEl && listEl.classList.toggle('az-on', !!show); if (!show) return; const lr = listEl.getBoundingClientRect(); rail.style.left = Math.round(lr.right + 6) + 'px'; rail.style.top = Math.max(110, Math.min(Math.round(lr.top), innerHeight - 120 - 320)) + 'px'; const mainEl = document.querySelector('main'), de = document.documentElement, innerScroll = mainEl && mainEl.scrollHeight > mainEl.clientHeight + 4 && getComputedStyle(mainEl).overflowY !== 'visible', remaining = innerScroll ? mainEl.scrollHeight - mainEl.clientHeight - mainEl.scrollTop : de.scrollHeight - innerHeight - scrollY, ref = 150 + (innerHeight - 150) * Math.max(0, Math.min(1, 1 - remaining / (innerHeight * .5))); if (Date.now() < azLockUntil) return; let active = ''; for (const el of document.querySelectorAll('.az-divider')) { if (el.getBoundingClientRect().top <= ref) active = el.dataset.letter; else break } if (!active) { const f = document.querySelector('.az-divider'); active = f ? f.dataset.letter : '' } rail.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.l === active)) }
-    function isAzView() { return activeView !== 'Recently added' && !activeAlbumKey }
+    function isAzView() { return activeView !== 'Recently added' && !activeAlbumKey && !isRankedPlaylist() }
     function azLetter(name) { const c = String(name || '').trim().normalize('NFD').charAt(0).toUpperCase(); return /[A-Z]/.test(c) ? c : (/\p{L}/u.test(c) ? c : '#') }
     function albumIdentity(track) { return JSON.stringify([track.artist || '', track.album || '']) }
     function getAlbumGroups() { const groups = new Map(); tracks.forEach((track, index) => { const key = albumIdentity(track); let group = groups.get(key); if (!group) { group = { key, album: track.album || 'Unknown Album', artist: track.artist || 'Unknown Artist', art: track.art || '', indices: [] }; groups.set(key, group) } if (!group.art && track.art) group.art = track.art; group.indices.push(index) }); return [...groups.values()].sort((a, b) => a.album.localeCompare(b.album) || a.artist.localeCompare(b.artist)) }
@@ -9255,7 +9234,7 @@
     function recordListenTime(deck) { if (deck !== audio || deck.paused || current < 0 || !tracks[current]) return; const position = deck.currentTime, track = tracks[current]; if (lastListenTrackId !== track.id) { lastListenTrackId = track.id; lastListenPosition = position; return } if (lastListenPosition !== null) { const delta = position - lastListenPosition; if (delta > 0 && delta <= 5) { const item = listeningStats.tracks[track.id] || (listeningStats.tracks[track.id] = { plays: 0, seconds: 0 }); item.seconds += delta; listeningStats.totalSeconds += delta; const now = Date.now(); saveListeningStats(); if (now - lastStatsRenderedAt >= 1000) { lastStatsRenderedAt = now; renderListeningStats() } } } lastListenPosition = position } function syncMobileTrackEdit() { const button = document.querySelector("#editCurrentTrack"), status = document.querySelector("#mobileTrackEditStatus"); if (!button || !status) return; const track = current >= 0 ? tracks[current] : null; button.disabled = !track; status.textContent = track ? `${track.name} · ${track.artist}` : "" } function render() { syncMobileTrackEdit(); renderRecent(); renderListeningStats(); renderAlbums(); const shown = visibleTracks(); document.querySelector('#count').textContent = `${shown.length} ${shown.length === 1 ? 'song' : 'songs'}`; const az = isAzView(); document.querySelector('#azBadge').hidden = !az; let lastLetter = ''; renderAzRail(az ? shown : []); if (!shown.length) { const message = ''; list.innerHTML = `<div class="empty"><strong>${tracks.length ? 'No tracks here yet' : 'Your library is waiting'}</strong>${escapeHtml(message)}</div>`; return } list.innerHTML = shown.map(({ t, i }, n) => { const L = az ? azLetter(t.name) : '', head = az && L !== lastLetter ? `<div class="az-divider" data-letter="${escapeHtml(L)}">${escapeHtml(L)}</div>` : ''; lastLetter = L; return head + `<div class="track ${i === current ? 'current' : ''}" data-i="${i}"><div class="track-no">${i === current && !audio.paused ? '♫' : String(n + 1).padStart(2, '0')}</div><div class="cover" data-cover="${i}">♫</div><div class="track-copy"><div class="track-copy-line"><div class="track-name">${escapeHtml(t.name)}</div><button type="button" class="metadata-edit" data-edit-track="${escapeHtml(t.id)}" title="Edit song, artist, and album details" aria-label="Edit details for ${escapeHtml(t.name)}">✎</button></div><div class="track-artist">${escapeHtml(t.artist)}</div></div><div class="track-album">${escapeHtml(t.album)}</div><div class="track-length">${fmt(t.duration)}</div><button class="track-action ${t.favorite ? 'favorite-on' : ''}" data-favorite="${i}" title="${t.favorite ? 'Remove from' : 'Add to'} favorites">${t.favorite ? '♥' : '♡'}</button><button class="track-action queue-add" data-queue="${i}" title="Add to Up Next" aria-label="Add to Up Next">⇥</button><button class="track-action" data-add="${i}" title="Add to playlist">＋</button></div>` }).join(''); list.querySelectorAll('[data-cover]').forEach(el => setCover(el, tracks[+el.dataset.cover])); list.querySelectorAll('[data-edit-track]').forEach(el => el.onclick = e => { e.stopPropagation(); openTrackMetadata(el.dataset.editTrack) }); list.querySelectorAll('.track').forEach(el => el.addEventListener('click', e => { if (e.target.closest('button')) return; playTrack(+el.dataset.i) })); list.querySelectorAll('[data-favorite]').forEach(el => el.onclick = e => { e.stopPropagation(); toggleFavorite(+el.dataset.favorite) }); list.querySelectorAll('[data-queue]').forEach(el => el.onclick = e => { e.stopPropagation(); enqueueTrack(+el.dataset.queue) }); list.querySelectorAll('[data-add]').forEach(el => el.onclick = e => { e.stopPropagation(); addToPlaylist(+el.dataset.add) }); }
     function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) }
     function playlistTint(p) { const allowed = ['#ff5368', '#8b70ff', '#328fe8', '#20a77a', '#e6a33a']; return allowed.includes(p?.color) ? p.color : allowed[0] }
-    function renderPlaylists() { const nav = document.querySelector('#playlistNav'); nav.innerHTML = playlists.map(p => `<button class="playlist-nav-item ${activePlaylistId === p.id ? 'active' : ''}" data-pid="${escapeHtml(p.id)}" data-rule="${escapeHtml(p.rule || 'manual')}" style="--playlist-color:${playlistTint(p)}"><span class="playlist-dot"></span><span class="playlist-nav-name">${escapeHtml(p.name)}</span><span class="playlist-edit" data-edit-playlist="${escapeHtml(p.id)}" title="Edit playlist" aria-label="Edit ${escapeHtml(p.name)}">✎</span><span class="playlist-delete" data-delete-playlist="${escapeHtml(p.id)}" title="Delete playlist" aria-label="Delete ${escapeHtml(p.name)}">×</span></button>`).join(''); nav.querySelectorAll('[data-pid]').forEach(el => el.onclick = e => { if (e.target.closest('[data-delete-playlist],[data-edit-playlist]')) return; selectView(playlists.find(p => p.id === el.dataset.pid)?.name || el.dataset.pid, el.dataset.pid) }); nav.querySelectorAll('[data-delete-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); deletePlaylist(el.dataset.deletePlaylist) }); nav.querySelectorAll('[data-edit-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); openPlaylistDialog(el.dataset.editPlaylist) }); renderMobileNav() }
+    function renderPlaylists() { const nav = document.querySelector('#playlistNav'); nav.innerHTML = playlists.map(p => `<button class="playlist-nav-item ${activePlaylistId === p.id ? 'active' : ''}" data-pid="${escapeHtml(p.id)}" data-rule="${escapeHtml(p.rule || 'manual')}" style="--playlist-color:${playlistTint(p)}"><span class="playlist-dot"></span><span class="playlist-nav-name">${escapeHtml(p.name)}</span></button>`).join(''); nav.querySelectorAll('[data-pid]').forEach(el => el.onclick = e => { if (e.target.closest('[data-delete-playlist],[data-edit-playlist]')) return; selectView(playlists.find(p => p.id === el.dataset.pid)?.name || el.dataset.pid, el.dataset.pid) }); nav.querySelectorAll('[data-delete-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); deletePlaylist(el.dataset.deletePlaylist) }); nav.querySelectorAll('[data-edit-playlist]').forEach(el => el.onclick = e => { e.stopPropagation(); openPlaylistDialog(el.dataset.editPlaylist) }); renderMobileNav() }
     function renderMobileNav() { const nav = document.querySelector('#mobileNav'); if (!nav) return; const navView = activeView === 'Album' ? 'Albums' : activeView; renderMobileTabs(navView); const views = ['Recently added']; nav.innerHTML = views.map(name => `<button data-name=\"${name}\" class=\"${navView === name && !activePlaylistId ? 'active' : ''}\">${name}</button>`).join('') + playlists.map(p => `<button data-name=\"${escapeHtml(p.id)}\" class=\"${activePlaylistId === p.id ? 'active' : ''}\">${escapeHtml(p.name)}</button>`).join('') + '<button class=\"mobile-auto-mix\" data-auto-mix>♫ Auto Mix</button><button class=\"mobile-new-playlist\" data-new-playlist>＋ New playlist</button>'; nav.querySelectorAll('button').forEach(b => b.onclick = () => { if (b.hasAttribute('data-auto-mix')) { startAutoMix(); return } if (b.hasAttribute('data-new-playlist')) { openPlaylistDialog(); return } const p = playlists.find(x => x.id === b.dataset.name); selectView(p ? p.name : b.dataset.name, p?.id || null) }) }
     function renderMobileTabs(navView) { const tabs = document.querySelector('#mobileTabs'); if (!tabs) return; const searching = document.activeElement === document.querySelector('#search') || (!!searchTerm && activeView !== 'Home'); const items = [['Home', 'Home', '<path d="m3 10.5 9-7.2 9 7.2V20a1 1 0 0 1-1 1h-4.5v-6.5h-7V21H4a1 1 0 0 1-1-1z"/>'], ['Library', 'Library', '<rect x="4" y="3.5" width="16" height="17" rx="3.2"/><path d="M10 16V8.6l5-1V14"/><circle cx="8.6" cy="16" r="1.4"/><circle cx="13.6" cy="14" r="1.4"/>'], ['__search', 'Search', '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>']]; tabs.innerHTML = items.map(([view, label, icon]) => { const isSearch = view === '__search', on = isSearch ? searching : view === 'Library' ? (!searching && (['Library', 'All tracks', 'Albums', 'Recently added', 'Favorites'].includes(navView) || !!activePlaylistId)) : (!searching && navView === view && !activePlaylistId); return `<button type="button" data-tab="${view}" class="tab-${label.toLowerCase()}${on ? ' active' : ''}" aria-label="${label}"${on ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true">${icon}</svg><span>${label}</span></button>` }).join(''); tabs.querySelectorAll('button').forEach(b => b.onclick = () => { const m = document.querySelector('main'); if (b.dataset.tab === '__search') { if (m) m.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelector('#search').focus(); return } const same = b.classList.contains('active') && (b.dataset.tab !== 'Library' || (window.musikoLibraryAtRoot && window.musikoLibraryAtRoot())); document.querySelector('#search').blur(); if (!same || searchTerm) { if (searchTerm) { searchTerm = ''; document.querySelector('#search').value = '' } selectView(b.dataset.tab) } if (m) m.scrollTo({ top: 0, behavior: same ? 'smooth' : 'auto' }) }) }
     (() => { const root = document.documentElement, field = () => document.querySelector('#search'); const typing = el => el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') && el.type !== 'checkbox' && el.type !== 'range' && el.type !== 'file'; document.addEventListener('focusin', e => { if (typing(e.target)) root.classList.add('kb-open'); if (e.target === field()) renderMobileNav() }); document.addEventListener('focusout', e => { if (typing(e.target)) setTimeout(() => { if (!typing(document.activeElement)) root.classList.remove('kb-open') }, 60); if (e.target === field()) setTimeout(renderMobileNav, 80) }) })();
@@ -9267,7 +9246,9 @@
     function closePlaylistPicker() { const p = document.querySelector('#playlistPicker'); p.classList.remove('open'); p.setAttribute('aria-hidden', 'true'); pendingPlaylistTrack = -1 }
     async function addSongToPlaylist(id) { const p = playlists.find(x => x.id === id), t = tracks[pendingPlaylistTrack]; if (!p || !t) return; if (p.trackIds.includes(t.id)) { toast(`Already in ${p.name}`); closePlaylistPicker(); return } p.trackIds.push(t.id); try { await dbRequest('playlists', 'put', p); toast(`Added to ${p.name}`) } catch { toast('Could not save playlist change') } closePlaylistPicker(); render() }
     async function addToPlaylist(i) { if (!playlists.length) { openPlaylistDialog(); pendingPlaylistTrack = i; return } openPlaylistPicker(i) }
-    function updatePlaylistRuleFields() { const rule = document.querySelector('#playlistRule').value, field = document.querySelector('#playlistRuleValueField'); field.hidden = !['artist', 'album'].includes(rule); document.querySelector('#playlistRuleValue') } function openPlaylistDialog(id = null) { editingPlaylistId = id; const p = id ? playlists.find(x => x.id === id) : null, dialog = document.querySelector('#playlistDialog'); document.querySelector('#playlistDialogTitle').textContent = p ? 'Edit playlist' : 'Create playlist'; document.querySelector('#savePlaylistButton').textContent = p ? 'Save changes' : 'Create playlist'; document.querySelector('#playlistNameInput').value = p?.name || ''; document.querySelector('#playlistDescriptionInput').value = p?.description || ''; document.querySelector('#playlistRule').value = p?.rule || 'manual'; document.querySelector('#playlistRuleValue').value = p?.ruleValue || ''; updatePlaylistRuleFields(); document.querySelector('#playlistFormError').textContent = ''; setPlaylistColor(p?.color || '#ff5368'); dialog.classList.add('open'); dialog.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => document.querySelector('#playlistNameInput').focus()) }
+    function openPlaylistDialog(id = null) { editingPlaylistId = id; const p = id ? playlists.find(x => x.id === id) : null, dialog = document.querySelector('#playlistDialog'); document.querySelector('#playlistDialogTitle').textContent = p ? 'Edit playlist' : 'Create playlist'; document.querySelector('#savePlaylistButton').textContent = p ? 'Save changes' : 'Create playlist'; document.querySelector('#playlistNameInput').value = p?.name || ''; document.querySelector('#playlistDescriptionInput').value = p?.description || ''; document.querySelector('#playlistFormError').textContent = ''; setPlaylistColor(p?.color || '#ff5368'); dialog.classList.add('open'); dialog.setAttribute('aria-hidden', 'false'); placePlaylistDialog(id); requestAnimationFrame(() => document.querySelector('#playlistNameInput').focus()) }
+    /* Editing from the sidebar: open the panel right beside the playlist you picked instead of centered on the window */
+    function placePlaylistDialog(id) { const card = document.querySelector('#playlistForm'), dlg = document.querySelector('#playlistDialog'); card.style.cssText = ''; dlg.classList.remove('anchored'); if (!id || matchMedia('(max-width:760px)').matches) return; const row = [...document.querySelectorAll('#playlistNav [data-pid]')].find(b => b.dataset.pid === id); if (!row || !row.offsetParent) return; const side = document.querySelector('#sidebar') || document.querySelector('aside'), r = row.getBoundingClientRect(), sr = side ? side.getBoundingClientRect() : r, w = card.offsetWidth, h = card.offsetHeight, left = Math.max(12, Math.min(sr.right + 14, innerWidth - w - 12)), top = Math.max(12, Math.min(r.top - 12, innerHeight - h - 12)); dlg.classList.add('anchored'); card.style.position = 'absolute'; card.style.left = left + 'px'; card.style.top = top + 'px'; card.style.margin = '0' }
     function closePlaylistDialog() { const d = document.querySelector('#playlistDialog'); d.classList.remove('open'); d.setAttribute('aria-hidden', 'true'); editingPlaylistId = null; pendingPlaylistTrack = -1 }
     function setPlaylistColor(color) { document.querySelector('#playlistColorValue').value = color; document.querySelectorAll('[data-playlist-color]').forEach(b => { const active = b.dataset.playlistColor === color; b.classList.toggle('active', active); b.setAttribute('aria-pressed', String(active)) }) }
     async function toggleFavorite(i) { tracks[i].favorite = !tracks[i].favorite; await saveTrack(tracks[i]); if (i === current) document.querySelector('#nowFavorite').classList.toggle('favorite-on', tracks[i].favorite); render(); preloadedTrackIndex = -1; prepareNextTrack() }
@@ -9304,7 +9285,7 @@
     function openQueue() { renderQueue(); const p = document.querySelector('#queuePanel'); p.classList.add('open'); p.setAttribute('aria-hidden', 'false'); document.querySelector('#closeQueue').focus() } function closeQueue() { const p = document.querySelector('#queuePanel'); p.classList.remove('open'); p.setAttribute('aria-hidden', 'true') }
     async function removeTrack(i) { if (!tracks[i]) return; if (activePlaylistId) { const p = playlists.find(x => x.id === activePlaylistId); if (p) { if (p.rule && p.rule !== 'manual') p.excludedTrackIds = [...new Set([...(p.excludedTrackIds || []), tracks[i].id])]; else p.trackIds = p.trackIds.filter(id => id !== tracks[i].id); try { await dbRequest('playlists', 'put', p) } catch { } render() } return } let was = current === i, removed = tracks[i]; if (removed.url) URL.revokeObjectURL(removed.url); delete listeningStats.tracks[removed.id]; if (removed.art?.startsWith('blob:')) URL.revokeObjectURL(removed.art); tracks.splice(i, 1); preloadedTrackIndex = -1; queue = queue.filter(item => item.trackId !== removed.id); try { await dbRequest('tracks', 'delete', removed.id); for (const p of playlists) if (p.trackIds.includes(removed.id)) { p.trackIds = p.trackIds.filter(id => id !== removed.id); await dbRequest('playlists', 'put', p) } } catch { } if (current > i) current--; else if (was) { cancelCrossfade(); current = -1; audio.pause(); audio.removeAttribute('src'); document.querySelector('#nowTitle').textContent = 'Nothing playing'; document.querySelector('#nowArtist').textContent = ''; document.querySelector('#nowFavorite').classList.remove('favorite-on'); document.querySelector('#nowFavorite').textContent = '♡'; setCover(document.querySelector('#nowCover'), null); syncHero(null); syncFull(null) } render(); if (current >= 0) prepareNextTrack() }
     function toggle() { if (current < 0) { const shown = visibleTracks(); if (shown.length) playTrack(shown[0].i); else toast('Add some music first'); return } if (audio.paused) { const pr = audio.play(); if (pr && pr.catch) pr.catch(err => { if (err && err.name === 'NotAllowedError') toast('Tap play to start the song') }) } else audio.pause() }
-    window.addEventListener('beforeunload', () => saveListeningStats(true)); window.addEventListener('pagehide', () => saveListeningStats(true)); document.addEventListener('visibilitychange', () => { if (document.hidden) saveListeningStats(true) }); document.querySelector('#openBtn').onclick = () => files.click(); document.querySelector('#heroAdd').onclick = () => files.click(); document.querySelector('#autoMixHero').onclick = startAutoMix; document.querySelector('#allRecent').onclick = () => selectView('All tracks'); document.querySelector('#backToAlbums').onclick = () => selectView('Albums'); files.onchange = () => { addFiles(files.files); files.value = '' }; document.querySelector('#folderImportSettings').onclick = () => document.querySelector('#folderFiles').click(); document.querySelector('#folderFiles').onchange = e => { addFiles(e.target.files); e.target.value = '' }; const customBackgroundInput = document.querySelector('#customBackgroundInput'), customBackgroundStatus = document.querySelector('#customBackgroundStatus'); if (window.MusikoAppearance.value.customBackground) customBackgroundStatus.textContent = 'Custom background is saved on this device.'; document.querySelector('#chooseCustomBackground').onclick = () => customBackgroundInput.click(); customBackgroundInput.onchange = e => { const file = e.target.files?.[0]; e.target.value = ''; if (!file || !file.type.startsWith('image/')) return; const imageUrl = URL.createObjectURL(file), image = new Image(); image.onload = () => { const scale = Math.min(1, 1200 / image.width, 800 / image.height), canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(image.width * scale)); canvas.height = Math.max(1, Math.round(image.height * scale)); const context = canvas.getContext('2d'); context.fillStyle = '#10121b'; context.fillRect(0, 0, canvas.width, canvas.height); context.drawImage(image, 0, 0, canvas.width, canvas.height); URL.revokeObjectURL(imageUrl); try { const settings = window.MusikoAppearance; settings.value.customBackground = canvas.toDataURL('image/jpeg', .72); settings.value.skin = 'custom'; settings.value.mode = 'dark'; settings.value.darkSkin = 'custom'; saveAppearance(); customBackgroundStatus.textContent = 'Custom background saved on this device.'; toast('Custom background applied') } catch { toast('Could not save that background image') } }; image.onerror = () => { URL.revokeObjectURL(imageUrl); toast('Could not open that image') }; image.src = imageUrl }; document.querySelector('#editCurrentTrack').onclick = () => { if (current < 0 || !tracks[current]) return; const id = tracks[current].id; closeSettings(); openTrackMetadata(id) }; document.querySelector('#play').onclick = toggle; document.querySelector('#newPlaylist').onclick = () => openPlaylistDialog(); document.querySelector('#autoMix').onclick = startAutoMix; document.querySelector('#playlistRule').onchange = updatePlaylistRuleFields; document.querySelector('#editActivePlaylist').onclick = () => { if (activePlaylistId) openPlaylistDialog(activePlaylistId) }; document.querySelectorAll('[data-close-playlist-dialog]').forEach(b => b.onclick = closePlaylistDialog); document.querySelectorAll('[data-close-playlist-picker]').forEach(b => b.onclick = closePlaylistPicker); document.querySelectorAll('[data-playlist-color]').forEach(b => b.onclick = () => setPlaylistColor(b.dataset.playlistColor)); document.querySelector('#createFromPicker').onclick = () => { document.querySelector('#playlistPicker').classList.remove('open'); document.querySelector('#playlistPicker').setAttribute('aria-hidden', 'true'); openPlaylistDialog() }; document.querySelector('#playlistForm').onsubmit = async e => { e.preventDefault(); const name = document.querySelector('#playlistNameInput').value.trim(), description = document.querySelector('#playlistDescriptionInput').value.trim(), color = document.querySelector('#playlistColorValue').value, rule = document.querySelector('#playlistRule').value, ruleValue = document.querySelector('#playlistRuleValue').value.trim(), error = document.querySelector('#playlistFormError'), duplicate = playlists.find(p => p.name.toLowerCase() === name.toLowerCase() && p.id !== editingPlaylistId); if (!name) { error.textContent = 'Give your playlist a name first.'; return } if (duplicate) { error.textContent = 'A playlist with this name already exists.'; return } if (['artist', 'album'].includes(rule) && !ruleValue) { error.textContent = 'Enter the artist or album to match.'; return } let p; if (editingPlaylistId) { p = playlists.find(x => x.id === editingPlaylistId); if (!p) return; p.name = name; p.description = description; p.color = playlistTint({ color }); p.rule = rule; p.ruleValue = ruleValue; try { await dbRequest('playlists', 'put', p) } catch { error.textContent = 'Could not save your playlist.'; return } renderPlaylists() } else p = await createPlaylist(name, description, color, rule, ruleValue); if (!p) return; if (pendingPlaylistTrack >= 0 && tracks[pendingPlaylistTrack]) { const track = tracks[pendingPlaylistTrack]; if (!p.trackIds.includes(track.id)) p.trackIds.push(track.id); try { await dbRequest('playlists', 'put', p) } catch { toast('Could not add this song to the playlist') } } pendingPlaylistTrack = -1; closePlaylistDialog(); closePlaylistPicker(); selectView(p.id, p.id) }; document.querySelector('#metadataRemoveSong').onclick = () => { const index = tracks.findIndex(track => track.id === editingTrackId); if (index < 0) return; const message = activePlaylistId ? 'Remove this song from the current playlist?' : 'Remove this song from your library?'; if (!confirm(message)) return; closeTrackMetadata(); removeTrack(index) }; document.querySelector('#metadataCoverInput').onchange = e => { const file = e.target.files?.[0]; if (!file || !file.type.startsWith('image/')) return; if (metadataPreviewUrl) URL.revokeObjectURL(metadataPreviewUrl); metadataPreviewUrl = URL.createObjectURL(file); const preview = document.querySelector('#metadataCoverPreview'); preview.style.backgroundImage = `url("${metadataPreviewUrl}")`; preview.classList.add('has-art'); preview.textContent = '' }; document.querySelector('#metadataForm').onsubmit = async e => { e.preventDefault(); const track = tracks.find(item => item.id === editingTrackId); if (!track) return; const title = document.querySelector('#metadataTitle').value.trim(); if (!title) { document.querySelector('#metadataError').textContent = 'Enter a song title.'; return } const artist = document.querySelector('#metadataArtist').value.trim() || 'Unknown Artist', album = document.querySelector('#metadataAlbum').value.trim() || 'Unknown Album', changed = track.artist !== artist || track.album !== album; track.name = title; track.artist = artist; track.album = album; const coverFile = document.querySelector('#metadataCoverInput').files?.[0]; if (coverFile) { if (track.customArtBlob && track.art?.startsWith('blob:')) URL.revokeObjectURL(track.art); track.customArtBlob = coverFile; track.art = metadataPreviewUrl || URL.createObjectURL(coverFile); metadataPreviewUrl = null } if (changed) track.lyricsLookup = ''; await saveTrack(track); closeTrackMetadata(); render(); renderQueue(); if (current >= 0 && tracks[current]?.id === track.id) { document.querySelector('#nowTitle').textContent = track.name; document.querySelector('#nowArtist').textContent = track.artist; syncHero(track); syncFull(track); if (changed) lookupLyrics(track) } toast('Track details saved') }; document.querySelectorAll('[data-close-metadata]').forEach(button => button.onclick = closeTrackMetadata); document.querySelector('#metadataDialog').addEventListener('click', e => { if (e.target.id === 'metadataDialog') closeTrackMetadata() }); document.querySelector('#playlistDialog').addEventListener('click', e => { if (e.target.id === 'playlistDialog') closePlaylistDialog() }); document.querySelector('#playlistPicker').addEventListener('click', e => { if (e.target.id === 'playlistPicker') closePlaylistPicker() }); document.querySelector('#search').oninput = e => { const query = e.target.value.trim(); if (query.toLowerCase() === 'terminal') { const settings = window.MusikoAppearance; settings.value.mode = 'dark'; settings.value.skin = 'terminal'; settings.value.darkSkin = 'terminal'; settings.value.accent = '#45ed82'; e.target.value = ''; searchTerm = ''; saveAppearance(); toast('Terminal theme activated') } else searchTerm = query; if (searchTerm && activeView === 'Home') selectView('All tracks'); else render(); preloadedTrackIndex = -1; prepareNextTrack() }; document.querySelector('#nowFavorite').onclick = () => { if (current >= 0) toggleFavorite(current) };
+    window.addEventListener('beforeunload', () => saveListeningStats(true)); window.addEventListener('pagehide', () => saveListeningStats(true)); document.addEventListener('visibilitychange', () => { if (document.hidden) saveListeningStats(true) }); document.querySelector('#openBtn').onclick = () => files.click(); document.querySelector('#heroAdd').onclick = () => files.click(); document.querySelector('#autoMixHero').onclick = startAutoMix; document.querySelector('#allRecent').onclick = () => selectView('All tracks'); document.querySelector('#backToAlbums').onclick = () => selectView('Albums'); files.onchange = () => { addFiles(files.files); files.value = '' }; document.querySelector('#folderImportSettings').onclick = () => document.querySelector('#folderFiles').click(); document.querySelector('#folderFiles').onchange = e => { addFiles(e.target.files); e.target.value = '' }; const customBackgroundInput = document.querySelector('#customBackgroundInput'), customBackgroundStatus = document.querySelector('#customBackgroundStatus'); if (window.MusikoAppearance.value.customBackground) customBackgroundStatus.textContent = 'Custom background is saved on this device.'; document.querySelector('#chooseCustomBackground').onclick = () => customBackgroundInput.click(); customBackgroundInput.onchange = e => { const file = e.target.files?.[0]; e.target.value = ''; if (!file || !file.type.startsWith('image/')) return; const imageUrl = URL.createObjectURL(file), image = new Image(); image.onload = () => { const scale = Math.min(1, 1200 / image.width, 800 / image.height), canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(image.width * scale)); canvas.height = Math.max(1, Math.round(image.height * scale)); const context = canvas.getContext('2d'); context.fillStyle = '#10121b'; context.fillRect(0, 0, canvas.width, canvas.height); context.drawImage(image, 0, 0, canvas.width, canvas.height); URL.revokeObjectURL(imageUrl); try { const settings = window.MusikoAppearance; settings.value.customBackground = canvas.toDataURL('image/jpeg', .72); settings.value.skin = 'custom'; settings.value.mode = 'dark'; settings.value.darkSkin = 'custom'; saveAppearance(); customBackgroundStatus.textContent = 'Custom background saved on this device.'; toast('Custom background applied') } catch { toast('Could not save that background image') } }; image.onerror = () => { URL.revokeObjectURL(imageUrl); toast('Could not open that image') }; image.src = imageUrl }; document.querySelector('#editCurrentTrack').onclick = () => { if (current < 0 || !tracks[current]) return; const id = tracks[current].id; closeSettings(); openTrackMetadata(id) }; document.querySelector('#play').onclick = toggle; document.querySelector('#newPlaylist').onclick = () => openPlaylistDialog(); document.querySelector('#autoMix').onclick = startAutoMix; document.querySelector('#editActivePlaylist').onclick = () => { if (activePlaylistId) openPlaylistDialog(activePlaylistId) }; document.querySelectorAll('[data-close-playlist-dialog]').forEach(b => b.onclick = closePlaylistDialog); document.querySelectorAll('[data-close-playlist-picker]').forEach(b => b.onclick = closePlaylistPicker); document.querySelectorAll('[data-playlist-color]').forEach(b => b.onclick = () => setPlaylistColor(b.dataset.playlistColor)); document.querySelector('#createFromPicker').onclick = () => { document.querySelector('#playlistPicker').classList.remove('open'); document.querySelector('#playlistPicker').setAttribute('aria-hidden', 'true'); openPlaylistDialog() }; document.querySelector('#playlistForm').onsubmit = async e => { e.preventDefault(); const name = document.querySelector('#playlistNameInput').value.trim(), description = document.querySelector('#playlistDescriptionInput').value.trim(), color = document.querySelector('#playlistColorValue').value, rule = 'manual', ruleValue = '', error = document.querySelector('#playlistFormError'), duplicate = playlists.find(p => p.name.toLowerCase() === name.toLowerCase() && p.id !== editingPlaylistId); if (!name) { error.textContent = 'Give your playlist a name first.'; return } if (duplicate) { error.textContent = 'A playlist with this name already exists.'; return } if (['artist', 'album'].includes(rule) && !ruleValue) { error.textContent = 'Enter the artist or album to match.'; return } let p; if (editingPlaylistId) { p = playlists.find(x => x.id === editingPlaylistId); if (!p) return; p.name = name; p.description = description; p.color = playlistTint({ color }); p.rule = 'manual'; p.ruleValue = ''; delete p.limit; delete p.excludedTrackIds; try { await dbRequest('playlists', 'put', p) } catch { error.textContent = 'Could not save your playlist.'; return } renderPlaylists() } else p = await createPlaylist(name, description, color, rule, ruleValue); if (!p) return; if (pendingPlaylistTrack >= 0 && tracks[pendingPlaylistTrack]) { const track = tracks[pendingPlaylistTrack]; if (!p.trackIds.includes(track.id)) p.trackIds.push(track.id); try { await dbRequest('playlists', 'put', p) } catch { toast('Could not add this song to the playlist') } } pendingPlaylistTrack = -1; closePlaylistDialog(); closePlaylistPicker(); selectView(p.id, p.id) }; document.querySelector('#metadataRemoveSong').onclick = () => { const index = tracks.findIndex(track => track.id === editingTrackId); if (index < 0) return; const message = activePlaylistId ? 'Remove this song from the current playlist?' : 'Remove this song from your library?'; if (!confirm(message)) return; closeTrackMetadata(); removeTrack(index) }; document.querySelector('#metadataCoverInput').onchange = e => { const file = e.target.files?.[0]; if (!file || !file.type.startsWith('image/')) return; if (metadataPreviewUrl) URL.revokeObjectURL(metadataPreviewUrl); metadataPreviewUrl = URL.createObjectURL(file); const preview = document.querySelector('#metadataCoverPreview'); preview.style.backgroundImage = `url("${metadataPreviewUrl}")`; preview.classList.add('has-art'); preview.textContent = '' }; document.querySelector('#metadataForm').onsubmit = async e => { e.preventDefault(); const track = tracks.find(item => item.id === editingTrackId); if (!track) return; const title = document.querySelector('#metadataTitle').value.trim(); if (!title) { document.querySelector('#metadataError').textContent = 'Enter a song title.'; return } const artist = document.querySelector('#metadataArtist').value.trim() || 'Unknown Artist', album = document.querySelector('#metadataAlbum').value.trim() || 'Unknown Album', changed = track.artist !== artist || track.album !== album; track.name = title; track.artist = artist; track.album = album; const coverFile = document.querySelector('#metadataCoverInput').files?.[0]; if (coverFile) { if (track.customArtBlob && track.art?.startsWith('blob:')) URL.revokeObjectURL(track.art); track.customArtBlob = coverFile; track.art = metadataPreviewUrl || URL.createObjectURL(coverFile); metadataPreviewUrl = null } if (changed) track.lyricsLookup = ''; await saveTrack(track); closeTrackMetadata(); render(); renderQueue(); if (current >= 0 && tracks[current]?.id === track.id) { document.querySelector('#nowTitle').textContent = track.name; document.querySelector('#nowArtist').textContent = track.artist; syncHero(track); syncFull(track); if (changed) lookupLyrics(track) } toast('Track details saved') }; document.querySelectorAll('[data-close-metadata]').forEach(button => button.onclick = closeTrackMetadata); document.querySelector('#metadataDialog').addEventListener('click', e => { if (e.target.id === 'metadataDialog') closeTrackMetadata() }); document.querySelector('#playlistDialog').addEventListener('click', e => { if (e.target.id === 'playlistDialog') closePlaylistDialog() }); document.querySelector('#playlistPicker').addEventListener('click', e => { if (e.target.id === 'playlistPicker') closePlaylistPicker() }); document.querySelector('#search').oninput = e => { const query = e.target.value.trim(); if (query.toLowerCase() === 'terminal') { const settings = window.MusikoAppearance; settings.value.mode = 'dark'; settings.value.skin = 'terminal'; settings.value.darkSkin = 'terminal'; settings.value.accent = '#45ed82'; e.target.value = ''; searchTerm = ''; saveAppearance(); toast('Terminal theme activated') } else searchTerm = query; if (searchTerm && activeView === 'Home') selectView('All tracks'); else render(); preloadedTrackIndex = -1; prepareNextTrack() }; document.querySelector('#nowFavorite').onclick = () => { if (current >= 0) toggleFavorite(current) };
     /* ---- iOS: undo any accidental zoom / sideways pan, and show real Now Playing controls ---- */
     (() => { const meta = document.querySelector('meta[name=viewport]'), base = meta ? meta.content : ''; let fixing = false; const reset = () => { if (fixing) return; fixing = true; if (window.scrollX || window.scrollY) window.scrollTo(0, 0); if (meta) { meta.content = 'width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no'; setTimeout(() => { meta.content = base; fixing = false }, 120) } else fixing = false }; const vv = window.visualViewport; if (vv) { const check = () => { if (vv.scale > 1.01 || Math.abs(vv.offsetLeft) > 1) reset() }; vv.addEventListener('resize', check); vv.addEventListener('scroll', check) } window.addEventListener('scroll', () => { if (window.scrollX) window.scrollTo(0, window.scrollY) }, { passive: true }); window.addEventListener('orientationchange', () => setTimeout(reset, 350)) })();
     (() => { if (!('mediaSession' in navigator)) return; const ms = navigator.mediaSession, set = (a, f) => { try { ms.setActionHandler(a, f) } catch { } }; const sync = () => { const t = tracks[current]; if (!t) { ms.metadata = null; return } try { ms.metadata = new MediaMetadata({ title: t.name, artist: t.artist, album: t.album && t.album !== 'Local files' ? t.album : '', artwork: t.art ? [{ src: t.art, sizes: '512x512' }] : [] }) } catch { } }; document.addEventListener('musiko:track', sync); const pos = () => { try { if (Number.isFinite(audio.duration) && audio.duration > 0) ms.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }) } catch { } }; audioDecks.forEach(d => { d.addEventListener('play', () => { if (d === audio) { ms.playbackState = 'playing'; pos() } }); d.addEventListener('pause', () => { if (d === audio) ms.playbackState = 'paused' }); d.addEventListener('loadedmetadata', () => { if (d === audio) pos() }); d.addEventListener('seeked', () => { if (d === audio) pos() }) }); set('play', () => { if (current < 0) toggle(); else audio.play() }); set('pause', () => audio.pause()); set('previoustrack', () => document.querySelector('#prev').click()); set('nexttrack', () => playNext(false, true)); set('seekto', e => { if (e.seekTime != null && Number.isFinite(audio.duration)) { audio.currentTime = Math.max(0, Math.min(audio.duration, e.seekTime)); pos() } }); set('seekbackward', e => { audio.currentTime = Math.max(0, audio.currentTime - (e.seekOffset || 10)) }); set('seekforward', e => { audio.currentTime = Math.min(audio.duration || 1e9, audio.currentTime + (e.seekOffset || 10)) }) })();
@@ -9403,6 +9384,7 @@
       window.musikoLibraryAtRoot = () => mode === 'root';
       window.musikoOpenArtist = name => enter('artist', name);
       const LIB_MODES = ['root', 'playlists', 'artists'];
+      const newRow = '<button type="button" class="lib-row lib-new" data-go="newplaylist"><span class="lib-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="lib-label"><span>New playlist</span></span></button>';
       const chev = '<svg class="lib-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
       const icons = {
         playlists: '<rect x="3.5" y="4" width="17" height="16" rx="3.5"/><path d="M10 9.2v5.6l4.6-2.8z"/>',
@@ -9433,15 +9415,15 @@
       function renderRoot() {
         const albums = getAlbumGroups();
         const recent = albums.map(g => ({ g, last: Math.max(...g.indices) })).sort((a, b) => b.last - a.last).slice(0, 12).map(x => x.g);
-        sec.innerHTML = `<div class="lib-list">${row('playlists', icons.playlists, 'Playlists', playlists.length)}${row('artists', icons.artists, 'Artists', artistGroups().length)}${row('albums', icons.albums, 'Albums', albums.length)}${row('songs', icons.songs, 'Songs', tracks.length)}${row('favorites', icons.favorites, 'Favorites', tracks.filter(t => t.favorite).length)}</div>`
+        sec.innerHTML = `<div class="lib-list">${row('playlists', icons.playlists, 'Playlists', playlists.length)}${row('artists', icons.artists, 'Artists', artistGroups().length)}${row('albums', icons.albums, 'Albums', albums.length)}${row('songs', icons.songs, 'Songs', tracks.length)}${row('favorites', icons.favorites, 'Favorites', tracks.filter(t => t.favorite).length)}${newRow}</div>`
           + `<div class="lib-head"><h2>Recently Added</h2>${recent.length ? '<button type="button" data-go="recent">See all</button>' : ''}</div>`
           + (recent.length ? `<div class="lib-grid">${recent.map((g, i) => `<button type="button" class="lib-card" data-album="${i}"><span class="lib-art">♫</span><span class="lib-name">${esc(g.album)}</span><span class="lib-sub">${esc(g.artist)}</span></button>`).join('')}</div>`
             : '<div class="lib-empty"><strong>Nothing here yet</strong><br><button type="button" class="glass-btn" data-go="add">＋ Add music</button></div>');
         sec.querySelectorAll('[data-album]').forEach(c => { const g = recent[+c.dataset.album]; setCover(c.querySelector('.lib-art'), { art: g.art }); c.dataset.key = g.key });
       }
       function renderPlaylistsPage() {
-        sec.innerHTML = playlists.length ? `<div class="lib-list">${playlists.map(p => `<button type="button" class="lib-row" data-playlist="${esc(p.id)}" style="--playlist-color:${playlistTint(p)}"><span class="lib-ico"><span class="lib-dot"></span></span><span class="lib-label"><span>${esc(p.name)}</span><span class="lib-count">${songsLabel(smartTrackIds(p).length)}</span>${chev}</span></button>`).join('')}</div>`
-          : '<div class="lib-empty"><strong>No playlists yet</strong><br><button type="button" class="glass-btn" data-go="newplaylist">＋ New playlist</button></div>';
+        sec.innerHTML = `<div class="lib-list">${newRow}${playlists.map(p => `<button type="button" class="lib-row" data-playlist="${esc(p.id)}" style="--playlist-color:${playlistTint(p)}"><span class="lib-ico"><span class="lib-dot"></span></span><span class="lib-label"><span>${esc(p.name)}</span><span class="lib-count">${songsLabel(smartTrackIds(p).length)}</span>${chev}</span></button>`).join('')}</div>`
+          + (playlists.length ? '' : '<div class="lib-empty"><strong>No playlists yet</strong></div>');
       }
       function renderArtistsPage() {
         const groups = artistGroups();
@@ -9513,57 +9495,21 @@
     })();
   </script>
   <script>
-    // Playlist dialog: live preview, counters, hints, autocomplete, delete
+    // Playlist dialog: live preview, counters, delete
     (() => {
       const $ = q => document.querySelector(q);
       const card = $('#playlistForm'); if (!card) return;
-      const name = $('#playlistNameInput'), desc = $('#playlistDescriptionInput'), rule = $('#playlistRule'), val = $('#playlistRuleValue'),
-        colorIn = $('#playlistColorValue'), hint = $('#plHint'), valField = $('#playlistRuleValueField'), list = $('#plMatchList'),
+      const name = $('#playlistNameInput'), desc = $('#playlistDescriptionInput'), colorIn = $('#playlistColorValue'),
         pvName = $('#plPreviewName'), pvSub = $('#plPreviewSub'), nameCount = $('#plNameCount'), descCount = $('#plDescCount'), del = $('#plDelete');
-      const HINTS = {
-        manual: 'You choose the songs. Add them with the + button on any track.',
-        favorites: 'Fills itself with every song you heart.',
-        artist: 'Every song by one artist, kept up to date automatically.',
-        album: 'Every song from one album, kept up to date automatically.',
-        top: 'Your 25 most played songs.',
-        recent: 'Your 25 most recently added songs.'
-      };
-      const LABELS = { manual: 'Regular playlist', favorites: 'Favorites', artist: 'Artist', album: 'Album', top: 'Most played', recent: 'Recently added' };
-      const norm = v => String(v || '').trim().toLowerCase();
-      function count() {
-        const r = rule.value, v = norm(val.value);
-        if (r === 'manual') { const p = editingPlaylistId ? playlists.find(x => x.id === editingPlaylistId) : null; return p && (p.rule || 'manual') === 'manual' ? (p.trackIds || []).length : 0 }
-        if (r === 'favorites') return tracks.filter(t => t.favorite).length;
-        if (r === 'artist') return v ? tracks.filter(t => norm(t.artist) === v).length : 0;
-        if (r === 'album') return v ? tracks.filter(t => norm(t.album) === v).length : 0;
-        return Math.min(25, tracks.length);
-      }
-      function fillSuggestions() {
-        const r = rule.value; if (r !== 'artist' && r !== 'album') { list.innerHTML = ''; return }
-        const set = new Set(tracks.map(t => (r === 'artist' ? t.artist : t.album) || '').filter(Boolean));
-        list.innerHTML = [...set].sort((a, b) => a.localeCompare(b)).map(x => `<option value="${escapeHtml(x)}">`).join('');
-      }
-      let refresh = function () {
+      const refresh = () => {
         card.style.setProperty('--pl-color', colorIn.value || '#ff5368');
-        const n = name.value.trim();
+        const n = name.value.trim(), p = editingPlaylistId ? playlists.find(x => x.id === editingPlaylistId) : null, c = p ? (p.trackIds || []).length : 0;
         pvName.textContent = n || 'Untitled playlist'; pvName.classList.toggle('is-empty', !n);
-        const c = count(); pvSub.textContent = `${c} ${c === 1 ? 'song' : 'songs'} · ${rule.value === 'manual' ? 'Regular playlist' : 'Smart · ' + LABELS[rule.value]}`;
+        pvSub.textContent = `${c} ${c === 1 ? 'song' : 'songs'}`;
         nameCount.textContent = `${name.value.length}/${name.maxLength}`;
         descCount.textContent = desc.value ? `${desc.value.length}/${desc.maxLength}` : 'optional';
-        hint.textContent = HINTS[rule.value] || '';
-        const r = rule.value; valField.firstChild.textContent = r === 'artist' ? 'Artist' : r === 'album' ? 'Album' : 'Match';
-        
-        fillSuggestions();
         del.hidden = !editingPlaylistId;
-      }
-      const typeBlock = $('#plTypeBlock'), seg = typeBlock.querySelectorAll('[data-kind]'), tiles = $('#plTiles'), tileBtns = tiles.querySelectorAll('[data-rule]');
-      typeBlock.appendChild(hint);
-      const setRule = v => { rule.value = v; rule.dispatchEvent(new Event('change', { bubbles: true })) };
-      seg.forEach(b => b.addEventListener('click', () => { if (b.dataset.kind === 'manual') setRule('manual'); else if (rule.value === 'manual') setRule('favorites') }));
-      tileBtns.forEach(b => b.addEventListener('click', () => setRule(b.dataset.rule)));
-      const syncPicker = () => { const smart = rule.value !== 'manual'; seg.forEach(b => b.setAttribute('aria-pressed', String((b.dataset.kind === 'smart') === smart))); tiles.hidden = !smart; tileBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.rule === rule.value))) };
-      const baseRefresh = refresh;
-      refresh = function () { baseRefresh(); syncPicker() };
+      };
       ['input', 'change'].forEach(ev => card.addEventListener(ev, refresh));
       document.querySelectorAll('[data-playlist-color]').forEach(b => b.addEventListener('click', () => setTimeout(refresh, 0)));
       const origOpen = window.openPlaylistDialog;
@@ -11374,6 +11320,34 @@
     html body .ctx-menu .ctx-item:focus, html body .ctx-menu .ctx-item:focus-visible { outline: none !important; box-shadow: none !important }
     .ctx-item small { font-size: 11.5px; color: #8f8f9b }
     .ctx-item.danger { color: #ff7b8b }
+    .ctx-mini { width: 270px; min-width: 0; padding: 7px }
+    .ctx-mini .ctx-head { display: flex; align-items: center; justify-content: space-between; gap: 10px }
+    .ctx-mini .ctx-head > div { min-width: 0 }
+    .ctx-mini .ctx-head button { flex: none; height: 26px; padding: 0 10px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--accent, #ff5368) 18%, transparent); color: var(--accent, #ff5368); font: 600 12px 'DM Sans', system-ui, sans-serif; cursor: pointer }
+    .ctx-mini .ctx-head button:hover { background: color-mix(in srgb, var(--accent, #ff5368) 30%, transparent) }
+    .ctx-mini-list { max-height: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin }
+    .ctx-mini-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 5px 6px; border: 0; border-radius: 10px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer }
+    .ctx-mini-row:hover, .ctx-mini-row:focus-visible { background: #ffffff14; outline: none }
+    html[data-theme="light"] .ctx-mini-row:hover, html[data-theme="light"] .ctx-mini-row:focus-visible { background: #0000000d }
+    .ctx-mini-cover { flex: none; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 6px; background: linear-gradient(145deg, #cf6876, #58465f); color: #fff9; font-size: 13px }
+    .ctx-mini-cover.has-art { background-size: cover; background-position: center }
+    .ctx-mini-copy { min-width: 0; display: grid; gap: 2px }
+    .ctx-mini-copy b, .ctx-mini-copy span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+    .ctx-mini-copy b { font-size: 13px; font-weight: 600 }
+    .ctx-mini-copy span { font-size: 11.5px; color: #8f8f9b }
+    .ctx-mini-form { width: 290px }
+    .ctx-mini-form form { display: grid; gap: 10px; padding: 4px 4px 2px }
+    .ctx-mini-form label { display: grid; gap: 5px; font-size: 12px; font-weight: 600 }
+    .ctx-mini-form input[type=text], .ctx-mini-form textarea { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.08); color: inherit; font: 13.5px 'DM Sans', system-ui, sans-serif; outline: none; -webkit-user-select: text; user-select: text }
+    .ctx-mini-form textarea { min-height: 52px; resize: none; line-height: 1.4 }
+    .ctx-mini-form input[type=text]:focus, .ctx-mini-form textarea:focus { border-color: var(--mf-color, var(--accent, #ff5368)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-color, var(--accent, #ff5368)) 22%, transparent) }
+    html[data-theme="light"] .ctx-mini-form input[type=text], html[data-theme="light"] .ctx-mini-form textarea { background: rgba(255,255,255,.5); border-color: rgba(40,32,44,.18) }
+    .ctx-mini-colors { display: flex; gap: 9px }
+    .ctx-mini-colors button { position: relative; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 50%; background: var(--sw); cursor: pointer }
+    .ctx-mini-colors button.active { box-shadow: 0 0 0 2px rgba(20,16,22,.9), 0 0 0 4px var(--sw) }
+    .ctx-mini-err { min-height: 14px; font-size: 11.5px; color: #ff8291 }
+    .ctx-mini-save { height: 32px; border: 0; border-radius: 999px; background: var(--mf-color, var(--accent, #ff5368)); color: #fff; font: 650 13px 'DM Sans', system-ui, sans-serif; cursor: pointer; text-shadow: 0 1px 2px rgba(0,0,0,.25) }
+    .ctx-mini-empty { padding: 14px 10px; text-align: center; font-size: 12.5px; color: #8f8f9b }
     .ctx-sep { height: 1px; margin: 5px 4px; background: #ffffff14 }
     html[data-theme="light"] .ctx-menu { background: #fffffff2; color: #1a1a1d; border-color: #00000018; box-shadow: 0 18px 50px #0003, 0 2px 8px #0002 }
     html[data-theme="light"] .ctx-head { border-bottom-color: #0000001a }
@@ -11428,11 +11402,79 @@
     const refreshQueue = () => { try { preloadedTrackIndex = -1 } catch { } renderQueue(); try { prepareNextTrack() } catch { } };
     const plural = n => n + (n === 1 ? ' song' : ' songs');
 
-    function close() { if (!menu) return; menu.remove(); menu = null; if (targetEl) targetEl.classList.remove('ctx-target'); targetEl = null }
+    let mini = null, miniTimer = 0;
+    const miniBusy = () => !!(mini && mini.classList.contains('ctx-mini-form') && mini.contains(document.activeElement));
+    function hideMini(force) { if (!force && miniBusy()) return; clearTimeout(miniTimer); if (mini) { mini.remove(); mini = null } }
+    function scheduleHideMini() { clearTimeout(miniTimer); miniTimer = setTimeout(() => hideMini(), 250) }
+    function placeMini(btn) {
+      const mr = menu.getBoundingClientRect(), br = btn.getBoundingClientRect(), w = mini.offsetWidth, h = mini.offsetHeight;
+      let left = mr.right + 8; if (left + w > innerWidth - 8) left = Math.max(8, mr.left - w - 8);
+      mini.style.left = left + 'px'; mini.style.top = Math.max(8, Math.min(br.top - 8, innerHeight - h - 8)) + 'px';
+      requestAnimationFrame(() => mini && mini.classList.add('show'));
+    }
+    function showMini(p, btn, kind) {
+      clearTimeout(miniTimer);
+      if (miniBusy()) return;
+      const key = p.id + ':' + (kind || 'list');
+      if (mini && mini._pid === key) return;
+      hideMini(true);
+      mini = document.createElement('div'); mini.className = 'ctx-menu ctx-mini' + (kind === 'edit' ? ' ctx-mini-form' : ''); mini._pid = key;
+      mini.onmouseenter = () => clearTimeout(miniTimer); mini.onmouseleave = scheduleHideMini;
+      if (kind === 'edit') buildEditMini(p); else buildListMini(p);
+      document.body.append(mini); placeMini(btn);
+    }
+    function buildListMini(p) {
+      const list = smartTrackIds(p).map(id => tracks.findIndex(t => t.id === id)).filter(i => i >= 0);
+      const head = document.createElement('div'); head.className = 'ctx-head';
+      const info = document.createElement('div'); const b = document.createElement('b'); b.textContent = p.name; const sp = document.createElement('span'); sp.textContent = plural(list.length); info.append(b, sp);
+      const openBtn = document.createElement('button'); openBtn.type = 'button'; openBtn.textContent = 'Open';
+      openBtn.onclick = e => { e.stopPropagation(); close(true); selectView(p.name, p.id) };
+      head.append(info, openBtn); mini.append(head);
+      const box = document.createElement('div'); box.className = 'ctx-mini-list';
+      if (!list.length) { const em = document.createElement('div'); em.className = 'ctx-mini-empty'; em.textContent = 'No songs yet'; box.append(em) }
+      list.forEach((i, k) => {
+        const t = tracks[i], row = document.createElement('button'); row.type = 'button'; row.className = 'ctx-mini-row';
+        const cv = document.createElement('div'); cv.className = 'ctx-mini-cover'; setCover(cv, t);
+        const cp = document.createElement('div'); cp.className = 'ctx-mini-copy'; const n = document.createElement('b'); n.textContent = t.name; const a = document.createElement('span'); a.textContent = t.artist; cp.append(n, a);
+        row.append(cv, cp);
+        row.onclick = e => { e.stopPropagation(); close(true); queue = list.slice(k + 1).map(entry); renderQueue(); playTrack(i) };
+        box.append(row);
+      });
+      mini.append(box);
+    }
+    function buildEditMini(p) {
+      const head = document.createElement('div'); head.className = 'ctx-head';
+      const b = document.createElement('b'); b.textContent = 'Edit details'; const sp = document.createElement('span'); sp.textContent = p.name; head.append(b, sp); mini.append(head);
+      const colors = ['#ff5368', '#8b70ff', '#328fe8', '#20a77a', '#e6a33a'];
+      let color = playlistTint(p);
+      const form = document.createElement('form'); form.noValidate = true;
+      const mk = (label, el) => { const l = document.createElement('label'); l.append(label, el); return l };
+      const name = document.createElement('input'); name.type = 'text'; name.maxLength = 40; name.value = p.name; name.autocomplete = 'off'; name.spellcheck = false;
+      const desc = document.createElement('textarea'); desc.maxLength = 140; desc.rows = 2; desc.value = p.description || '';
+      const cw = document.createElement('div'); cw.className = 'ctx-mini-colors'; cw.setAttribute('role', 'group'); cw.setAttribute('aria-label', 'Playlist color');
+      const paint = () => { mini.style.setProperty('--mf-color', color); cw.querySelectorAll('button').forEach(x => x.classList.toggle('active', x.dataset.c === color)) };
+      colors.forEach(c => { const x = document.createElement('button'); x.type = 'button'; x.dataset.c = c; x.style.setProperty('--sw', c); x.setAttribute('aria-label', c); x.onclick = () => { color = c; paint() }; cw.append(x) });
+      const err = document.createElement('div'); err.className = 'ctx-mini-err'; err.setAttribute('role', 'alert');
+      const save = document.createElement('button'); save.type = 'submit'; save.className = 'ctx-mini-save'; save.textContent = 'Save changes';
+      form.append(mk('Name', name), mk('Description', desc), mk('Color', cw), err, save); mini.append(form); paint();
+      form.onsubmit = async e => {
+        e.preventDefault();
+        const n = name.value.trim(), d = desc.value.trim();
+        if (!n) { err.textContent = 'Give your playlist a name first.'; return }
+        if (playlists.some(x => x.id !== p.id && x.name.trim().toLowerCase() === n.toLowerCase())) { err.textContent = 'A playlist with this name already exists.'; return }
+        const old = { name: p.name, description: p.description, color: p.color };
+        p.name = n; p.description = d; p.color = playlistTint({ color });
+        try { await dbRequest('playlists', 'put', p) } catch { Object.assign(p, old); err.textContent = 'Could not save your playlist.'; return }
+        renderPlaylists(); if (activePlaylistId === p.id) selectView(p.name, p.id);
+        close(true); toast('Playlist updated');
+      };
+      mini.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Escape') { e.preventDefault(); close(true) } });
+    }
+    function close(force) { if (!menu) return; hideMini(true); menu.remove(); menu = null; if (targetEl) targetEl.classList.remove('ctx-target'); targetEl = null }
 
     function resolve(el) {
-      const plRow = el.closest('#playlistNav .playlist-nav-item[data-pid], #mobileNav button[data-name]');
-      if (plRow) { const id = plRow.dataset.pid || plRow.dataset.name, pl = playlists.find(x => x.id === id); if (pl) return { kind: 'playlist', p: pl, el: plRow } }
+      const plRow = el.closest('#playlistNav .playlist-nav-item[data-pid], #mobileNav button[data-name], .lib-row[data-playlist]');
+      if (plRow) { const id = plRow.dataset.pid || plRow.dataset.name || plRow.dataset.playlist, pl = playlists.find(x => x.id === id); if (pl) return { kind: 'playlist', p: pl, el: plRow } }
       const row = el.closest('.track[data-i]');
       if (row) { const i = +row.dataset.i; if (tracks[i]) return { kind: 'song', i, el: row } }
       const card = el.closest('.album-card[data-album-index]');
@@ -11460,10 +11502,10 @@
 
     function playlistItems(info) {
       const p = info.p, at = playlists.indexOf(p), last = playlists.length - 1, items = [
-        ['Open playlist', () => selectView(p.name, p.id)],
+        ['Open playlist', () => selectView(p.name, p.id), '', false, p],
         '-',
         ['Rename', () => window.musikoRenamePlaylist(p.id)],
-        ['Edit details…', () => openPlaylistDialog(p.id)]
+        ['Edit details…', () => openPlaylistDialog(p.id), '', false, p, 'edit']
       ];
       if (at > 0) items.push('-', ['Move up', () => window.musikoMovePlaylist(p.id, -1)]);
       if (at < last) items.push(at > 0 ? null : '-', ['Move down', () => window.musikoMovePlaylist(p.id, 1)]);
@@ -11526,6 +11568,10 @@
         if (it === '-') { const d = document.createElement('div'); d.className = 'ctx-sep'; menu.append(d); return }
         const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'ctx-item' + (it[2] ? ' ' + it[2] : ''); btn.setAttribute('role', 'menuitem'); btn.textContent = it[0];
         btn.onclick = e => { e.stopPropagation(); close(); it[1]() };
+        if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+          if (it[4]) { btn.addEventListener('mouseenter', () => showMini(it[4], btn, it[5])); btn.addEventListener('focus', () => showMini(it[4], btn, it[5])); btn.addEventListener('mouseleave', scheduleHideMini) }
+          else { btn.addEventListener('mouseenter', () => hideMini()); btn.addEventListener('focus', () => hideMini()) }
+        }
         menu.append(btn);
       });
       document.body.append(menu);
@@ -11561,9 +11607,10 @@
     /* dismiss */
     document.addEventListener('pointerdown', e => { if (menu && !e.target.closest('.ctx-menu')) close() }, true);
     window.addEventListener('blur', close); window.addEventListener('resize', close);
-    document.addEventListener('scroll', close, true);
+    document.addEventListener('scroll', e => { if (e.target && e.target.nodeType === 1 && e.target.closest('.ctx-mini')) return; close() }, true);
     document.addEventListener('keydown', e => {
       if (!menu) return;
+      if (e.target.closest && e.target.closest('.ctx-mini') && e.target.matches('input,textarea')) return;
       const items = [...menu.querySelectorAll('.ctx-item')], at = items.indexOf(document.activeElement);
       if (e.key === 'Escape') { e.preventDefault(); close() }
       else if (e.key === 'ArrowDown') { e.preventDefault(); items[(at + 1) % items.length].focus() }
@@ -12128,6 +12175,10 @@
     html.side-collapsed body aside #playlistNav .playlist-dot { width: 24px; height: 24px }
     html.side-collapsed body aside #playlistNav .playlist-dot::before { width: 22px; height: 22px }
     @media (prefers-reduced-motion: reduce) { html body aside #playlistNav .playlist-dot { transition: none } }
+  </style>
+  <style id="musiko-lib-new-playlist">
+    .lib-row.lib-new .lib-label > span:first-child { color: var(--lib-accent); font-weight: 600 }
+    .lib-row.lib-new .lib-ico { color: var(--lib-accent) }
   </style>
 </body>
 
