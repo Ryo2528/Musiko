@@ -11461,18 +11461,25 @@
 <script id="musiko-playback-recovery">
     // Mobile playback reliability:
     //  1) the Web Audio context (used for volume / silence trimming) is often left "suspended" or "interrupted" on phones,
-    //     which makes a playing <audio> silent, so it is resumed on every tap, play and when the app comes back to the front;
-    //  2) if a song is still not loaded a few seconds after it was started, it is reloaded (fresh copy from storage) and retried.
+    //     which makes a playing <audio> silent, so it is resumed on every tap, play, state change and when the app returns to the front;
+    //  2) on phones the standby (next-song) deck is NOT started muted and is only preloaded once the current song is really playing,
+    //     because two audio elements decoding at once is what leaves a song stuck at 0:00;
+    //  3) every way of starting a song (tap, auto-next, gapless, crossfade, resume) is watched: if the time does not advance,
+    //     it escalates: resume audio + play -> reload fresh copy from storage -> plain reload -> message. The position is kept.
     (() => {
+      const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
       const ctxOf = () => { try { return silenceAudioContext } catch { return null } };
       const resumeCtx = () => { const c = ctxOf(); if (c && c.state !== 'running' && c.state !== 'closed') { try { c.resume().catch(() => { }) } catch { } } };
       ['touchend', 'pointerup', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, resumeCtx, { capture: true, passive: true }));
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) resumeCtx() });
       window.addEventListener('pageshow', resumeCtx); window.addEventListener('focus', resumeCtx);
-      try { audioDecks.forEach(d => d.addEventListener('play', resumeCtx)) } catch { }
 
-      let watchId = 0, timers = [];
-      const clearWatch = () => { timers.forEach(clearTimeout); timers = [] };
+      // keep trying to wake the audio context whenever it drops out of "running" while a song is meant to be playing
+      let hookedCtx = null;
+      const hookCtx = () => { const c = ctxOf(); if (!c || c === hookedCtx) return; hookedCtx = c; try { c.addEventListener('statechange', () => { if (c.state !== 'running' && c.state !== 'closed' && !audio.paused) resumeCtx() }) } catch { } };
+
+      let watchId = 0, monitor = 0, monitorTrack = -1, prepTimer = 0;
+      const stopMonitor = () => { clearInterval(monitor); monitor = 0 };
+
       async function freshSource(t) {
         const old = t.url;
         try {
@@ -11483,31 +11490,66 @@
         return false
       }
       async function recover(i, id, fresh) {
-        const t = tracks[i]; if (!t || id !== watchId || current !== i) return;
+        const t = tracks[i]; if (!t || id !== watchId || current !== i) return false;
+        const at = audio.currentTime || 0;
         resumeCtx();
-        if (fresh && !(await freshSource(t))) return;
-        if (id !== watchId || current !== i) return;
+        if (fresh && !(await freshSource(t))) return false;
+        if (id !== watchId || current !== i) return false;
         try { preloadedTrackIndex = -1 } catch { }
-        audio.src = t.url; audio.load(); applyDeckVolume(audio, 1);
-        const p = audio.play(); if (p && p.catch) p.catch(err => { if (err && err.name === 'NotAllowedError' && id === watchId) toast('Tap play to start the song') })
+        const deck = audio;
+        deck.src = t.url; deck.load(); applyDeckVolume(deck, 1);
+        if (at > 1) deck.addEventListener('loadedmetadata', () => { try { deck.currentTime = at } catch { } }, { once: true });
+        const p = deck.play(); if (p && p.catch) p.catch(err => { if (err && err.name === 'NotAllowedError' && id === watchId) toast('Tap play to start the song') });
+        return true
       }
-      function watch(i) {
-        clearWatch(); const id = ++watchId; if (!tracks[i]) return;
-        // not loaded yet (or errored) after 3s -> reload from storage; after 7s -> plain reload; after 12s -> give up with a message
-        const notLoaded = () => id === watchId && current === i && (audio.error || audio.readyState < 2) && !audio.ended;
-        timers.push(setTimeout(() => { if (notLoaded()) recover(i, id, true) }, 3000));
-        timers.push(setTimeout(() => { if (notLoaded()) recover(i, id, false) }, 7000));
-        timers.push(setTimeout(() => { if (notLoaded()) toast('This song is taking too long to load. Try tapping it again.') }, 12000))
+
+      // Watches the song that is playing now. Stuck = not paused, not ended, but the clock is not moving.
+      function watch(i, keep) {
+        if (keep && monitor && monitorTrack === i) return; // already watching this song (a reload fires 'play' again; do not restart the escalation)
+        stopMonitor(); const id = ++watchId; monitorTrack = i; if (!tracks[i]) return;
+        let last = -1, still = 0, stage = 0, played = 0;
+        monitor = setInterval(() => {
+          if (id !== watchId || current !== i || !tracks[i] || audio.paused || audio.ended) { stopMonitor(); return }
+          const t = audio.currentTime;
+          if (Math.abs(t - last) > .05 && audio.readyState >= 2 && !audio.error) { last = t; still = 0; played++; if (played >= 4 && t > 2) stopMonitor(); return }
+          last = t; still++;
+          if (still === 3 && stage === 0) { stage = 1; still = 0; resumeCtx(); if (audio.readyState >= 1 && !audio.error) { const p = audio.play(); if (p && p.catch) p.catch(() => { }) } else { recover(i, id, false) } }
+          else if (still === 3 && stage === 1) { stage = 2; still = 0; recover(i, id, true) }
+          else if (still === 4 && stage === 2) { stage = 3; still = 0; recover(i, id, false) }
+          else if (still === 5 && stage === 3) { stopMonitor(); toast('This song is taking too long to load. Try tapping it again.') }
+        }, 1000)
       }
-      const origPlayTrack = window.playTrack;
-      window.playTrack = function (i) { resumeCtx(); const out = origPlayTrack.apply(this, arguments); watch(i); return out };
-      // a decode/load error on the active deck: if the built-in single retry did not fix it, retry with a fresh copy
+
+      // every deck: when the active one starts playing (including after the app was in the background), watch it
       try {
-        audioDecks.forEach(deck => deck.addEventListener('error', () => {
-          const i = current, id = watchId; if (deck !== audio || i < 0 || !tracks[i]) return;
-          setTimeout(() => { if (id === watchId && current === i && audio.error) recover(i, id, true) }, 700)
-        }))
+        audioDecks.forEach(d => {
+          d.addEventListener('play', () => { resumeCtx(); hookCtx(); if (d === audio && current >= 0) watch(current, true) });
+          d.addEventListener('error', () => {
+            const i = current, id = watchId; if (d !== audio || i < 0 || !tracks[i]) return;
+            setTimeout(() => { if (id === watchId && current === i && audio.error) recover(i, id, true) }, 700)
+          })
+        })
       } catch { }
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) { resumeCtx(); if (current >= 0 && !audio.paused) watch(current, true) } });
+
+      // any way of starting a song is watched, not only playTrack
+      const origPlayTrack = window.playTrack;
+      window.playTrack = function (i) { resumeCtx(); const out = origPlayTrack.apply(this, arguments); hookCtx(); watch(i); return out };
+      const origPlayNext = window.playNext;
+      if (origPlayNext) window.playNext = function () { resumeCtx(); const out = origPlayNext.apply(this, arguments); if (current >= 0) watch(current); return out };
+
+      if (mobile) {
+        // never start the standby deck muted on phones: it can freeze the song that is playing
+        const origPrime = window.primeStandbyDeck;
+        if (origPrime) window.primeStandbyDeck = function (deck) { try { deck._primedSrc = deck.src } catch { } };
+        // only preload the next song once the current one is genuinely playing, so it gets the decoder and storage to itself
+        const origPrepare = window.prepareNextTrack;
+        if (origPrepare) window.prepareNextTrack = function () {
+          clearTimeout(prepTimer);
+          if (!audio.paused && (audio.readyState < 3 || audio.currentTime < 1.5)) { prepTimer = setTimeout(() => window.prepareNextTrack(), 1500); return }
+          return origPrepare.apply(this, arguments)
+        };
+      }
     })();
   </script>
 </body>
