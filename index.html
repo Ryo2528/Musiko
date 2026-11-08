@@ -11444,7 +11444,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     }
     function buildEditMini(p) {
       const head = document.createElement('div'); head.className = 'ctx-head';
-      const b = document.createElement('b'); b.textContent = 'Edit details'; const sp = document.createElement('span'); sp.textContent = p.name; head.append(b, sp); mini.append(head);
+      const b = document.createElement('b'); b.textContent = 'Edit details'; head.append(b); mini.append(head);
       const colors = ['#ff5368', '#8b70ff', '#328fe8', '#20a77a', '#e6a33a'];
       let color = playlistTint(p);
       const form = document.createElement('form'); form.noValidate = true;
