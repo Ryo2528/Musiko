@@ -12022,30 +12022,44 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     body.dragging-track #playlistNav .playlist-nav-item { outline: 1px dashed #ffffff33; outline-offset: -1px }
     body.dragging-track #playlistNav .playlist-nav-item.drop-ok { outline: 2px dashed var(--playlist-color, var(--accent)); outline-offset: -2px; background: color-mix(in srgb, var(--playlist-color, var(--accent)) 24%, transparent) }
     body.dragging-track #playlistNav .playlist-nav-item.drop-no { opacity: .4; cursor: not-allowed }
-    [data-i].is-dragging { opacity: .45 }
+    [data-i].is-dragging,
+    #recentGrid .lib-card.is-dragging { opacity: .45 }
     .musiko-drag-ghost { position: fixed; left: -9999px; top: -9999px; max-width: 240px; padding: 8px 14px; border-radius: 999px; background: var(--accent); color: var(--accent-ink, #fff); font: 600 13px/1.2 system-ui, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 6px 20px #0006 }
   </style>
 <script>
-    // Drag & drop: drag a song (any row with data-i) onto a manual playlist in the sidebar to add it
+    // Drag a song row or a Recently Added album onto a sidebar playlist.
     (() => {
       const TYPE = 'application/x-musiko-track';
       const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
       const main = document.querySelector('main'), nav = document.querySelector('#playlistNav');
       if (!main || !nav) return;
       const isManual = p => !p.rule || p.rule === 'manual';
-      // make song rows draggable (desktop / mouse only, so touch long-press keeps working)
+      const recentCard = '#recentGrid .lib-card[data-key]';
+      const dragSource = `:is([data-i], ${recentCard})`;
+      // Leave touch long-press available.
       let queued = false;
-      const mark = () => { queued = false; if (!finePointer.matches) return; main.querySelectorAll('[data-i]:not([draggable])').forEach(el => el.setAttribute('draggable', 'true')) };
+      const mark = () => {
+        queued = false;
+        if (!finePointer.matches) return;
+        main.querySelectorAll(`${dragSource}:not([draggable])`).forEach(el => { el.draggable = true });
+      };
       new MutationObserver(() => { if (!queued) { queued = true; requestAnimationFrame(mark) } }).observe(main, { childList: true, subtree: true });
       mark();
 
       let ghost = null, dragRow = null;
       const clearUi = () => { document.body.classList.remove('dragging-track'); nav.querySelectorAll('.drop-ok,.drop-no').forEach(el => el.classList.remove('drop-ok', 'drop-no')); if (dragRow) dragRow.classList.remove('is-dragging'); dragRow = null; if (ghost) { ghost.remove(); ghost = null } };
       main.addEventListener('dragstart', e => {
-        const row = e.target.closest && e.target.closest('[data-i]'); if (!row) return;
-        const t = tracks[+row.dataset.i]; if (!t) return;
-        e.dataTransfer.setData(TYPE, String(t.id)); e.dataTransfer.setData('text/plain', t.name || ''); e.dataTransfer.effectAllowed = 'copy';
-        ghost = document.createElement('div'); ghost.className = 'musiko-drag-ghost'; ghost.textContent = '♪  ' + (t.name || 'Song'); document.body.appendChild(ghost);
+        const row = e.target.closest?.(dragSource);
+        if (!finePointer.matches || !row?.draggable || !e.dataTransfer) return;
+        const album = row.matches(recentCard) && getAlbumGroups().find(group => group.key === row.dataset.key);
+        const selected = album ? album.indices.map(index => tracks[index]) : [tracks[Number(row.dataset.i)]];
+        const ids = selected.filter(Boolean).map(track => String(track.id));
+        if (!ids.length) return;
+        const label = (album ? album.album : selected[0].name) || 'Song';
+        e.dataTransfer.setData(TYPE, JSON.stringify(ids));
+        e.dataTransfer.setData('text/plain', label);
+        e.dataTransfer.effectAllowed = 'copy';
+        ghost = document.createElement('div'); ghost.className = 'musiko-drag-ghost'; ghost.textContent = '♪  ' + label; document.body.appendChild(ghost);
         try { e.dataTransfer.setDragImage(ghost, 16, 16) } catch (err) { }
         dragRow = row; row.classList.add('is-dragging'); document.body.classList.add('dragging-track')
       });
@@ -12064,18 +12078,36 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
         el.classList.add(ok ? 'drop-ok' : 'drop-no'); el.classList.remove(ok ? 'drop-no' : 'drop-ok')
       });
       nav.addEventListener('dragleave', e => { const el = target(e); if (el && !el.contains(e.relatedTarget)) el.classList.remove('drop-ok', 'drop-no') });
-      nav.addEventListener('drop', async e => {
+      let pendingDrop = Promise.resolve();
+      nav.addEventListener('drop', e => {
         if (!has(e)) return;
         const el = target(e); if (!el) return; e.preventDefault();
-        const pl = playlists.find(x => x.id === el.dataset.pid), id = e.dataTransfer.getData(TYPE);
+        const playlistId = el.dataset.pid;
         clearUi();
-        if (!pl) return;
-        if (!isManual(pl)) { toast(`“${pl.name}” fills itself automatically`); return }
-        const t = tracks.find(x => String(x.id) === id); if (!t) return;
-        if ((pl.trackIds || []).includes(t.id)) { toast(`Already in ${pl.name}`); return }
-        (pl.trackIds = pl.trackIds || []).push(t.id);
-        try { await dbRequest('playlists', 'put', pl); toast(`Added to ${pl.name}`) } catch (err) { pl.trackIds = pl.trackIds.filter(x => x !== t.id); toast('Could not save playlist change') }
-        render()
+        let ids;
+        try { ids = JSON.parse(e.dataTransfer.getData(TYPE)) } catch { return }
+        if (!Array.isArray(ids) || !ids.length) return;
+
+        pendingDrop = pendingDrop.then(async () => {
+          const pl = playlists.find(x => x.id === playlistId);
+          if (!pl) return;
+          if (!isManual(pl)) { toast(`“${pl.name}” fills itself automatically`); return }
+          const available = new Map(tracks.map(track => [String(track.id), track.id]));
+          const incoming = [...new Set(ids)].filter(id => available.has(id)).map(id => available.get(id));
+          if (!incoming.length) return;
+          const existing = new Set(pl.trackIds || []);
+          const additions = new Set(incoming.filter(id => !existing.has(id)));
+          if (!additions.size) { toast(`Already in ${pl.name}`); return }
+          (pl.trackIds ||= []).push(...additions);
+          try {
+            await dbRequest('playlists', 'put', pl);
+            toast(additions.size === 1 ? `Added to ${pl.name}` : `Added ${additions.size} songs to ${pl.name}`);
+          } catch {
+            pl.trackIds = pl.trackIds.filter(id => !additions.has(id));
+            toast('Could not save playlist change');
+          }
+          render();
+        }).catch(error => console.error('Playlist drop failed:', error));
       })
     })();
   </script>
