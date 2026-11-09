@@ -9000,6 +9000,17 @@
       if (restored.length) toast(`Restored ${restored.length} saved ${restored.length === 1 ? 'track' : 'tracks'}${failed ? ` · ${failed} could not be restored` : ''}`); else if (failed) toast(`${failed} saved ${failed === 1 ? 'track' : 'tracks'} could not be restored`)
     } catch { toast('Local library storage is unavailable in this browser') } }
     const libraryLoaded = restoreLibrary();
+    /* Default songs: shipped in ./songs, added to the library once (removing one keeps it removed) */
+    const DEFAULT_SONGS = ['songs/Lil_Wayne_Drake_Future_-_Love_Me.mp3', 'songs/Kali_Uchis_-_Melting.mp3'];
+    libraryLoaded.then(async () => {
+      let done = []; try { done = JSON.parse(localStorage.getItem('musiko-default-songs') || '[]') } catch { }
+      const todo = DEFAULT_SONGS.filter(p => !done.includes(p)); if (!todo.length) return;
+      const got = [];
+      for (const path of todo) { try { const r = await fetch(path); if (!r.ok) continue; const b = await r.blob(); got.push({ path, file: new File([b], path.split('/').pop(), { type: b.type && b.type.startsWith('audio/') ? b.type : 'audio/mpeg' }) }) } catch { } }
+      if (!got.length) return;
+      await addFiles(got.map(g => g.file));
+      try { localStorage.setItem('musiko-default-songs', JSON.stringify([...done, ...got.map(g => g.path)])) } catch { }
+    });
     const fmt = s => { if (!Number.isFinite(s)) return '0:00'; return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') };
     function toast(s) { let t = document.querySelector('#toast'); t.textContent = s; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200) }
     function syncSleepShortcuts() { const active = !!(sleepUntil || sleepAtTrackEnd); let description = 'Sleep timer'; if (sleepAtTrackEnd) description = 'Sleep timer active · stops at end of track'; else if (sleepUntil) { const remaining = Math.max(0, Math.ceil((sleepUntil - Date.now()) / 1000)); description = `Sleep timer active · ${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')} remaining` } const mini = document.querySelector('#miniSleepShortcut'), full = document.querySelector('#fullSleepShortcut');[mini, full].forEach(button => { if (button) { button.dataset.active = String(active); button.title = description; button.setAttribute('aria-label', description) } }); if (full) full.textContent = active ? 'Sleep timer · on' : 'Sleep timer'; document.querySelectorAll('[data-sleep-choice]').forEach(button => button.classList.toggle('active', button.dataset.sleepChoice === sleepTimerChoice)); const quickStatus = document.querySelector('#sleepQuickStatus'); if (quickStatus) quickStatus.textContent = sleepAtTrackEnd ? 'Playback will stop at the end of this track.' : sleepUntil ? description : '' }
