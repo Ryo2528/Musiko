@@ -1,0 +1,15 @@
+{
+  "id": "./",
+  "name": "Musiko By Ryo",
+  "short_name": "Musiko",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#17141a",
+  "theme_color": "#17141a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
