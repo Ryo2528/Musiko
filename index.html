@@ -7481,27 +7481,8 @@
 
       html.side-collapsed body aside .nav button.active { box-shadow: none }
 
-      /* section labels become a thin divider */
-      html.side-collapsed body aside .nav-label {
-        height: 1px;
-        padding: 0;
-        margin: 0 10px 14px;
-        font-size: 0;
-        overflow: hidden;
-        background: var(--hair);
-        opacity: 1
-      }
-
-      /* the playlist header keeps just the + button */
-      html.side-collapsed body aside .nav-label.playlist-label {
-        height: auto;
-        background: none;
-        margin: 0 0 10px;
-        display: flex;
-        justify-content: center
-      }
-
       html.side-collapsed body aside .playlist-label > span,
+      html.side-collapsed body aside #newPlaylist,
       html.side-collapsed body aside #autoMix,
       html.side-collapsed body aside .side-bottom { display: none }
 
@@ -12279,11 +12260,22 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     .side-lib-label { display: none }
     @media (min-width: 761px) {
       .side-lib-label { display: block; padding: 14px 12px 4px; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted) }
-      html.side-collapsed .side-lib-label { display: none }
+      html.side-collapsed body aside .side-lib-label,
+      html.side-collapsed body aside .nav-label.playlist-label {
+        display: block;
+        flex-shrink: 0;
+        height: 1px;
+        margin: 4px 10px 8px;
+        padding: 0;
+        overflow: hidden;
+        font-size: 0;
+        background: var(--hair)
+      }
       html body aside .nav button.side-lib-item svg { color: var(--accent); stroke: currentColor }
       html body aside .side-head + .nav { margin-bottom: 4px }
       html body aside .side-lib-label { padding: 12px 12px 6px; margin: 0 }
       html body aside #libNav { margin-top: 0; margin-bottom: 16px }
+      html.side-collapsed body aside #libNav { margin-bottom: 4px }
     }
     @media (max-width: 760px) { .side-lib-item { display: none !important } }
   </style>
