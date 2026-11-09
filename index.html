@@ -8595,13 +8595,16 @@
             <h3 id="downloadSourcesTitle">Download sources</h3>
             <div class="download-source-option">
               <h4>Spotify links</h4>
-              <a class="glass-btn" id="openDownloadSource" href="https://spotisaver.net/en/track/3hxIUxnT27p5WcmjGUXNwx/" target="_blank" rel="noopener noreferrer">Open Spotify download source</a>
+              <a class="glass-btn" id="openDownloadSource" href="https://spotisaver.net/en1" target="_blank" rel="noopener noreferrer">Open Spotify download source</a>
               <p id="downloadSourceMissing" hidden>Add a Spotify source link below to get started.</p>
             </div>
             <div class="download-source-option">
               <h4>YouTube links</h4>
-              <p>Paste the video link into YouTubeToolkit and save the MP3.</p>
-              <a class="glass-btn" href="https://youtubetoolkit.com/tools/mp3-downloader" target="_blank" rel="noopener noreferrer">Open YouTube MP3 downloader</a>
+              <p>Open a download source, paste the video link, and save the MP3.</p>
+              <div class="download-source-links">
+                <a class="glass-btn" href="https://mp3cow.com/?v=xUT3ZcbVWmQ" target="_blank" rel="noopener noreferrer">Open MP3Cow</a>
+                <a class="glass-btn" href="https://youtubetoolkit.com/tools/mp3-downloader" target="_blank" rel="noopener noreferrer">Open YouTubeToolkit</a>
+              </div>
             </div>
             <form id="downloadSourceForm">
               <label class="playlist-field" for="downloadSourceUrl">Custom Spotify source
@@ -12464,6 +12467,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     .download-source-panel { min-width: 0; padding: 18px }
     .download-source-option { margin-top: 14px }
     .download-source-option .glass-btn { margin-top: 6px }
+    .download-source-links { display: grid; justify-items: start }
     .download-steps li::marker { color: var(--accent); font-weight: 700 }
     .downloads-layout h3 { margin: 0; font-size: 16px }
     .download-platforms {
