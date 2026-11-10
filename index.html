@@ -9153,6 +9153,26 @@
     } catch { toast('Local library storage is unavailable in this browser') } }
     const libraryLoaded = restoreLibrary();
     const fmt = s => { if (!Number.isFinite(s)) return '0:00'; return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') };
+    const playbackClocks = [document.querySelector('#elapsed'), document.querySelector('#fullElapsed')];
+    const playbackSliders = [document.querySelector('#seek'), document.querySelector('#fullSeek')];
+    let playbackJumpTimer;
+    function setPlaybackJump(active) {
+      const root = document.documentElement;
+      clearTimeout(playbackJumpTimer);
+      root.classList.toggle('playback-jump', active);
+      if (active) playbackJumpTimer = setTimeout(() => root.classList.remove('playback-jump'), 250);
+    }
+    function renderPlaybackProgress(position = audio.currentTime, duration = audio.duration) {
+      const total = current >= 0 && Number.isFinite(duration) && duration > 0 ? duration : 0;
+      const elapsed = current >= 0 && Number.isFinite(position) ? Math.max(0, position) : 0;
+      const time = total ? Math.min(elapsed, total) : elapsed;
+      document.documentElement.style.setProperty('--playback-progress', (total ? time / total * 100 : 0) + '%');
+      for (const clock of playbackClocks) clock.textContent = fmt(time);
+      for (const slider of playbackSliders) {
+        slider.setAttribute('aria-valuemax', String(Math.round(total)));
+        slider.setAttribute('aria-valuenow', String(Math.round(total ? time : 0)));
+      }
+    }
     function toast(s) { let t = document.querySelector('#toast'); t.textContent = s; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200) }
     function syncSleepShortcuts() { const active = !!(sleepUntil || sleepAtTrackEnd); let description = 'Sleep timer'; if (sleepAtTrackEnd) description = 'Sleep timer active · stops at end of track'; else if (sleepUntil) { const remaining = Math.max(0, Math.ceil((sleepUntil - Date.now()) / 1000)); description = `Sleep timer active · ${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')} remaining` } const mini = document.querySelector('#miniSleepShortcut'), full = document.querySelector('#fullSleepShortcut');[mini, full].forEach(button => { if (button) { button.dataset.active = String(active); button.title = description; button.setAttribute('aria-label', description) } }); if (full) full.textContent = active ? 'Sleep timer · on' : 'Sleep timer'; document.querySelectorAll('[data-sleep-choice]').forEach(button => button.classList.toggle('active', button.dataset.sleepChoice === sleepTimerChoice)); const quickStatus = document.querySelector('#sleepQuickStatus'); if (quickStatus) quickStatus.textContent = sleepAtTrackEnd ? 'Playback will stop at the end of this track.' : sleepUntil ? description : '' }
     function clearSleepTimer() { clearTimeout(sleepTimeoutId); clearInterval(sleepIntervalId); sleepTimeoutId = sleepIntervalId = sleepUntil = 0; sleepAtTrackEnd = false; sleepTimerChoice = 'off'; const select = document.querySelector('#sleepTimerSelect'), status = document.querySelector('#sleepTimerStatus'); if (select) select.value = 'off'; if (status) status.textContent = ''; syncSleepShortcuts() }
@@ -9435,7 +9455,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     function singleDeckOffline() { return isIOSDevice && !navigator.onLine; }
     function prepareNextTrack() { if (singleDeckOffline() || window.MusikoAppearance.value.lowEnd || !window.MusikoAppearance.value.gapless || isCrossfading) return; const i = peekNextTrackIndex(), deck = otherDeck(), t = tracks[i]; if (i < 0 || !t) { preloadedTrackIndex = -1; return } const src = trackAudioUrl(t); if (deck.src !== src) { deck.pause(); setTrackSource(deck, src); deck.preload = 'auto'; deck.load() } deck.preload = 'auto'; deck.playbackRate = audio.playbackRate; deck.loop = repeat; preloadedTrackIndex = i; primeStandbyDeck(deck) }
     function cancelCrossfade() { clearInterval(crossfadeTimer); crossfadeTimer = 0; if (isCrossfading) { const old = otherDeck(); old.pause(); applyDeckVolume(old, 0); isCrossfading = false } applyDeckVolume(audio, 1) }
-    function showTrack(i, countPlay = true) { if (countPlay && !skipHistoryPush && current >= 0 && current !== i && tracks[current]) { playHistory.push(tracks[current].id); if (playHistory.length > 100) playHistory.shift() } skipHistoryPush = false; starterTrackCued = !countPlay; if (countPlay) recordPlayStart(tracks[i]); current = i; activeLyricLine = -1; document.querySelector('#elapsed').textContent = '0:00'; document.querySelector('#fullElapsed').textContent = '0:00'; document.querySelector('#progress').style.width = '0%'; document.querySelector('#fullProgress').style.width = '0%'; document.querySelector('#duration').textContent = fmt(tracks[i].duration); document.querySelector('#fullDuration').textContent = fmt(tracks[i].duration); if (audio.readyState >= 1 && Number.isFinite(audio.duration)) { tracks[i].duration = audio.duration; saveTrack(tracks[i]); if (countPlay) lookupLyrics(tracks[i]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration) } document.querySelector('#nowTitle').textContent = tracks[i].name; document.querySelector('#nowArtist').textContent = tracks[i].artist; document.querySelector('#nowFavorite').classList.toggle('favorite-on', tracks[i].favorite); document.querySelector('#nowFavorite').textContent = tracks[i].favorite ? '♥' : '♡'; setCover(document.querySelector('#nowCover'), tracks[i]); syncHero(tracks[i]); syncFull(tracks[i]); if (lyricsVisible()) renderLyrics(); render(); renderQueue(); document.dispatchEvent(new Event('musiko:track')) }
+    function showTrack(i, countPlay = true) { if (countPlay && !skipHistoryPush && current >= 0 && current !== i && tracks[current]) { playHistory.push(tracks[current].id); if (playHistory.length > 100) playHistory.shift() } skipHistoryPush = false; starterTrackCued = !countPlay; if (countPlay) recordPlayStart(tracks[i]); if (current >= 0 && current !== i) setPlaybackJump(true); current = i; activeLyricLine = -1; renderPlaybackProgress(); document.querySelector('#duration').textContent = fmt(tracks[i].duration); document.querySelector('#fullDuration').textContent = fmt(tracks[i].duration); if (audio.readyState >= 1 && Number.isFinite(audio.duration)) { tracks[i].duration = audio.duration; saveTrack(tracks[i]); if (countPlay) lookupLyrics(tracks[i]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration) } document.querySelector('#nowTitle').textContent = tracks[i].name; document.querySelector('#nowArtist').textContent = tracks[i].artist; document.querySelector('#nowFavorite').classList.toggle('favorite-on', tracks[i].favorite); document.querySelector('#nowFavorite').textContent = tracks[i].favorite ? '♥' : '♡'; setCover(document.querySelector('#nowCover'), tracks[i]); syncHero(tracks[i]); syncFull(tracks[i]); if (lyricsVisible()) renderLyrics(); render(); renderQueue(); document.dispatchEvent(new Event('musiko:track')) }
     function playNext(early, manual) { early = early === true; manual = manual === true; if (isCrossfading) cancelCrossfade(); const i = takeNextTrackIndex(); if (i < 0) return; if (manual) { for (const d of audioDecks) if (d !== audio) { try { d.pause() } catch { } } } if (!early && !manual && !isIOSDevice && !window.MusikoAppearance.value.lowEnd && window.MusikoAppearance.value.crossfadeSeconds > 0 && !audio.paused && !repeat && !sleepAtTrackEnd && startCrossfade(i)) return; const deck = otherDeck(), t = tracks[i], ready = !singleDeckOffline() && !window.MusikoAppearance.value.lowEnd && window.MusikoAppearance.value.gapless && deck.src === trackAudioUrl(t) && deck.readyState >= 2; if (ready) { const previous = audio, tailMs = early && Number.isFinite(previous.duration) ? Math.max(0, (previous.duration - previous.currentTime) / (previous.playbackRate || 1) * 1000) : 0; audio = deck; audio.muted = false; if (silenceAudioContext && silenceAudioContext.state !== 'running') silenceAudioContext.resume().catch(() => { }); audio.loop = repeat; audio.playbackRate = window.MusikoAppearance.value.playbackRate; try { audio.currentTime = 0 } catch { } applyDeckVolume(audio, 1); const started = audio.play(); if (!early) previous.pause(); preloadedTrackIndex = -1; showTrack(i); const retire = () => { if (previous !== audio) { previous.pause(); try { previous.currentTime = 0 } catch { } } prepareNextTrack() }; if (started && started.then) started.then(() => setTimeout(retire, early ? tailMs + 80 : 0), () => { if (previous !== audio) { try { previous.pause(); previous.currentTime = 0 } catch { } } if (audio === deck && current === i) { deck.load(); startPlayback(deck, i, 0) } }); else retire(); return } playTrack(i) }
 
     /* Mobile browsers ignore preload=auto on idle <audio> elements and block play() on elements that were never started by a tap.
@@ -9469,7 +9489,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     }
     function reloadCurrentTrack() { const i = current, t = tracks[i]; if (!t || !t.file || t._retried) return false; t._retried = true; const at = audio.currentTime || 0; setTrackSource(audio, retryTrackSource(audio, t)); audio.load(); audio.addEventListener('loadedmetadata', () => { if (at > 1) try { audio.currentTime = at } catch { } }, { once: true }); startPlayback(audio, i, 1); setTimeout(() => { t._retried = false }, 8000); return true }
     function openQueue() { renderQueue(); const p = document.querySelector('#queuePanel'); p.classList.add('open'); p.setAttribute('aria-hidden', 'false'); document.querySelector('#closeQueue').focus() } function closeQueue() { const p = document.querySelector('#queuePanel'); p.classList.remove('open'); p.setAttribute('aria-hidden', 'true') }
-    async function removeTrack(i) { if (!tracks[i]) return; if (activePlaylistId) { const p = playlists.find(x => x.id === activePlaylistId); if (p) { if (p.rule && p.rule !== 'manual') p.excludedTrackIds = [...new Set([...(p.excludedTrackIds || []), tracks[i].id])]; else p.trackIds = p.trackIds.filter(id => id !== tracks[i].id); try { await dbRequest('playlists', 'put', p) } catch { } render() } return } let was = current === i, removed = tracks[i]; if (removed.url) URL.revokeObjectURL(removed.url); delete listeningStats.tracks[removed.id]; if (removed.art?.startsWith('blob:')) URL.revokeObjectURL(removed.art); tracks.splice(i, 1); preloadedTrackIndex = -1; queue = queue.filter(item => item.trackId !== removed.id); try { await dbRequest('tracks', 'delete', removed.id); for (const p of playlists) if (p.trackIds.includes(removed.id)) { p.trackIds = p.trackIds.filter(id => id !== removed.id); await dbRequest('playlists', 'put', p) } } catch { } if (current > i) current--; else if (was) { cancelCrossfade(); current = -1; audio.pause(); audio.removeAttribute('src'); document.querySelector('#nowTitle').textContent = 'Nothing playing'; document.querySelector('#nowArtist').textContent = ''; document.querySelector('#nowFavorite').classList.remove('favorite-on'); document.querySelector('#nowFavorite').textContent = '♡'; setCover(document.querySelector('#nowCover'), null); syncHero(null); syncFull(null) } render(); if (current >= 0) prepareNextTrack() }
+    async function removeTrack(i) { if (!tracks[i]) return; if (activePlaylistId) { const p = playlists.find(x => x.id === activePlaylistId); if (p) { if (p.rule && p.rule !== 'manual') p.excludedTrackIds = [...new Set([...(p.excludedTrackIds || []), tracks[i].id])]; else p.trackIds = p.trackIds.filter(id => id !== tracks[i].id); try { await dbRequest('playlists', 'put', p) } catch { } render() } return } let was = current === i, removed = tracks[i]; if (removed.url) URL.revokeObjectURL(removed.url); delete listeningStats.tracks[removed.id]; if (removed.art?.startsWith('blob:')) URL.revokeObjectURL(removed.art); tracks.splice(i, 1); preloadedTrackIndex = -1; queue = queue.filter(item => item.trackId !== removed.id); try { await dbRequest('tracks', 'delete', removed.id); for (const p of playlists) if (p.trackIds.includes(removed.id)) { p.trackIds = p.trackIds.filter(id => id !== removed.id); await dbRequest('playlists', 'put', p) } } catch { } if (current > i) current--; else if (was) { cancelCrossfade(); current = -1; audio.pause(); audio.removeAttribute('src'); renderPlaybackProgress(); document.querySelector('#nowTitle').textContent = 'Nothing playing'; document.querySelector('#nowArtist').textContent = ''; document.querySelector('#nowFavorite').classList.remove('favorite-on'); document.querySelector('#nowFavorite').textContent = '♡'; setCover(document.querySelector('#nowCover'), null); syncHero(null); syncFull(null) } render(); if (current >= 0) prepareNextTrack() }
     function toggle() { if (current < 0) { const shown = visibleTracks(); if (shown.length) playTrack(shown[0].i); else toast('Add some music first'); return } if (audio.paused) { const pr = audio.play(); if (pr && pr.catch) pr.catch(err => { if (err && err.name === 'NotAllowedError') toast('Tap play to start the song') }) } else audio.pause() }
     window.addEventListener('beforeunload', () => saveListeningStats(true)); window.addEventListener('pagehide', () => saveListeningStats(true)); document.addEventListener('visibilitychange', () => { if (document.hidden) saveListeningStats(true) }); document.querySelector('#openBtn').onclick = () => files.click(); document.querySelector('#heroAdd').onclick = () => files.click(); document.querySelector('#allRecent').onclick = () => { selectView('Recently added'); document.querySelector('main').scrollTo({ top: 0 }) }; document.querySelector('#backToAlbums').onclick = () => selectView('Albums'); files.onchange = () => { addFiles(files.files); files.value = '' }; document.querySelector('#folderImportSettings').onclick = () => document.querySelector('#folderFiles').click(); document.querySelector('#folderFiles').onchange = e => { addFiles(e.target.files); e.target.value = '' }; const customBackgroundInput = document.querySelector('#customBackgroundInput'), customBackgroundStatus = document.querySelector('#customBackgroundStatus'); if (window.MusikoAppearance.value.customBackground) customBackgroundStatus.textContent = 'Custom background is saved on this device.'; document.querySelector('#chooseCustomBackground').onclick = () => customBackgroundInput.click(); customBackgroundInput.onchange = e => { const file = e.target.files?.[0]; e.target.value = ''; if (!file || !file.type.startsWith('image/')) return; const imageUrl = URL.createObjectURL(file), image = new Image(); image.onload = () => { const scale = Math.min(1, 1200 / image.width, 800 / image.height), canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(image.width * scale)); canvas.height = Math.max(1, Math.round(image.height * scale)); const context = canvas.getContext('2d'); context.fillStyle = '#10121b'; context.fillRect(0, 0, canvas.width, canvas.height); context.drawImage(image, 0, 0, canvas.width, canvas.height); URL.revokeObjectURL(imageUrl); try { const settings = window.MusikoAppearance; settings.value.customBackground = canvas.toDataURL('image/jpeg', .72); settings.value.skin = 'custom'; settings.value.mode = 'dark'; settings.value.darkSkin = 'custom'; saveAppearance(); customBackgroundStatus.textContent = 'Custom background saved on this device.'; toast('Custom background applied') } catch { toast('Could not save that background image') } }; image.onerror = () => { URL.revokeObjectURL(imageUrl); toast('Could not open that image') }; image.src = imageUrl }; document.querySelector('#editCurrentTrack').onclick = () => { if (current < 0 || !tracks[current]) return; const id = tracks[current].id; closeSettings(); openTrackMetadata(id) }; document.querySelector('#play').onclick = toggle; document.querySelector('#newPlaylist').onclick = () => openPlaylistDialog(); document.querySelector('#editActivePlaylist').onclick = () => { if (activePlaylistId) openPlaylistDialog(activePlaylistId) }; document.querySelectorAll('[data-close-playlist-dialog]').forEach(b => b.onclick = closePlaylistDialog); document.querySelectorAll('[data-close-playlist-picker]').forEach(b => b.onclick = closePlaylistPicker); document.querySelectorAll('[data-playlist-color]').forEach(b => b.onclick = () => setPlaylistColor(b.dataset.playlistColor)); document.querySelector('#createFromPicker').onclick = () => { document.querySelector('#playlistPicker').classList.remove('open'); document.querySelector('#playlistPicker').setAttribute('aria-hidden', 'true'); openPlaylistDialog() }; document.querySelector('#playlistForm').onsubmit = async e => { e.preventDefault(); const name = document.querySelector('#playlistNameInput').value.trim(), description = document.querySelector('#playlistDescriptionInput').value.trim(), color = document.querySelector('#playlistColorValue').value, rule = 'manual', ruleValue = '', error = document.querySelector('#playlistFormError'), duplicate = playlists.find(p => p.name.toLowerCase() === name.toLowerCase() && p.id !== editingPlaylistId); if (!name) { error.textContent = 'Give your playlist a name first.'; return } if (duplicate) { error.textContent = 'A playlist with this name already exists.'; return } if (['artist', 'album'].includes(rule) && !ruleValue) { error.textContent = 'Enter the artist or album to match.'; return } let p; if (editingPlaylistId) { p = playlists.find(x => x.id === editingPlaylistId); if (!p) return; p.name = name; p.description = description; p.color = playlistTint({ color }); p.rule = 'manual'; p.ruleValue = ''; delete p.limit; delete p.excludedTrackIds; try { await dbRequest('playlists', 'put', p) } catch { error.textContent = 'Could not save your playlist.'; return } renderPlaylists() } else p = await createPlaylist(name, description, color, rule, ruleValue); if (!p) return; if (pendingPlaylistTrack >= 0 && tracks[pendingPlaylistTrack]) { const track = tracks[pendingPlaylistTrack]; if (!p.trackIds.includes(track.id)) p.trackIds.push(track.id); try { await dbRequest('playlists', 'put', p) } catch { toast('Could not add this song to the playlist') } } pendingPlaylistTrack = -1; closePlaylistDialog(); closePlaylistPicker(); selectView(p.id, p.id) }; document.querySelector('#metadataRemoveSong').onclick = () => { const index = tracks.findIndex(track => track.id === editingTrackId); if (index < 0) return; const message = activePlaylistId ? 'Remove this song from the current playlist?' : 'Remove this song from your library?'; if (!confirm(message)) return; closeTrackMetadata(); removeTrack(index) }; document.querySelector('#metadataCoverInput').onchange = e => { const file = e.target.files?.[0]; if (!file || !file.type.startsWith('image/')) return; if (metadataPreviewUrl) URL.revokeObjectURL(metadataPreviewUrl); metadataPreviewUrl = URL.createObjectURL(file); const preview = document.querySelector('#metadataCoverPreview'); preview.style.backgroundImage = `url("${metadataPreviewUrl}")`; preview.classList.add('has-art'); preview.textContent = '' }; document.querySelector('#metadataForm').onsubmit = async e => { e.preventDefault(); const track = tracks.find(item => item.id === editingTrackId); if (!track) return; const title = document.querySelector('#metadataTitle').value.trim(); if (!title) { document.querySelector('#metadataError').textContent = 'Enter a song title.'; return } const artist = document.querySelector('#metadataArtist').value.trim() || 'Unknown Artist', album = document.querySelector('#metadataAlbum').value.trim() || 'Unknown Album', changed = track.artist !== artist || track.album !== album; track.name = title; track.artist = artist; track.album = album; const coverFile = document.querySelector('#metadataCoverInput').files?.[0]; if (coverFile) { if (track.customArtBlob && track.art?.startsWith('blob:')) URL.revokeObjectURL(track.art); track.customArtBlob = coverFile; track.art = metadataPreviewUrl || URL.createObjectURL(coverFile); metadataPreviewUrl = null } if (changed) track.lyricsLookup = ''; await saveTrack(track); closeTrackMetadata(); render(); renderQueue(); if (current >= 0 && tracks[current]?.id === track.id) { document.querySelector('#nowTitle').textContent = track.name; document.querySelector('#nowArtist').textContent = track.artist; syncHero(track); syncFull(track); if (changed) lookupLyrics(track) } toast('Track details saved') }; document.querySelectorAll('[data-close-metadata]').forEach(button => button.onclick = closeTrackMetadata); document.querySelector('#metadataDialog').addEventListener('click', e => { if (e.target.id === 'metadataDialog') closeTrackMetadata() }); document.querySelector('#playlistDialog').addEventListener('click', e => { if (e.target.id === 'playlistDialog') closePlaylistDialog() }); document.querySelector('#playlistPicker').addEventListener('click', e => { if (e.target.id === 'playlistPicker') closePlaylistPicker() }); document.querySelector('#search').oninput = e => { const query = e.target.value.trim(); if (query.toLowerCase() === 'terminal') { const settings = window.MusikoAppearance; settings.value.mode = 'dark'; settings.value.skin = 'terminal'; settings.value.darkSkin = 'terminal'; settings.value.accent = '#45ed82'; e.target.value = ''; searchTerm = ''; saveAppearance(); toast('Terminal theme activated') } else searchTerm = query; if (searchTerm && (activeView === 'Home' || (activeView === 'Downloads' && !activePlaylistId))) selectView('All tracks'); else render(); preloadedTrackIndex = -1; prepareNextTrack() }; document.querySelector('#nowFavorite').onclick = () => { if (current >= 0) toggleFavorite(current) };
     /* ---- iOS: undo any accidental zoom / sideways pan, and show real Now Playing controls ---- */
@@ -9493,7 +9513,14 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
         showFirstVisitWelcome = false;
         syncHero(tracks[current]);
       }
-      if (starterTrackCued) { starterTrackCued = false; recordPlayStart(tracks[current]); lookupLyrics(tracks[current]) } if (window.MusikoAppearance.value.trimSilence) startSilenceMonitor(); sleepPauseTriggered = false; updatePlayIcons(); render() }; deck.onpause = () => { if (deck !== audio) return; saveListeningStats(true); if (isCrossfading) cancelCrossfade(); updatePlayIcons(); render() }; deck.ontimeupdate = () => { if (deck !== audio) return; recordListenTime(deck); if (window.musikoScrubbing) return; const ratio = audio.duration ? audio.currentTime / audio.duration * 100 : 0; document.querySelector('#elapsed').textContent = fmt(audio.currentTime); document.querySelector('#progress').style.width = ratio + '%'; document.querySelector('#fullElapsed').textContent = fmt(audio.currentTime); document.querySelector('#fullProgress').style.width = ratio + '%'; gaplessTick(0.3); updateLyricHighlight(); if (sleepAtTrackEnd && repeat && audio.duration && audio.currentTime >= audio.duration - .3) { stopForSleepTimer(); return } if (!isIOSDevice && !repeat && !sleepAtTrackEnd && !isCrossfading && !window.MusikoAppearance.value.lowEnd && window.MusikoAppearance.value.crossfadeSeconds > 0 && (audio.duration - audio.currentTime) / audio.playbackRate <= window.MusikoAppearance.value.crossfadeSeconds) playNext() }; deck.onloadedmetadata = () => { if (deck !== audio || current < 0) return; const prevDuration = tracks[current].duration; tracks[current].duration = audio.duration; if (!prevDuration || Math.abs(prevDuration - audio.duration) > .5) saveTrack(tracks[current]); if (!starterTrackCued) lookupLyrics(tracks[current]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration); render(); prepareNextTrack() }; deck.onended = () => { if (deck !== audio) return; if (silenceAudioContext && silenceAudioContext.state !== 'running') silenceAudioContext.resume().catch(() => { }); if (sleepPauseTriggered) { sleepPauseTriggered = false; return } if (sleepAtTrackEnd) { stopForSleepTimer(); return } if (!repeat && (queue.length || visibleTracks().length)) playNext() } }
+      if (starterTrackCued) { starterTrackCued = false; recordPlayStart(tracks[current]); lookupLyrics(tracks[current]) } if (window.MusikoAppearance.value.trimSilence) startSilenceMonitor(); sleepPauseTriggered = false; updatePlayIcons(); render() }; deck.onpause = () => { if (deck !== audio) return; saveListeningStats(true); if (isCrossfading) cancelCrossfade(); updatePlayIcons(); render() }; deck.ontimeupdate = () => { if (deck !== audio) return; recordListenTime(deck); if (window.musikoScrubbing) return; renderPlaybackProgress(); gaplessTick(0.3); updateLyricHighlight(); if (sleepAtTrackEnd && repeat && audio.duration && audio.currentTime >= audio.duration - .3) { stopForSleepTimer(); return } if (!isIOSDevice && !repeat && !sleepAtTrackEnd && !isCrossfading && !window.MusikoAppearance.value.lowEnd && window.MusikoAppearance.value.crossfadeSeconds > 0 && (audio.duration - audio.currentTime) / audio.playbackRate <= window.MusikoAppearance.value.crossfadeSeconds) playNext() }; deck.onloadedmetadata = () => { if (deck !== audio || current < 0) return; const prevDuration = tracks[current].duration; tracks[current].duration = audio.duration; if (!prevDuration || Math.abs(prevDuration - audio.duration) > .5) saveTrack(tracks[current]); if (!starterTrackCued) lookupLyrics(tracks[current]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration); render(); prepareNextTrack() }; deck.onended = () => { if (deck !== audio) return; if (silenceAudioContext && silenceAudioContext.state !== 'running') silenceAudioContext.resume().catch(() => { }); if (sleepPauseTriggered) { sleepPauseTriggered = false; return } if (sleepAtTrackEnd) { stopForSleepTimer(); return } if (!repeat && (queue.length || visibleTracks().length)) playNext() } }
+    for (const event of ['loadedmetadata', 'durationchange', 'play', 'pause', 'seeking', 'seeked', 'ended', 'emptied']) {
+      document.addEventListener(event, e => {
+        if (e.target !== audio || window.musikoScrubbing) return;
+        if (event === 'seeking') setPlaybackJump(true);
+        renderPlaybackProgress();
+      }, true);
+    }
     audioDecks.forEach(bindAudioDeck); audioDecks.forEach(deck => { deck.setAttribute('playsinline', ''); deck.addEventListener('error', () => { if (deck !== audio || current < 0 || !audio.getAttribute('src')) return; if (!reloadCurrentTrack()) toast('This song could not be loaded') }) });
     document.querySelector('#seek').onclick = e => { if (audio.duration) { const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration } };
     document.querySelector('#fullSeek').onclick = e => { if (audio.duration) { const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration } };
@@ -10051,7 +10078,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     @media (hover:hover) { html body .hero.is-playing .hero-art:hover, html body .hero.is-continue .hero-art:hover { transform: scale(1.025) } }
 
     .hero-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 3; background: color-mix(in srgb, var(--white) 10%, transparent); opacity: 0; transition: opacity .3s }
-    .hero-progress i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 0 2px 2px 0; transition: width .25s linear }
+    .hero-progress i { display: block; height: 100%; width: var(--resume-progress, 0%); background: var(--accent); border-radius: 0 2px 2px 0; transition: width .25s linear }
     html body .hero.is-playing .hero-progress,
     html body .hero.is-continue .hero-progress { opacity: 1 }
 
@@ -10202,7 +10229,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
           heroPlay.setAttribute('aria-label', pos > 1 ? 'Resume' : 'Play');
           tint(t.art)
         }
-        heroFill.style.width = (dur ? Math.min(100, pos / dur * 100) : 0) + '%';
+        heroFill.style.setProperty('--resume-progress', (dur ? Math.min(100, pos / dur * 100) : 0) + '%');
         heroTime.textContent = dur ? (pos > 1 ? `${fmt(dur - pos)} left` : fmt(dur)) : '';
         return true
       }
@@ -10241,11 +10268,10 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
         const on = current >= 0 && !!tracks[current];
         hero.classList.toggle('is-playing', on);
         hero.classList.toggle('is-paused', on && audio.paused); if (on) hero.classList.remove('is-continue');
-        if (!on) { if (!hero.classList.contains('is-continue')) { heroTime.textContent = ''; heroFill.style.width = '0%' } return }
+        if (!on) { if (!hero.classList.contains('is-continue')) heroTime.textContent = ''; return }
         const paused = audio.paused, d = audio.duration, p = audio.currentTime || 0;
         const label = paused ? '▶  Resume' : '❚❚  Pause'; if (heroPlay.innerHTML !== label) heroPlay.innerHTML = label;
         heroPlay.setAttribute('aria-label', paused ? 'Play' : 'Pause');
-        heroFill.style.width = (Number.isFinite(d) && d > 0 ? Math.min(100, p / d * 100) : 0) + '%';
         heroTime.textContent = Number.isFinite(d) && d > 0 ? `${fmt(p)} / ${fmt(d)}` : '';
         sec.classList.toggle('is-paused', paused)
       }
@@ -10430,10 +10456,23 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
   </script>
   <style id="musiko-scrub">
     /* ===== Draggable seek bars (full player + mini player) ===== */
+    @property --playback-progress {
+      syntax: "<percentage>";
+      inherits: true;
+      initial-value: 0%;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      html.playback-jump:not([data-performance="low"]) {
+        transition: --playback-progress .22s cubic-bezier(.2, .7, .2, 1)
+      }
+    }
     #seek, #fullSeek { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; outline: none }
     #seek::before, #fullSeek::before { content: ""; position: absolute; left: -6px; right: -6px; top: -14px; bottom: -14px }   /* bigger touch target */
     #fullSeek { height: 6px; transition: height .14s ease }
-    #fullSeek .fill, #seek .fill { transition: none }
+    #fullProgress, #progress, .hero.is-playing .hero-progress i {
+      width: var(--playback-progress, 0%);
+      transition: none
+    }
     #fullSeek .fill:after, #seek .fill:after { transition: transform .14s ease, box-shadow .14s ease }
     #fullSeek .fill:after { width: 12px; height: 12px; right: -6px; top: -3px }
     #fullSeek.scrubbing { height: 10px }
@@ -10474,41 +10513,51 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
   <script>
     // Drag (or tap) the progress bar to seek. Releasing commits the new position.
     (() => {
-      const bars = [document.querySelector('#seek'), document.querySelector('#fullSeek')].filter(Boolean);
-      if (!bars.length) return;
-      const fills = [document.querySelector('#progress'), document.querySelector('#fullProgress')].filter(Boolean);
-      const times = [document.querySelector('#elapsed'), document.querySelector('#fullElapsed')].filter(Boolean);
-      const ready = () => Number.isFinite(audio.duration) && audio.duration > 0;
+      let drag = null;
+      const ready = () => current >= 0 && Number.isFinite(audio.duration) && audio.duration > 0;
       const ratioAt = (bar, x) => { const r = bar.getBoundingClientRect(); return r.width ? Math.max(0, Math.min(1, (x - r.left) / r.width)) : 0 };
-      const paint = ratio => {
-        fills.forEach(f => f.style.width = (ratio * 100) + '%');
-        times.forEach(t => t.textContent = fmt(ratio * audio.duration));
-        bars.forEach(b => b.setAttribute('aria-valuenow', String(Math.round(ratio * audio.duration))));
+      const isCurrentDrag = session => session.deck === audio && session.track === tracks[current] && session.source === audio.src;
+      const finish = apply => {
+        if (!drag) return;
+        const session = drag;
+        drag = null;
+        window.musikoScrubbing = false;
+        session.bar.classList.remove('scrubbing');
+        try { session.bar.releasePointerCapture(session.pointerId) } catch { }
+        if (apply && isCurrentDrag(session) && ready()) audio.currentTime = session.ratio * audio.duration;
+        renderPlaybackProgress();
       };
-      const commit = ratio => { audio.currentTime = ratio * audio.duration; paint(ratio) };
 
-      bars.forEach(bar => {
+      playbackSliders.forEach(bar => {
         bar.onclick = null;                      // replaces the old click-only seeking
         bar.setAttribute('role', 'slider'); bar.setAttribute('tabindex', '0'); bar.setAttribute('aria-label', 'Seek'); bar.setAttribute('aria-valuemin', '0');
-        let dragging = false, last = 0;
+        const ownsDrag = e => drag?.bar === bar && drag.pointerId === e.pointerId;
         bar.addEventListener('pointerdown', e => {
-          if (e.button !== undefined && e.button > 0) return;
-          if (!ready()) return;
-          dragging = true; window.musikoScrubbing = true; bar.classList.add('scrubbing');
+          if (drag || (e.button !== undefined && e.button > 0) || !ready()) return;
+          drag = { bar, pointerId: e.pointerId, deck: audio, track: tracks[current], source: audio.src, ratio: ratioAt(bar, e.clientX) };
+          window.musikoScrubbing = true;
+          bar.classList.add('scrubbing');
           try { bar.setPointerCapture(e.pointerId) } catch (err) { }
-          last = ratioAt(bar, e.clientX); paint(last); e.preventDefault();
+          setPlaybackJump(true);
+          renderPlaybackProgress(drag.ratio * audio.duration);
+          e.preventDefault();
         });
-        bar.addEventListener('pointermove', e => { if (!dragging) return; last = ratioAt(bar, e.clientX); paint(last) });
-        const finish = (e, apply) => {
-          if (!dragging) return;
-          dragging = false; bar.classList.remove('scrubbing');
-          try { bar.releasePointerCapture(e.pointerId) } catch (err) { }
-          if (apply && ready()) commit(last);
-          window.musikoScrubbing = false;
-        };
-        bar.addEventListener('pointerup', e => finish(e, true));
-        bar.addEventListener('pointercancel', e => finish(e, false));
-        bar.addEventListener('lostpointercapture', e => finish(e, false));
+        bar.addEventListener('pointermove', e => {
+          if (!ownsDrag(e)) return;
+          if (!isCurrentDrag(drag) || !ready()) { finish(false); return }
+          const ratio = ratioAt(bar, e.clientX);
+          if (ratio === drag.ratio) return;
+          drag.ratio = ratio;
+          setPlaybackJump(false);
+          renderPlaybackProgress(drag.ratio * audio.duration);
+        });
+        bar.addEventListener('pointerup', e => {
+          if (!ownsDrag(e)) return;
+          drag.ratio = ratioAt(bar, e.clientX);
+          finish(true);
+        });
+        bar.addEventListener('pointercancel', e => { if (ownsDrag(e)) finish(false) });
+        bar.addEventListener('lostpointercapture', e => { if (ownsDrag(e)) finish(false) });
         bar.addEventListener('keydown', e => {
           if (!ready()) return;
           const step = e.shiftKey ? 15 : 5; let t = null;
@@ -10516,11 +10565,17 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
           else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') t = audio.currentTime - step;
           else if (e.key === 'Home') t = 0; else if (e.key === 'End') t = audio.duration - .5;
           if (t === null) return;
-          e.preventDefault(); commit(Math.max(0, Math.min(audio.duration, t)) / audio.duration);
+          e.preventDefault();
+          e.stopPropagation();
+          finish(false);
+          audio.currentTime = Math.max(0, Math.min(audio.duration, t));
+          setPlaybackJump(true);
+          renderPlaybackProgress();
         });
-        const setMax = () => bar.setAttribute('aria-valuemax', String(Math.round(audio.duration || 0)));
-        document.addEventListener('loadedmetadata', setMax, true);
       });
+      document.addEventListener('musiko:track', () => finish(false));
+      document.addEventListener('emptied', e => { if (e.target === audio) finish(false) }, true);
+      renderPlaybackProgress();
     })();
   </script>
   <style id="musiko-no-select">
