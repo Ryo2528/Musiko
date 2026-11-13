@@ -9090,6 +9090,7 @@
               <label class="metadata-cover-choose">Change cover<input id="metadataCoverInput" type="file" accept="image/*"></label>
               <button type="button" class="metadata-cover-choose" id="metadataCropCover">Crop cover</button>
               <button type="button" class="metadata-cover-choose" id="metadataDefaultCover">Return to default</button>
+              <button type="button" class="metadata-cover-choose" id="metadataFetch">Fetch details</button>
             </div>
           </div>
         </div>
@@ -9191,7 +9192,7 @@
     let lastAddedAt = 0;
     let persistAsked = false; function askPersist() { if (persistAsked) return; persistAsked = true; try { const r = navigator.storage && navigator.storage.persist && navigator.storage.persist(); if (r && r.catch) r.catch(() => { }) } catch { } }
     function dbRequest(store, method, value) { return dbReady.then(db => new Promise((resolve, reject) => { const write = !['get', 'getAll', 'getAllKeys', 'count'].includes(method); const tx = db.transaction(store, write ? 'readwrite' : 'readonly'); let result; const os = tx.objectStore(store), req = value === undefined ? os[method]() : os[method](value); req.onsuccess = () => { result = req.result; if (!write) resolve(result) }; req.onerror = () => reject(req.error); tx.oncomplete = () => resolve(result); tx.onabort = () => reject(tx.error || req.error || new Error('Storage transaction aborted')) })) }
-    async function saveTrack(t) { try { await dbRequest('tracks', 'put', { id: t.id, addedAt: t.addedAt, blob: t.file, fileName: t.fileName, type: t.type, name: t.name, artist: t.artist, album: t.album, duration: t.duration, favorite: !!t.favorite, lyrics: t.lyrics || '', lyricLines: t.lyricLines || [], lyricsSource: t.lyricsSource || '', lyricsLookup: t.lyricsLookup || '', customArtBlob: t.customArtBlob || null }); t.savedLocally = true; askPersist(); return true } catch (e) { toast(e && e.name === 'QuotaExceededError' ? 'Not enough browser storage to save this track' : 'Could not save this track to your library'); return false } }
+    async function saveTrack(t) { try { await dbRequest('tracks', 'put', { id: t.id, addedAt: t.addedAt, blob: t.file, fileName: t.fileName, type: t.type, name: t.name, artist: t.artist, album: t.album, duration: t.duration, favorite: !!t.favorite, lyrics: t.lyrics || '', lyricLines: t.lyricLines || [], lyricsSource: t.lyricsSource || '', lyricsLookup: t.lyricsLookup || '', customArtBlob: t.customArtBlob || null, metaLookup: t.metaLookup || 0, metaEdited: !!t.metaEdited }); t.savedLocally = true; askPersist(); return true } catch (e) { toast(e && e.name === 'QuotaExceededError' ? 'Not enough browser storage to save this track' : 'Could not save this track to your library'); return false } }
     const starterSongId = 'musiko-starter-melting';
     const starterSongKey = 'musiko-starter-song-seen';
     const welcomeSeenKey = 'musiko-welcome-seen';
@@ -9252,11 +9253,11 @@
       const worker = async () => { while (next < saved.length) { const at = next++, r = saved[at]; try {
         if (!r || !r.blob) throw new Error('missing audio data');
         const file = new File([r.blob], r.fileName || r.name, { type: audioMime(r.fileName || r.name, r.type || r.blob.type) }), tags = /\.mp3$/i.test(file.name) ? await readId3(file) : {}, customArtUrl = r.customArtBlob ? URL.createObjectURL(r.customArtBlob) : '';
-        out[at] = { id: r.id, addedAt: r.addedAt, savedLocally: true, file, fileName: file.name, type: file.type, url: URL.createObjectURL(file), art: customArtUrl || tags.art || '', originalArt: tags.art || '', customArtBlob: r.customArtBlob || null, name: r.name || tags.title || file.name.replace(/\.[^.]+$/, ''), artist: r.artist || tags.artist || 'Local audio', album: r.album || tags.album || 'Local files', duration: r.duration || 0, favorite: !!r.favorite, lyrics: r.lyrics || tags.lyrics || '', lyricLines: r.lyricLines || [], lyricsSource: r.lyricsSource || (tags.lyrics ? 'MP3 tags' : ''), lyricsLookup: r.lyricsLookup || '' }
+        out[at] = { id: r.id, addedAt: r.addedAt, savedLocally: true, file, fileName: file.name, type: file.type, url: URL.createObjectURL(file), art: customArtUrl || tags.art || '', originalArt: tags.art || '', customArtBlob: r.customArtBlob || null, name: r.name || tags.title || file.name.replace(/\.[^.]+$/, ''), artist: r.artist || tags.artist || 'Local audio', album: r.album || tags.album || 'Local files', duration: r.duration || 0, favorite: !!r.favorite, lyrics: r.lyrics || tags.lyrics || '', lyricLines: r.lyricLines || [], lyricsSource: r.lyricsSource || (tags.lyrics ? 'MP3 tags' : ''), lyricsLookup: r.lyricsLookup || '', metaLookup: r.metaLookup || 0, metaEdited: !!r.metaEdited }
       } catch { failed++ } } };
       await Promise.all(Array.from({ length: 4 }, worker));
       const restored = out.filter(Boolean).sort((a, b) => (a.addedAt || 0) - (b.addedAt || 0));
-      lastAddedAt = restored.at(-1)?.addedAt || 0; tracks = restored; if (restored.length && !failed) for (const pl of playlists) if (pl.rule && pl.rule !== 'manual') { pl.trackIds = smartTrackIds(pl); pl.rule = 'manual'; pl.ruleValue = ''; delete pl.limit; delete pl.excludedTrackIds; dbRequest('playlists', 'put', pl).catch(() => { }) }
+      lastAddedAt = restored.at(-1)?.addedAt || 0; tracks = restored; setTimeout(() => autoFillMetadata(restored), 1500); if (restored.length && !failed) for (const pl of playlists) if (pl.rule && pl.rule !== 'manual') { pl.trackIds = smartTrackIds(pl); pl.rule = 'manual'; pl.ruleValue = ''; delete pl.limit; delete pl.excludedTrackIds; dbRequest('playlists', 'put', pl).catch(() => { }) }
       if (!failed && restored.length) { const keep = new Set(restored.map(t => t.id)); for (const id of Object.keys(listeningStats.tracks)) if (!keep.has(id)) delete listeningStats.tracks[id]; saveListeningStats(true) }
       const starterIndex = firstVisit ? tracks.findIndex(t => t.id === starterSongId) : -1;
       if (starterIndex >= 0 && current < 0) {
@@ -9319,6 +9320,49 @@
       return result } catch { return {} } }
     function parseLrc(text) { const out = []; for (const raw of text.replace(/^\ufeff/, '').split(/\r?\n/)) { const stamps = [...raw.matchAll(/\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]/g)]; if (!stamps.length) continue; const line = raw.replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]/g, '').trim(); if (!line) continue; for (const m of stamps) { const frac = m[3] || '0'; out.push({ time: +m[1] * 60 + +m[2] + (+frac / 10 ** frac.length), text: line }) } } return out.sort((a, b) => a.time - b.time) }
     let lyricsQueue = Promise.resolve(), lyricsNextAt = 0, lyricsRetryAt = 0;
+    /* ---- Auto metadata: songs with no tags are matched online by title + artist (iTunes Search, then MusicBrainz + Cover Art Archive) ---- */
+    let metaQueue = Promise.resolve(), metaNextAt = 0;
+    const metaClean = s => String(s || '').replace(/[_]+/g, ' ').replace(/\s*[\(\[][^\)\]]*(official|lyric|audio|video|visuali[sz]er|hd|hq|4k|mv|remaster)[^\)\]]*[\)\]]/ig, '').replace(/\s+(feat\.?|ft\.?|featuring)\s.*$/i, '').replace(/^\s*\d{1,3}\s*[-._)]\s+/, '').replace(/\s+/g, ' ').trim();
+    const metaNorm = s => metaClean(s).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+    function metaNeeded(t) { return t && !t.customArtBlob && (!t.art || !t.artist || t.artist === 'Local audio' || !t.album || t.album === 'Local files') && !(t.metaLookup && Date.now() - t.metaLookup < 864e5) }
+    function metaGuess(t) { let title = metaClean(t.name), artist = (t.artist && t.artist !== 'Local audio' && t.artist !== 'Unknown Artist') ? t.artist : ''; if (!artist) { const m = title.match(/^(.{2,60}?)\s+[-–—]\s+(.{2,100})$/); if (m) { artist = metaClean(m[1]); title = metaClean(m[2]) } } else { const rx = new RegExp('^' + artist.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*[-–—]\\s*', 'i'); title = title.replace(rx, '') } return { title, artist } }
+    async function metaFetchJson(url, ms = 9000) { const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), ms); try { const r = await fetch(url, { referrerPolicy: 'no-referrer', signal: ctl.signal }); if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json() } finally { clearTimeout(timer) } }
+    async function metaFromItunes(title, artist) {
+      const term = [artist, title].filter(Boolean).join(' '), data = await metaFetchJson(`https://itunes.apple.com/search?${new URLSearchParams({ term, media: 'music', entity: 'song', limit: '10' })}`), nt = metaNorm(title), na = metaNorm(artist);
+      let best = null, bestScore = 0;
+      for (const r of data.results || []) { const rt = metaNorm(r.trackName), ra = metaNorm(r.artistName); let score = 0; if (rt === nt) score += 3; else if (rt && nt && (rt.includes(nt) || nt.includes(rt))) score += 1.5; if (na) { if (ra === na) score += 3; else if (ra.includes(na) || na.includes(ra)) score += 2 } else score += .5; if (score > bestScore) { bestScore = score; best = r } }
+      if (!best || bestScore < (na ? 4 : 3)) return null;
+      return { title: best.trackName, artist: best.artistName, album: best.collectionName, art: best.artworkUrl100 ? best.artworkUrl100.replace(/\/\d+x\d+bb\./, '/600x600bb.') : '' }
+    }
+    async function metaFromMusicBrainz(title, artist) {
+      const q = `recording:"${title.replace(/"/g, '')}"${artist ? ` AND artist:"${artist.replace(/"/g, '')}"` : ''}`, data = await metaFetchJson(`https://musicbrainz.org/ws/2/recording?${new URLSearchParams({ query: q, fmt: 'json', limit: '5' })}`), nt = metaNorm(title);
+      for (const rec of data.recordings || []) { if ((rec.score || 0) < 85 || metaNorm(rec.title) !== nt) continue; const rel = (rec.releases || []).find(x => x.id); const out = { title: rec.title, artist: (rec['artist-credit'] || []).map(c => (c.name || '') + (c.joinphrase || '')).join('').trim(), album: rel?.title || '', art: rel ? `https://coverartarchive.org/release/${rel.id}/front-500` : '' }; if (out.artist) return out }
+      return null
+    }
+    async function metaFind(title, artist) { let found = null, reached = false; try { found = await metaFromItunes(title, artist); reached = true } catch { } if (!found) { try { found = await metaFromMusicBrainz(title, artist); reached = true } catch { } } return { found, reached } }
+    async function metaFetchArt(url) { try { const resp = await fetch(url, { referrerPolicy: 'no-referrer' }); if (!resp.ok) return null; const blob = await resp.blob(); return blob.type.startsWith('image/') && blob.size > 500 ? blob : null } catch { return null } }
+    async function autoFillMetadata(list) {
+      const todo = (list || tracks).filter(metaNeeded); if (!todo.length) return;
+      for (const t of todo) metaQueue = metaQueue.then(async () => {
+        if (!tracks.includes(t) || !metaNeeded(t)) return;
+        const wait = metaNextAt - Date.now(); if (wait > 0) await new Promise(r => setTimeout(r, wait));
+        const guess = metaGuess(t); let found = null, reached = false;
+        if (guess.title) {
+          try { found = await metaFromItunes(guess.title, guess.artist); reached = true } catch { }
+          if (!found) { try { found = await metaFromMusicBrainz(guess.title, guess.artist); reached = true } catch { } metaNextAt = Date.now() + 1100 } else metaNextAt = Date.now() + 400
+        }
+        if (!reached) return; /* offline: leave unmarked so it retries next time */
+        t.metaLookup = Date.now();
+        if (found && tracks.includes(t)) {
+          const noArtist = !t.artist || t.artist === 'Local audio' || t.artist === 'Unknown Artist', noAlbum = !t.album || t.album === 'Local files' || t.album === 'Unknown Album', fileLike = metaNorm(t.name) === metaNorm(t.fileName.replace(/\.[^.]+$/, ''));
+          const artistChanged = noArtist && found.artist; if (artistChanged) t.artist = found.artist; if (noAlbum && found.album) t.album = found.album; if (fileLike && found.title) t.name = found.title;
+          if (!t.art && found.art) { const blob = await metaFetchArt(found.art); if (blob) { t.customArtBlob = blob; t.art = URL.createObjectURL(blob) } }
+          if (artistChanged) t.lyricsLookup = '';
+        }
+        await saveTrack(t); render(); renderQueue();
+        if (tracks[current] === t) { document.querySelector('#nowTitle').textContent = t.name; document.querySelector('#nowArtist').textContent = t.artist; setCover(document.querySelector('#nowCover'), t); syncHero(t); syncFull(t); if (found) lookupLyrics(t) }
+      }).catch(() => { })
+    }
     function lookupLyrics(t) {
       if (!t || t.lyricLines?.length || t.lyricsLookup === 'loading' || t.lyricsLookup === 'done2' || t.lyricsLookup === 'unavailable') return;
       if (!t.name || !t.artist || t.artist === 'Local audio' || !Number.isFinite(t.duration) || t.duration < 1 || t.duration > 3600) { t.lyricsLookup = 'unavailable'; return }
@@ -9388,7 +9432,7 @@
       task.catch(err => { lyricsNextAt = Date.now() + 350; if (err && err.message === 'Lyrics service is busy' && (t._lyricsRetries = (t._lyricsRetries || 0) + 1) <= 3) { t.lyricsLookup = ''; setTimeout(() => lookupLyrics(t), Math.max(1000, lyricsRetryAt - Date.now()) + 250); return } t.lyricsLookup = 'failed'; if (current >= 0 && tracks[current].id === t.id && lyricsVisible()) renderLyrics() })
     }
     function fileBase(name) { return (name || '').replace(/\.[^.]+$/, '').trim().toLowerCase() }
-    async function addFiles(fileList) { const selected = [...fileList]; await libraryLoaded; const known = new Set(tracks.map(t => `${t.fileName}|${t.file ? t.file.size : 0}`)); let skipped = 0; const incoming = selected.filter(f => (f.type.startsWith('audio/') || /\.(mp3|wav|ogg|oga|opus|m4a|m4b|flac|aac|weba|aif|aiff)$/i.test(f.name)) && (() => { const key = `${f.name}|${f.size}`; if (known.has(key)) { skipped++; return false } known.add(key); return true })()), lrcFiles = selected.filter(f => /\.lrc$/i.test(f.name)); if (!incoming.length && !lrcFiles.length) { toast(skipped ? 'Those tracks are already in your library' : 'No audio or LRC lyric files found'); return } toast('Adding music and reading tags…'); const added = await Promise.all(incoming.map(async f0 => { const f = fixAudioFile(f0); const tags = /\.mp3$/i.test(f.name) ? await readId3(f) : {}; return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, file: f, fileName: f.name, type: f.type, url: URL.createObjectURL(f), art: tags.art || '', originalArt: tags.art || '', customArtBlob: null, name: tags.title || f.name.replace(/\.[^.]+$/, ''), artist: tags.artist || 'Local audio', album: tags.album || 'Local files', duration: 0, favorite: false, lyrics: tags.lyrics || '', lyricLines: [], lyricsSource: tags.lyrics ? 'MP3 tags' : '', lyricsLookup: '' } })); let addedAt = Math.max(Date.now(), lastAddedAt + 1); for (const track of added) { track.addedAt = addedAt++; lastAddedAt = track.addedAt } tracks.push(...added); let attached = 0; for (const lyricFile of lrcFiles) { const lines = parseLrc(await lyricFile.text()); if (!lines.length) continue; const base = fileBase(lyricFile.name), target = added.find(t => fileBase(t.fileName) === base) || tracks.find(t => fileBase(t.fileName) === base) || tracks.find(t => fileBase(t.name) === base); if (target) { target.lyricLines = lines; target.lyrics = lines.map(x => x.text).join('\n'); target.lyricsSource = 'LRC file'; target.lyricsLookup = ''; await saveTrack(target); attached++ } } await Promise.all(added.map(saveTrack)); render(); const summary = added.length ? `Added ${added.length} ${added.length === 1 ? 'track' : 'tracks'}` : 'Checked lyric files'; toast(`${summary}${attached ? ` · lyrics loaded for ${attached}` : lrcFiles.length ? ' · no matching lyrics were found' : ''}${skipped ? ` · ${skipped} duplicate${skipped === 1 ? '' : 's'} skipped` : ''}`); files.value = '' }
+    async function addFiles(fileList) { const selected = [...fileList]; await libraryLoaded; const known = new Set(tracks.map(t => `${t.fileName}|${t.file ? t.file.size : 0}`)); let skipped = 0; const incoming = selected.filter(f => (f.type.startsWith('audio/') || /\.(mp3|wav|ogg|oga|opus|m4a|m4b|flac|aac|weba|aif|aiff)$/i.test(f.name)) && (() => { const key = `${f.name}|${f.size}`; if (known.has(key)) { skipped++; return false } known.add(key); return true })()), lrcFiles = selected.filter(f => /\.lrc$/i.test(f.name)); if (!incoming.length && !lrcFiles.length) { toast(skipped ? 'Those tracks are already in your library' : 'No audio or LRC lyric files found'); return } toast('Adding music and reading tags…'); const added = await Promise.all(incoming.map(async f0 => { const f = fixAudioFile(f0); const tags = /\.mp3$/i.test(f.name) ? await readId3(f) : {}; return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, file: f, fileName: f.name, type: f.type, url: URL.createObjectURL(f), art: tags.art || '', originalArt: tags.art || '', customArtBlob: null, name: tags.title || f.name.replace(/\.[^.]+$/, ''), artist: tags.artist || 'Local audio', album: tags.album || 'Local files', duration: 0, favorite: false, lyrics: tags.lyrics || '', lyricLines: [], lyricsSource: tags.lyrics ? 'MP3 tags' : '', lyricsLookup: '' } })); let addedAt = Math.max(Date.now(), lastAddedAt + 1); for (const track of added) { track.addedAt = addedAt++; lastAddedAt = track.addedAt } tracks.push(...added); let attached = 0; for (const lyricFile of lrcFiles) { const lines = parseLrc(await lyricFile.text()); if (!lines.length) continue; const base = fileBase(lyricFile.name), target = added.find(t => fileBase(t.fileName) === base) || tracks.find(t => fileBase(t.fileName) === base) || tracks.find(t => fileBase(t.name) === base); if (target) { target.lyricLines = lines; target.lyrics = lines.map(x => x.text).join('\n'); target.lyricsSource = 'LRC file'; target.lyricsLookup = ''; await saveTrack(target); attached++ } } await Promise.all(added.map(saveTrack)); render(); autoFillMetadata(added); const summary = added.length ? `Added ${added.length} ${added.length === 1 ? 'track' : 'tracks'}` : 'Checked lyric files'; toast(`${summary}${attached ? ` · lyrics loaded for ${attached}` : lrcFiles.length ? ' · no matching lyrics were found' : ''}${skipped ? ` · ${skipped} duplicate${skipped === 1 ? '' : 's'} skipped` : ''}`); files.value = '' }
     function setCover(el, t) { el.classList.toggle('has-art', !!t?.art); el.style.backgroundImage = t?.art ? `url("${t.art}")` : ''; el.textContent = t?.art ? '' : '♫' }
     function syncFull(t) { document.querySelector('#fullTitle').textContent = t?.name || 'Nothing playing'; document.querySelector('#fullArtist').textContent = t?.artist || ''; document.querySelector('#fullAlbum').textContent = t?.album && t.album !== 'Local files' ? t.album : ''; const wrap = document.querySelector('#fullArtWrap'); wrap.replaceChildren(); if (t?.art) { const img = document.createElement('img'); img.src = t.art; img.alt = `Album artwork for ${t.name}`; wrap.append(img); document.querySelector('#fullBg').style.backgroundImage = `url("${t.art}")`; document.querySelector('#fullscreen').style.setProperty('--full-art', `url("${t.art}")`); document.documentElement.style.setProperty('--full-art', `url("${t.art}")`) } else { const fallback = document.createElement('div'); fallback.className = 'no-art'; fallback.textContent = '♫'; wrap.append(fallback); document.querySelector('#fullBg').style.backgroundImage = ''; document.querySelector('#fullscreen').style.setProperty('--full-art', 'none'); document.documentElement.style.setProperty('--full-art', 'none') } }
     function fullLyricsOn() { const f = document.querySelector('#fullscreen'); return f.classList.contains('open') && f.classList.contains('lyrics-on') }
@@ -9556,15 +9600,17 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     const metadataCoverPreview = document.querySelector('#metadataCoverPreview');
     const metadataCropCover = document.querySelector('#metadataCropCover');
     const metadataDefaultCover = document.querySelector('#metadataDefaultCover');
+    const metadataFetch = document.querySelector('#metadataFetch');
     const metadataCropPanel = document.querySelector('#metadataCrop');
     const metadataCropCanvas = document.querySelector('#metadataCropCanvas');
     const metadataCropZoom = document.querySelector('#metadataCropZoom');
     let metadataEdit = null;
 
     function syncMetadataArtworkControls(edit) {
-      const cover = edit.restoreDefault ? edit.track.originalArt : edit.track.art;
+      const cover = edit.fetched ? edit.fetched.url : edit.restoreDefault ? edit.track.originalArt : edit.track.art;
       metadataCropCover.disabled = !cover || !!(edit.crop || edit.pending || edit.saving);
-      metadataDefaultCover.disabled = !!edit.saving || !(edit.crop || edit.pending || (edit.track.customArtBlob && !edit.restoreDefault));
+      metadataDefaultCover.disabled = !!edit.saving || !(edit.crop || edit.pending || edit.fetched || (edit.track.customArtBlob && !edit.restoreDefault));
+      metadataFetch.disabled = !!(edit.saving || edit.fetching);
       metadataSave.disabled = !!(edit.pending || edit.saving);
       metadataCoverInput.disabled = metadataCropZoom.disabled = !!edit.saving;
     }
@@ -9573,6 +9619,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       if (crop?.owned) URL.revokeObjectURL(crop.url);
     }
 
+    function clearFetched(edit) { if (edit?.fetched) { URL.revokeObjectURL(edit.fetched.url); edit.fetched = null } }
     function clearMetadataCrop(edit) {
       if (edit) {
         releaseMetadataCrop(edit.pending);
@@ -9623,6 +9670,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
         paintMetadataCrop(crop);
         releaseMetadataCrop(edit.crop);
         edit.crop = crop;
+        clearFetched(edit);
         edit.restoreDefault = false;
         metadataCropZoom.value = '1';
         metadataCropPanel.hidden = false;
@@ -9653,7 +9701,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       const track = tracks.find(item => item.id === id);
       if (!track || metadataEdit?.saving) return;
       clearMetadataCrop(metadataEdit);
-      metadataEdit = { track, crop: null, pending: null, restoreDefault: false, saving: false };
+      clearFetched(metadataEdit); metadataEdit = { track, crop: null, pending: null, restoreDefault: false, saving: false, fetched: null, fetching: false };
       editingTrackId = id;
       metadataTitle.value = track.name || '';
       metadataArtist.value = track.artist || '';
@@ -9665,6 +9713,8 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       metadataDialog.classList.add('open');
       metadataDialog.setAttribute('aria-hidden', 'false');
       requestAnimationFrame(() => metadataTitle.focus());
+      const missing = !track.art || !track.album || track.album === 'Local files' || track.album === 'Unknown Album';
+      if (missing && track.name) fetchMetadataDetails(false);
     }
 
     function closeTrackMetadata() {
@@ -9672,6 +9722,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       metadataDialog.classList.remove('open');
       metadataDialog.setAttribute('aria-hidden', 'true');
       clearMetadataCrop(metadataEdit);
+      clearFetched(metadataEdit);
       metadataEdit = null;
       editingTrackId = null;
     }
@@ -9682,10 +9733,32 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       if (file && metadataEdit && !metadataEdit.saving) loadMetadataCrop(URL.createObjectURL(file), true);
     });
 
+    const metaPlaceholder = v => !v || /^(local files|unknown album|local audio|unknown artist)$/i.test(v.trim());
+    async function fetchMetadataDetails(manual) {
+      const edit = metadataEdit; if (!edit || edit.saving || edit.fetching) return;
+      let title = metadataTitle.value.trim(), artist = metadataArtist.value.trim(); if (metaPlaceholder(artist)) artist = '';
+      if (!title) { if (manual) metadataError.textContent = 'Enter a song title first.'; return }
+      const guess = metaGuess({ name: title, artist }); edit.fetching = true; metadataFetch.textContent = 'Fetching…'; syncMetadataArtworkControls(edit); if (manual) metadataError.textContent = '';
+      try {
+        const { found, reached } = await metaFind(guess.title, guess.artist);
+        if (edit !== metadataEdit) return;
+        if (!reached) { if (manual) metadataError.textContent = 'Could not reach the music database. Check your connection.'; return }
+        if (!found) { if (manual) metadataError.textContent = 'No match found. Check the song title and artist spelling.'; return }
+        if (metaPlaceholder(artist) && found.artist) metadataArtist.value = found.artist;
+        if (found.album && (manual || metaPlaceholder(metadataAlbum.value))) metadataAlbum.value = found.album;
+        if (found.art && !edit.crop && !edit.pending && (manual || !edit.track.art)) {
+          const blob = await metaFetchArt(found.art);
+          if (edit !== metadataEdit) return;
+          if (blob && !edit.crop && !edit.pending) { clearFetched(edit); edit.fetched = { blob, url: URL.createObjectURL(blob) }; edit.restoreDefault = false; setCover(metadataCoverPreview, { art: edit.fetched.url }) }
+        }
+      } finally { if (edit === metadataEdit) { edit.fetching = false; metadataFetch.textContent = 'Fetch details'; syncMetadataArtworkControls(edit) } }
+    }
+    metadataFetch.addEventListener('click', () => fetchMetadataDetails(true));
+
     metadataCropCover.addEventListener('click', () => {
       const edit = metadataEdit;
       if (!edit || edit.saving) return;
-      const cover = edit.restoreDefault ? edit.track.originalArt : edit.track.art;
+      const cover = edit.fetched ? edit.fetched.url : edit.restoreDefault ? edit.track.originalArt : edit.track.art;
       if (cover) loadMetadataCrop(cover);
     });
 
@@ -9693,6 +9766,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       const edit = metadataEdit;
       if (!edit || edit.saving) return;
       clearMetadataCrop(edit);
+      clearFetched(edit);
       edit.restoreDefault = true;
       setCover(metadataCoverPreview, { art: edit.track.originalArt });
       metadataError.textContent = '';
@@ -9758,7 +9832,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       metadataError.textContent = '';
       syncMetadataArtworkControls(edit);
       try {
-        let customArtBlob = edit.restoreDefault ? null : track.customArtBlob;
+        let customArtBlob = edit.restoreDefault ? null : (edit.fetched?.blob || track.customArtBlob);
         if (edit.crop) {
           customArtBlob = await exportMetadataCrop(edit.crop).catch(() => null);
           if (!customArtBlob) {
@@ -9767,15 +9841,15 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
           }
         }
         const oldArt = track.art;
-        const art = edit.crop ? URL.createObjectURL(customArtBlob) : edit.restoreDefault ? track.originalArt : oldArt;
-        const changes = { name, artist, album, art, customArtBlob };
+        const art = edit.crop || edit.fetched ? URL.createObjectURL(customArtBlob) : edit.restoreDefault ? track.originalArt : oldArt;
+        const changes = { name, artist, album, art, customArtBlob, metaEdited: true };
         if (changed) changes.lyricsLookup = '';
         const previous = Object.fromEntries(Object.keys(changes).map(key => [key, track[key]]));
         Object.assign(track, changes);
         const saved = await saveTrack(track);
         if (!saved) {
           Object.assign(track, previous);
-          if (edit.crop) URL.revokeObjectURL(art);
+          if (edit.crop || edit.fetched) URL.revokeObjectURL(art);
           metadataError.textContent = 'Could not save these details. Try again.';
           return;
         }
