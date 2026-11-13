@@ -4589,7 +4589,7 @@
       }
     }
   </style>
-  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .32 ? '#101114' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff', '#f5f5f5', '#4f7cff', '#6fd3a4', '#ff8a3d', '#f2c230', '#2ec4c4', '#e86ae0'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 4, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, fullBgAnimation: true, classicHero: false, adaptiveHeroAllColors: false, heroFlowSpeed: 1, customBackground: '', customDim: 60, customBlur: 0 }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent) || /^#[0-9a-f]{6}$/i.test(saved.accent || '')) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.fullBgAnimation === 'boolean') value.fullBgAnimation = saved.fullBgAnimation; if (typeof saved.classicHero === 'boolean') value.classicHero = saved.classicHero; if (typeof saved.adaptiveHeroAllColors === 'boolean') value.adaptiveHeroAllColors = saved.adaptiveHeroAllColors; if (Number.isFinite(saved.heroFlowSpeed)) value.heroFlowSpeed = Math.min(3, Math.max(.25, saved.heroFlowSpeed)); if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground; if (Number.isFinite(saved.customDim)) value.customDim = Math.min(90, Math.max(0, saved.customDim)); if (Number.isFinite(saved.customBlur)) value.customBlur = Math.min(24, Math.max(0, saved.customBlur)) } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.dataset.fullAnimation = value.fullBgAnimation ? 'on' : 'off'; root.dataset.classicHero = value.classicHero ? 'on' : 'off'; root.dataset.heroContrast = value.adaptiveHeroAllColors ? 'all' : 'bright'; root.style.setProperty('--hero-flow-speed', value.heroFlowSpeed); root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); root.style.setProperty('--custom-dim', value.customDim / 100); root.style.setProperty('--custom-blur', value.customBlur + 'px'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
+  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .32 ? '#101114' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff', '#f5f5f5', '#4f7cff', '#6fd3a4', '#ff8a3d', '#f2c230', '#2ec4c4', '#e86ae0'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 4, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, fullBgAnimation: true, heroBgAnimation: true, fullscreenFlowSpeed: 1, classicHero: false, adaptiveHeroAllColors: false, heroFlowSpeed: 1, customBackground: '', customDim: 60, customBlur: 0 }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent) || /^#[0-9a-f]{6}$/i.test(saved.accent || '')) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.fullBgAnimation === 'boolean') value.fullBgAnimation = saved.fullBgAnimation; value.heroBgAnimation = typeof saved.heroBgAnimation === 'boolean' ? saved.heroBgAnimation : value.fullBgAnimation; if (Number.isFinite(saved.fullscreenFlowSpeed)) value.fullscreenFlowSpeed = Math.min(3, Math.max(.25, Math.round(saved.fullscreenFlowSpeed * 4) / 4)); else if (Number.isFinite(saved.fullFlowSpeed) && saved.fullFlowSpeed !== 1) value.fullscreenFlowSpeed = Math.min(3, Math.max(.25, Math.round(saved.fullFlowSpeed * 16) / 4)); if (typeof saved.classicHero === 'boolean') value.classicHero = saved.classicHero; if (typeof saved.adaptiveHeroAllColors === 'boolean') value.adaptiveHeroAllColors = saved.adaptiveHeroAllColors; if (Number.isFinite(saved.heroFlowSpeed)) value.heroFlowSpeed = Math.min(3, Math.max(.25, saved.heroFlowSpeed)); if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground; if (Number.isFinite(saved.customDim)) value.customDim = Math.min(90, Math.max(0, saved.customDim)); if (Number.isFinite(saved.customBlur)) value.customBlur = Math.min(24, Math.max(0, saved.customBlur)) } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.dataset.fullAnimation = value.fullBgAnimation ? 'on' : 'off'; root.dataset.heroAnimation = value.heroBgAnimation ? 'on' : 'off'; root.dataset.classicHero = value.classicHero ? 'on' : 'off'; root.dataset.heroContrast = value.adaptiveHeroAllColors ? 'all' : 'bright'; root.style.setProperty('--hero-flow-speed', value.heroFlowSpeed); root.style.setProperty('--full-flow-speed', value.fullscreenFlowSpeed); root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); root.style.setProperty('--custom-dim', value.customDim / 100); root.style.setProperty('--custom-blur', value.customBlur + 'px'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
   <style>
     .queue-panel {
       position: fixed;
@@ -4900,10 +4900,6 @@
       filter: blur(18px);
       background: radial-gradient(ellipse at 22% 24%, color-mix(in srgb, var(--ambient-a) 72%, transparent), transparent 48%), radial-gradient(ellipse at 78% 76%, color-mix(in srgb, var(--ambient-b) 68%, transparent), transparent 48%);
       transition: opacity 1s ease
-    }
-
-    .fullscreen.open .full-ambient {
-      animation: ambient-drift 18s ease-in-out infinite alternate
     }
 
     @keyframes ambient-drift {
@@ -5367,13 +5363,17 @@
   </style>
   <style>
     .fullscreen.open .full-bg {
-      animation: full-art-drift 32s ease-in-out infinite alternate;
+      animation: full-art-drift calc(128s / var(--full-flow-speed, 1)) ease-in-out infinite alternate;
       will-change: transform, background-position
     }
 
     .full-ambient {
-      background-size: 155% 155%;
-      animation: ambient-drift 18s ease-in-out infinite alternate, ambient-color-flow 28s ease-in-out infinite alternate;
+      background-size: 155% 155%
+    }
+
+    .fullscreen.open .full-ambient {
+      animation: ambient-drift calc(72s / var(--full-flow-speed, 1)) ease-in-out infinite alternate,
+        ambient-color-flow calc(112s / var(--full-flow-speed, 1)) ease-in-out infinite alternate;
       will-change: transform, background-position
     }
 
@@ -5384,18 +5384,32 @@
       inset: -12%;
       pointer-events: none;
       border-radius: 50%;
-      filter: blur(35px);
-      will-change: transform, opacity
+      filter: blur(35px)
     }
 
     .full-ambient:before {
       background: radial-gradient(ellipse at 30% 38%, color-mix(in srgb, var(--ambient-a) 42%, transparent), transparent 42%);
-      animation: full-glow-orbit 23s ease-in-out infinite alternate
+    }
+
+    .fullscreen.open .full-ambient:before {
+      animation: full-glow-orbit calc(92s / var(--full-flow-speed, 1)) ease-in-out infinite alternate;
+      will-change: transform, opacity
     }
 
     .full-ambient:after {
       background: radial-gradient(ellipse at 72% 60%, color-mix(in srgb, var(--ambient-b) 38%, transparent), transparent 45%);
-      animation: full-glow-orbit 29s ease-in-out -8s infinite alternate-reverse
+    }
+
+    .fullscreen.open .full-ambient:after {
+      animation: full-glow-orbit calc(116s / var(--full-flow-speed, 1)) ease-in-out calc(-32s / var(--full-flow-speed, 1)) infinite alternate-reverse;
+      will-change: transform, opacity
+    }
+
+    html[data-full-animation="off"] .fullscreen.open :is(.full-bg, .full-ambient),
+    html[data-full-animation="off"] .fullscreen.open .full-ambient::before,
+    html[data-full-animation="off"] .fullscreen.open .full-ambient::after {
+      animation: none;
+      will-change: auto
     }
 
     .fullscreen.open .full-content {
@@ -5438,8 +5452,8 @@
 
       .fullscreen.open .full-bg,
       .fullscreen.open .full-ambient,
-      .full-ambient:before,
-      .full-ambient:after {
+      .fullscreen.open .full-ambient:before,
+      .fullscreen.open .full-ambient:after {
         animation: none !important;
         will-change: auto
       }
@@ -8485,35 +8499,39 @@
     html body .queue-list, html body .settings-content, html body .settings-card, html body .fullscreen { overscroll-behavior: contain }
   </style>
   <style id="musiko-flow-css">
-    /* Fullscreen background in the style of Apple Music: big blurred copies of the album art that slowly turn,
-       so the cover's colours sweep across the screen. Rendered at half size and scaled 2x to keep the blur cheap. */
+    /* Render the moving artwork at half size. Off-center rotation makes the colors sweep across the player. */
     .full-flow {
       position: absolute; left: 0; top: 0; width: 50%; height: 50%;
       transform: scale(2); transform-origin: 0 0;
       pointer-events: none; overflow: hidden;
-      filter: blur(26px) saturate(1.7) brightness(.78);
-      opacity: .95
+      filter: blur(22px) saturate(1.8) brightness(.95)
     }
     .full-flow .ff {
       position: absolute; display: block; border-radius: 50%;
-      background-image: var(--full-art, none); background-size: cover; background-position: center;
+      background-image: var(--full-art, none), radial-gradient(circle, var(--flow-color), transparent 70%);
+      background-size: cover; background-position: center;
       width: calc(var(--s) * .5vmax); aspect-ratio: 1;
       will-change: transform
     }
-    .full-flow .ff1 { --s: 95; left: -24%; top: -34%; }
-    .full-flow .ff2 { --s: 80; left: 38%;  top: -12%; }
-    .full-flow .ff3 { --s: 78; left: -16%; top: 34%; }
-    .full-flow .ff4 { --s: 66; left: 46%;  top: 38%; }
-    .fullscreen.open .full-flow .ff1 { animation: ff-spin 95s linear infinite }
-    .fullscreen.open .full-flow .ff2 { animation: ff-spin-r 70s linear infinite }
-    .fullscreen.open .full-flow .ff3 { animation: ff-spin-r 115s linear -30s infinite }
-    .fullscreen.open .full-flow .ff4 { animation: ff-spin 80s linear -45s infinite }
+    .full-flow .ff1 { --s: 95; --flow-color: var(--ambient-a); left: -24%; top: -34%; transform-origin: 70% 65% }
+    .full-flow .ff2 { --s: 80; --flow-color: var(--accent); left: 38%; top: -12%; transform-origin: 30% 70%; opacity: .85 }
+    .full-flow .ff3 { --s: 78; --flow-color: var(--ambient-b); left: -16%; top: 34%; transform-origin: 65% 35% }
+    .full-flow .ff4 { --s: 66; --flow-color: var(--accent); left: 46%; top: 38%; transform-origin: 35% 60%; opacity: .85 }
+    .fullscreen.open .full-flow .ff1 { animation: ff-spin calc(72s / var(--full-flow-speed, 1)) linear infinite }
+    .fullscreen.open .full-flow .ff2 { animation: ff-spin-r calc(56s / var(--full-flow-speed, 1)) linear infinite }
+    .fullscreen.open .full-flow .ff3 { animation: ff-spin-r calc(88s / var(--full-flow-speed, 1)) linear calc(-12s / var(--full-flow-speed, 1)) infinite }
+    .fullscreen.open .full-flow .ff4 { animation: ff-spin calc(64s / var(--full-flow-speed, 1)) linear calc(-16s / var(--full-flow-speed, 1)) infinite }
     @keyframes ff-spin   { from { transform: rotate(0deg) scale(1) }      50% { transform: rotate(180deg) scale(1.12) } to { transform: rotate(360deg) scale(1) } }
     @keyframes ff-spin-r { from { transform: rotate(0deg) scaleX(-1) scale(1) } 50% { transform: rotate(-180deg) scaleX(-1) scale(1.1) } to { transform: rotate(-360deg) scaleX(-1) scale(1) } }
-    /* setting OFF = the original fullscreen look (blurred cover + soft glow), without the flowing layer */
-    html[data-full-animation="off"] .full-flow { display: none !important }
-    html[data-theme="light"] .full-flow { opacity: .6 }
-    html[data-performance="low"] .full-flow { display: none !important }
+    html[data-full-animation="off"] .full-flow,
+    html[data-performance="low"] .full-flow { display: none }
+    html[data-theme="light"] .full-flow { opacity: .68 }
+    html:not([data-full-animation="off"]):not([data-performance="low"]) .fullscreen .full-shade {
+      background: linear-gradient(90deg, #10121bb0, #10121b73 55%, #10121bb0)
+    }
+    html[data-theme="light"]:not([data-full-animation="off"]):not([data-performance="low"]) .fullscreen .full-shade {
+      background: linear-gradient(90deg, #f8f6f5c9, #f8f6f5a0 55%, #f8f6f5c9)
+    }
     @media (prefers-reduced-motion: reduce) {
       .fullscreen.open .full-flow .ff { animation: none !important; will-change: auto }
     }
@@ -8916,9 +8934,23 @@
         </section>
         <section class="setting-group">
           <div>
-            <h3>Background Animation</h3>
+            <h3>Fullscreen background animation</h3>
           </div><label class="setting-switch"><input type="checkbox" id="fullBgAnimation"
-              aria-label="Background Animation"><span></span></label>
+              aria-label="Fullscreen background animation"><span></span></label>
+        </section>
+        <section class="setting-group animation-speed-setting">
+          <div class="custom-look">
+            <h3>Fullscreen animation speed</h3>
+            <label class="animation-speed-row"><input type="range" id="fullscreenFlowSpeed" min="0.25" max="3" step="0.25" value="1"
+                aria-label="Fullscreen animation speed"><output id="fullscreenFlowSpeedValue" for="fullscreenFlowSpeed"></output></label>
+            <button type="button" class="text-link" id="fullscreenFlowSpeedReset">Reset to default</button>
+          </div>
+        </section>
+        <section class="setting-group">
+          <div>
+            <h3>Hero card background animation</h3>
+          </div><label class="setting-switch"><input type="checkbox" id="heroBgAnimation"
+              aria-label="Hero card background animation"><span></span></label>
         </section>
         <section class="setting-group">
           <div>
@@ -8933,11 +8965,11 @@
           </div><label class="setting-switch"><input type="checkbox" id="adaptiveHeroAllColors"
               aria-label="Adaptive hero text on all colors" aria-describedby="adaptiveHeroAllColorsHint"><span></span></label>
         </section>
-        <section class="setting-group" id="heroSpeedSetting">
+        <section class="setting-group animation-speed-setting" id="heroSpeedSetting">
           <div class="custom-look">
             <h3>Hero card animation speed</h3>
-            <label class="hero-speed-row"><input type="range" id="heroFlowSpeed" min="0.25" max="3" step="0.25"
-                aria-label="Hero card animation speed"><output id="heroFlowSpeedValue"></output></label>
+            <label class="animation-speed-row"><input type="range" id="heroFlowSpeed" min="0.25" max="3" step="0.25"
+                aria-label="Hero card animation speed"><output id="heroFlowSpeedValue" for="heroFlowSpeed"></output></label>
             <button type="button" class="text-link" id="heroFlowSpeedReset">Reset to default</button>
           </div>
         </section>
@@ -9832,7 +9864,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     (() => { if (!('mediaSession' in navigator)) return; const ms = navigator.mediaSession, set = (a, f) => { try { ms.setActionHandler(a, f) } catch { } }; const sync = () => { const t = tracks[current]; if (!t) { ms.metadata = null; return } try { ms.metadata = new MediaMetadata({ title: t.name, artist: t.artist, album: t.album && t.album !== 'Local files' ? t.album : '', artwork: t.art ? [{ src: t.art, sizes: '512x512' }] : [] }) } catch { } }; document.addEventListener('musiko:track', sync); const pos = () => { try { if (Number.isFinite(audio.duration) && audio.duration > 0) ms.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }) } catch { } }; audioDecks.forEach(d => { d.addEventListener('play', () => { if (d === audio) { ms.playbackState = 'playing'; pos() } }); d.addEventListener('pause', () => { if (d === audio) ms.playbackState = 'paused' }); d.addEventListener('loadedmetadata', () => { if (d === audio) pos() }); d.addEventListener('seeked', () => { if (d === audio) pos() }) }); set('play', () => { if (current < 0) toggle(); else audio.play() }); set('pause', () => audio.pause()); set('previoustrack', () => document.querySelector('#prev').click()); set('nexttrack', () => playNext(false, true)); set('seekto', e => { if (e.seekTime != null && Number.isFinite(audio.duration)) { audio.currentTime = Math.max(0, Math.min(audio.duration, e.seekTime)); pos() } }); set('seekbackward', e => { audio.currentTime = Math.max(0, audio.currentTime - (e.seekOffset || 10)) }); set('seekforward', e => { audio.currentTime = Math.min(audio.duration || 1e9, audio.currentTime + (e.seekOffset || 10)) }) })();
 
     function syncSettingsButtons() { const settings = window.MusikoAppearance; document.querySelectorAll('[data-mode]').forEach(button => { const active = button.dataset.mode === settings.value.mode; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }); document.querySelectorAll('.theme-choices [data-skin]').forEach(button => { const active = button.dataset.skin === settings.value.skin; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }); document.querySelectorAll('[data-accent]').forEach(button => { const active = button.dataset.accent === settings.value.accent; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)) }) ; if (window.syncCustomAccent) window.syncCustomAccent() }
-    function saveAppearance() { const settings = window.MusikoAppearance; document.documentElement.dataset.theme = settings.value.mode; document.documentElement.dataset.skin = settings.value.skin; document.documentElement.dataset.glass = settings.value.glassy ? 'on' : 'off'; document.documentElement.dataset.performance = settings.value.lowEnd ? 'low' : 'normal'; document.documentElement.dataset.searchAnimation = settings.value.searchAnimation ? 'on' : 'off'; document.documentElement.dataset.largeMobileControls = settings.value.largerMobileControls ? 'on' : 'off'; document.documentElement.dataset.fullAnimation = settings.value.fullBgAnimation ? 'on' : 'off'; document.documentElement.dataset.classicHero = settings.value.classicHero ? 'on' : 'off'; document.documentElement.dataset.heroContrast = settings.value.adaptiveHeroAllColors ? 'all' : 'bright'; document.documentElement.style.setProperty('--accent', settings.value.accent); document.documentElement.style.setProperty('--accent-ink', window.MusikoInkFor(settings.value.accent)); document.documentElement.style.setProperty('--custom-background-image', settings.value.customBackground ? 'url(' + settings.value.customBackground + ')' : 'none'); document.documentElement.style.setProperty('--custom-dim', settings.value.customDim / 100); document.documentElement.style.setProperty('--custom-blur', settings.value.customBlur + 'px'); settings.save(); syncSettingsButtons() }
+    function saveAppearance() { const settings = window.MusikoAppearance; document.documentElement.dataset.theme = settings.value.mode; document.documentElement.dataset.skin = settings.value.skin; document.documentElement.dataset.glass = settings.value.glassy ? 'on' : 'off'; document.documentElement.dataset.performance = settings.value.lowEnd ? 'low' : 'normal'; document.documentElement.dataset.searchAnimation = settings.value.searchAnimation ? 'on' : 'off'; document.documentElement.dataset.largeMobileControls = settings.value.largerMobileControls ? 'on' : 'off'; document.documentElement.dataset.fullAnimation = settings.value.fullBgAnimation ? 'on' : 'off'; document.documentElement.dataset.heroAnimation = settings.value.heroBgAnimation ? 'on' : 'off'; document.documentElement.dataset.classicHero = settings.value.classicHero ? 'on' : 'off'; document.documentElement.dataset.heroContrast = settings.value.adaptiveHeroAllColors ? 'all' : 'bright'; document.documentElement.style.setProperty('--accent', settings.value.accent); document.documentElement.style.setProperty('--accent-ink', window.MusikoInkFor(settings.value.accent)); document.documentElement.style.setProperty('--custom-background-image', settings.value.customBackground ? 'url(' + settings.value.customBackground + ')' : 'none'); document.documentElement.style.setProperty('--custom-dim', settings.value.customDim / 100); document.documentElement.style.setProperty('--custom-blur', settings.value.customBlur + 'px'); settings.save(); syncSettingsButtons() }
     function closeSettings() { const panel = document.querySelector('#settingsPanel'); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); document.querySelector('#openSettings').focus() }
     function openSettings() { const panel = document.querySelector('#settingsPanel'); syncSettingsButtons(); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); document.querySelector('#closeSettings').focus() }
     function closeSleepQuickMenu(restoreFocus = true) { const panel = document.querySelector('#sleepQuickPanel'); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); if (restoreFocus && sleepQuickOpener?.isConnected) sleepQuickOpener.focus(); sleepQuickOpener = null }
@@ -9840,7 +9872,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     document.querySelectorAll('.strawberry-float').forEach(berry => berry.addEventListener('click', e => { e.stopPropagation(); const dark = document.documentElement.dataset.skin === 'strawberry-dark', animation = dark ? 'berry-dark-clicking' : 'berry-clicking'; berry.classList.remove('berry-clicking', 'berry-dark-clicking'); void berry.offsetWidth; berry.classList.add(animation); setTimeout(() => berry.classList.remove(animation), 950) })); document.querySelector('#miniQueueShortcut').onclick = openQueue; document.querySelector('#closeQueue').onclick = closeQueue; document.querySelector('#queueBackdrop').onclick = closeQueue; document.querySelector('#clearQueue').onclick = () => { queue = []; preloadedTrackIndex = -1; renderQueue(); prepareNextTrack(); toast('Up Next cleared') }; document.querySelector('#openSettings').onclick = openSettings; document.querySelector('#closeSettings').onclick = closeSettings; document.querySelector('#miniSleepShortcut').onclick = e => toggleSleepQuickMenu(e.currentTarget); document.querySelector('#fullSleepShortcut').onclick = e => toggleSleepQuickMenu(e.currentTarget); document.querySelector('#closeSleepQuick').onclick = () => closeSleepQuickMenu(); document.querySelectorAll('[data-sleep-choice]').forEach(button => button.onclick = () => { setSleepTimer(button.dataset.sleepChoice); closeSleepQuickMenu() }); document.addEventListener('pointerdown', e => { const panel = document.querySelector('#sleepQuickPanel'); if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.sleep-shortcut')) closeSleepQuickMenu(false) }); window.addEventListener('resize', () => closeSleepQuickMenu(false)); document.addEventListener('scroll', () => closeSleepQuickMenu(false), true); document.querySelector('#settingsPanel').onclick = e => { if (e.target.id === 'settingsPanel') closeSettings() }; document.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => { const settings = window.MusikoAppearance, currentSkin = settings.value.skin; settings.value.mode = button.dataset.mode; if (settings.value.mode === 'light') settings.value.skin = currentSkin === 'strawberry-dark' ? 'strawberry' : 'cloud'; else settings.value.skin = currentSkin === 'strawberry' ? 'strawberry-dark' : 'black'; if (settings.value.mode === 'dark') settings.value.darkSkin = settings.value.skin; saveAppearance() }); document.querySelectorAll('.theme-choices [data-skin]').forEach(button => button.onclick = () => { const settings = window.MusikoAppearance, skin = button.dataset.skin; settings.value.skin = skin; if (skin === 'cloud' || skin === 'strawberry') settings.value.mode = 'light'; else { settings.value.mode = 'dark'; settings.value.darkSkin = skin } settings.value.accent = ({ midnight: '#ff5368', rose: '#ff7198', strawberry: '#e53939', 'strawberry-dark': '#fd5f5f', ocean: '#53b8ee', forest: '#6fd3a4', glass: '#91caff', 'prism-dark': '#8b70ff', black: '#ff5368', mono: '#f5f5f5', terminal: '#45ed82', custom: '#8b70ff', cloud: '#4f7cff' })[skin]; saveAppearance() }); document.querySelectorAll('[data-accent]').forEach(button => button.onclick = () => { window.MusikoAppearance.value.accent = button.dataset.accent; saveAppearance() }); syncSettingsButtons(); syncSleepShortcuts();
     function openLyrics() { document.querySelector('#lyricsPanel').classList.add('open'); renderLyrics() } function closeLyrics() { document.querySelector('#lyricsPanel').classList.remove('open') }; document.querySelector('#openLyrics').onclick = openLyrics; document.querySelector('#fullLyrics').onclick = () => setFullLyrics(!document.querySelector('#fullscreen').classList.contains('lyrics-on')); document.querySelector('#closeLyrics').onclick = closeLyrics; document.querySelector('#lyricsPanel').onclick = e => { if (e.target.id === 'lyricsPanel') closeLyrics() };
     document.querySelector('#next').onclick = () => playNext(false, true); document.querySelector('#prev').onclick = () => { if (audio.currentTime > 3) { audio.currentTime = 0; return } if (shuffle) { while (playHistory.length) { const id = playHistory.pop(), idx = tracks.findIndex(t => t.id === id); if (idx >= 0 && idx !== current) { skipHistoryPush = true; playTrack(idx); return } } } const shown = visibleTracks(); if (shown.length) { const at = shown.findIndex(x => x.i === current); playTrack(shown[(at - 1 + shown.length) % shown.length].i) } };
-    document.querySelector('#shuffle').onclick = () => { shuffle = !shuffle; preloadedTrackIndex = -1; prepareNextTrack(); syncPlaybackModeButtons(); toast(shuffle ? 'Shuffle on' : 'Shuffle off') }; document.querySelector('#repeat').onclick = () => { repeat = !repeat; audioDecks.forEach(deck => deck.loop = repeat); syncPlaybackModeButtons(); toast(repeat ? 'Repeat on' : 'Repeat off') }; syncPlaybackModeButtons(); document.querySelector('#volume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#fullVolume').value = e.target.value }; document.querySelector('#fullVolume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#volume').value = e.target.value }; audioDecks.forEach(deck => { deck.volume = .8; deck.playbackRate = window.MusikoAppearance.value.playbackRate; deck.loop = repeat }); document.querySelector('#playbackRate').value = String(audio.playbackRate); document.querySelector('#playbackRate').onchange = e => { const rate = Number(e.target.value); audioDecks.forEach(deck => deck.playbackRate = rate); window.MusikoAppearance.value.playbackRate = rate; window.MusikoAppearance.save(); toast('Playback speed ' + rate + '×') }; document.querySelector('#crossfadeDuration').value = String(window.MusikoAppearance.value.crossfadeSeconds); document.querySelector('#crossfadeDuration').onchange = e => { window.MusikoAppearance.value.crossfadeSeconds = Number(e.target.value); window.MusikoAppearance.save(); toast(window.MusikoAppearance.value.crossfadeSeconds ? 'Crossfade set to ' + e.target.value + ' seconds' : 'Crossfade off') }; document.querySelector('#gaplessPlayback').checked = window.MusikoAppearance.value.gapless; document.querySelector('#glassEffect').checked = window.MusikoAppearance.value.glassy; document.querySelector('#searchAnimation').checked = window.MusikoAppearance.value.searchAnimation; document.querySelector('#fullBgAnimation').checked = window.MusikoAppearance.value.fullBgAnimation; document.querySelector('#classicHero').checked = window.MusikoAppearance.value.classicHero; document.querySelector('#adaptiveHeroAllColors').checked = window.MusikoAppearance.value.adaptiveHeroAllColors; document.querySelector('#largerMobileControls').checked = window.MusikoAppearance.value.largerMobileControls; document.querySelector('#trimSilence').checked = window.MusikoAppearance.value.trimSilence; document.querySelector('#lowEndMode').checked = window.MusikoAppearance.value.lowEnd; document.querySelector('#crossfadeDuration').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#gaplessPlayback').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#lowEndMode').onchange = e => { const settings = window.MusikoAppearance; settings.value.lowEnd = e.target.checked; document.querySelector('#crossfadeDuration').disabled = e.target.checked; document.querySelector('#gaplessPlayback').disabled = e.target.checked; if (e.target.checked) { if (isCrossfading) cancelCrossfade(); audioDecks.forEach(deck => { if (deck !== audio) { deck.pause(); deck.preload = 'none' } }); preloadedTrackIndex = -1 } else prepareNextTrack(); saveAppearance(); toast(e.target.checked ? 'Ultra low-end mode on' : 'Ultra low-end mode off') }; document.querySelector('#trimSilence').onchange = e => { window.MusikoAppearance.value.trimSilence = e.target.checked; window.MusikoAppearance.save(); silentSince = 0; if (e.target.checked) startSilenceMonitor(); else { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } toast(e.target.checked ? 'Silence skipping on' : 'Silence skipping off') }; document.querySelector('#largerMobileControls').onchange = e => { window.MusikoAppearance.value.largerMobileControls = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Larger mobile player buttons on' : 'Larger mobile player buttons off') }; document.querySelector('#fullBgAnimation').onchange = e => { window.MusikoAppearance.value.fullBgAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Background animation on' : 'Background animation off') }; document.querySelector('#classicHero').onchange = e => { window.MusikoAppearance.value.classicHero = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Classic hero card on' : 'Classic hero card off') }; document.querySelector('#adaptiveHeroAllColors').onchange = e => { window.MusikoAppearance.value.adaptiveHeroAllColors = e.target.checked; saveAppearance() }; document.querySelector('#searchAnimation').onchange = e => { window.MusikoAppearance.value.searchAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Search animation on' : 'Search animation off') }; document.querySelector('#glassEffect').onchange = e => { window.MusikoAppearance.value.glassy = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Glass effect on' : 'Glass effect off') }; document.querySelector('#gaplessPlayback').onchange = e => { window.MusikoAppearance.value.gapless = e.target.checked; window.MusikoAppearance.save(); preloadedTrackIndex = -1; prepareNextTrack(); toast(e.target.checked ? 'Gapless playback on' : 'Gapless playback off') }; document.querySelector('#sleepTimerSelect').onchange = e => setSleepTimer(e.target.value);
+    document.querySelector('#shuffle').onclick = () => { shuffle = !shuffle; preloadedTrackIndex = -1; prepareNextTrack(); syncPlaybackModeButtons(); toast(shuffle ? 'Shuffle on' : 'Shuffle off') }; document.querySelector('#repeat').onclick = () => { repeat = !repeat; audioDecks.forEach(deck => deck.loop = repeat); syncPlaybackModeButtons(); toast(repeat ? 'Repeat on' : 'Repeat off') }; syncPlaybackModeButtons(); document.querySelector('#volume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#fullVolume').value = e.target.value }; document.querySelector('#fullVolume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#volume').value = e.target.value }; audioDecks.forEach(deck => { deck.volume = .8; deck.playbackRate = window.MusikoAppearance.value.playbackRate; deck.loop = repeat }); document.querySelector('#playbackRate').value = String(audio.playbackRate); document.querySelector('#playbackRate').onchange = e => { const rate = Number(e.target.value); audioDecks.forEach(deck => deck.playbackRate = rate); window.MusikoAppearance.value.playbackRate = rate; window.MusikoAppearance.save(); toast('Playback speed ' + rate + '×') }; document.querySelector('#crossfadeDuration').value = String(window.MusikoAppearance.value.crossfadeSeconds); document.querySelector('#crossfadeDuration').onchange = e => { window.MusikoAppearance.value.crossfadeSeconds = Number(e.target.value); window.MusikoAppearance.save(); toast(window.MusikoAppearance.value.crossfadeSeconds ? 'Crossfade set to ' + e.target.value + ' seconds' : 'Crossfade off') }; document.querySelector('#gaplessPlayback').checked = window.MusikoAppearance.value.gapless; document.querySelector('#glassEffect').checked = window.MusikoAppearance.value.glassy; document.querySelector('#searchAnimation').checked = window.MusikoAppearance.value.searchAnimation; document.querySelector('#fullBgAnimation').checked = window.MusikoAppearance.value.fullBgAnimation; document.querySelector('#heroBgAnimation').checked = window.MusikoAppearance.value.heroBgAnimation; document.querySelector('#classicHero').checked = window.MusikoAppearance.value.classicHero; document.querySelector('#adaptiveHeroAllColors').checked = window.MusikoAppearance.value.adaptiveHeroAllColors; document.querySelector('#largerMobileControls').checked = window.MusikoAppearance.value.largerMobileControls; document.querySelector('#trimSilence').checked = window.MusikoAppearance.value.trimSilence; document.querySelector('#lowEndMode').checked = window.MusikoAppearance.value.lowEnd; document.querySelector('#crossfadeDuration').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#gaplessPlayback').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#lowEndMode').onchange = e => { const settings = window.MusikoAppearance; settings.value.lowEnd = e.target.checked; document.querySelector('#crossfadeDuration').disabled = e.target.checked; document.querySelector('#gaplessPlayback').disabled = e.target.checked; if (e.target.checked) { if (isCrossfading) cancelCrossfade(); audioDecks.forEach(deck => { if (deck !== audio) { deck.pause(); deck.preload = 'none' } }); preloadedTrackIndex = -1 } else prepareNextTrack(); saveAppearance(); toast(e.target.checked ? 'Ultra low-end mode on' : 'Ultra low-end mode off') }; document.querySelector('#trimSilence').onchange = e => { window.MusikoAppearance.value.trimSilence = e.target.checked; window.MusikoAppearance.save(); silentSince = 0; if (e.target.checked) startSilenceMonitor(); else { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } toast(e.target.checked ? 'Silence skipping on' : 'Silence skipping off') }; document.querySelector('#largerMobileControls').onchange = e => { window.MusikoAppearance.value.largerMobileControls = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Larger mobile player buttons on' : 'Larger mobile player buttons off') }; document.querySelector('#fullBgAnimation').onchange = e => { window.MusikoAppearance.value.fullBgAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Fullscreen background animation on' : 'Fullscreen background animation off') }; document.querySelector('#heroBgAnimation').onchange = e => { window.MusikoAppearance.value.heroBgAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Hero card animation on' : 'Hero card animation off') }; document.querySelector('#classicHero').onchange = e => { window.MusikoAppearance.value.classicHero = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Classic hero card on' : 'Classic hero card off') }; document.querySelector('#adaptiveHeroAllColors').onchange = e => { window.MusikoAppearance.value.adaptiveHeroAllColors = e.target.checked; saveAppearance() }; document.querySelector('#searchAnimation').onchange = e => { window.MusikoAppearance.value.searchAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Search animation on' : 'Search animation off') }; document.querySelector('#glassEffect').onchange = e => { window.MusikoAppearance.value.glassy = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Glass effect on' : 'Glass effect off') }; document.querySelector('#gaplessPlayback').onchange = e => { window.MusikoAppearance.value.gapless = e.target.checked; window.MusikoAppearance.save(); preloadedTrackIndex = -1; prepareNextTrack(); toast(e.target.checked ? 'Gapless playback on' : 'Gapless playback off') }; document.querySelector('#sleepTimerSelect').onchange = e => setSleepTimer(e.target.value);
     function startSilenceMonitor() { if (!window.MusikoAppearance.value.trimSilence || silenceCheckTimer) return; try { const AudioContextClass = window.AudioContext || window.webkitAudioContext; if (!AudioContextClass) return; silenceAudioContext = silenceAudioContext || new AudioContextClass(); for (const deck of audioDecks) { if (!silenceAnalyzers.has(deck)) { ensureVolumeGraph(); const analyser = silenceAudioContext.createAnalyser(); analyser.fftSize = 1024; deckGains.get(deck).connect(analyser); silenceAnalyzers.set(deck, { analyser, data: new Uint8Array(analyser.fftSize) }) } } silenceAudioContext.resume().catch(() => { }); silenceCheckTimer = setInterval(() => { if (!window.MusikoAppearance.value.trimSilence || audio.paused || !Number.isFinite(audio.duration) || audio.duration <= 0 || isCrossfading) { silentSince = 0; return } const meter = silenceAnalyzers.get(audio); if (!meter) return; meter.analyser.getByteTimeDomainData(meter.data); let sum = 0; for (const sample of meter.data) { const value = (sample - 128) / 128; sum += value * value } const rms = Math.sqrt(sum / meter.data.length); if (rms < .006 && (audio.currentTime < 10 || audio.duration - audio.currentTime < 25)) { if (!silentSince) silentSince = performance.now(); if (performance.now() - silentSince > 1100 && performance.now() - lastSilenceSeek > 500) { audio.currentTime = Math.min(audio.duration - .05, audio.currentTime + 1.25); lastSilenceSeek = performance.now() } } else silentSince = 0 }, 250) } catch { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } } function updatePlayIcons() { const path = audio.paused ? '<path d="m8 5 12 7-12 7z"/>' : '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'; document.querySelector('#playIcon').innerHTML = path; document.querySelector('#fullPlayIcon').innerHTML = path }
     function syncPlaybackModeButtons() { [['#shuffle', '#fullShuffle', shuffle], ['#repeat', '#fullRepeat', repeat]].forEach(([main, full, active]) => [document.querySelector(main), document.querySelector(full)].forEach(button => { button.style.color = active ? 'var(--accent)' : ''; button.setAttribute('aria-pressed', String(active)) })) } function bindAudioDeck(deck) { deck.onplay = () => {
       if (deck !== audio) return;
@@ -12922,27 +12954,48 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     html:not([data-classic-hero="on"]) body #heroAdd, html:not([data-classic-hero="on"]) body .hero-art { display: none !important }
     /* Settings > Classic hero card: the old look, no animated glow */
     html[data-classic-hero="on"] .hero-flow { display: none !important }
-    /* Hero animation speed setting (default 1x) */
-    #heroSpeedSetting .custom-look { display: grid; gap: 10px; width: 100% }
-    #heroSpeedSetting .hero-speed-row { display: flex; align-items: center; gap: 12px }
-    #heroSpeedSetting input[type="range"] { flex: 1; min-width: 0; accent-color: var(--accent) }
-    #heroSpeedSetting output { width: 44px; text-align: right; font-size: 12px; font-variant-numeric: tabular-nums; opacity: .75 }
-    #heroSpeedSetting .text-link { justify-self: start; padding: 0 }
-    #heroSpeedSetting [hidden] { display: none !important }
     html[data-classic-hero="on"] #heroSpeedSetting { opacity: .45; pointer-events: none }
   </style>
-  <script>
+  <style id="musiko-animation-speed">
+    .animation-speed-setting .custom-look { display: grid; gap: 10px; width: 100% }
+    .animation-speed-row { display: flex; align-items: center; gap: 12px }
+    .animation-speed-row input { flex: 1; min-width: 0; accent-color: var(--accent) }
+    .animation-speed-row output { width: 44px; text-align: right; font-size: 12px; font-variant-numeric: tabular-nums; opacity: .75 }
+    .animation-speed-setting .text-link { justify-self: start; padding: 0 }
+    .animation-speed-setting [hidden] { display: none !important }
+  </style>
+  <script id="musiko-animation-speed-controls">
     (() => {
-      const A = window.MusikoAppearance, root = document.documentElement;
-      const range = document.querySelector('#heroFlowSpeed'), out = document.querySelector('#heroFlowSpeedValue'), reset = document.querySelector('#heroFlowSpeedReset');
-      if (!A || !range) return;
-      const DEFAULT = 1;
-      const show = () => { range.value = A.value.heroFlowSpeed; out.textContent = (+A.value.heroFlowSpeed).toFixed(2).replace(/0$/, '') + '\u00d7'; reset.hidden = A.value.heroFlowSpeed === DEFAULT };
-      const apply = v => { A.value.heroFlowSpeed = v; root.style.setProperty('--hero-flow-speed', v); show() };
-      range.addEventListener('input', () => apply(+range.value));
-      range.addEventListener('change', () => A.save());
-      reset.addEventListener('click', () => { apply(DEFAULT); A.save(); if (typeof toast === 'function') toast('Hero animation speed reset') });
-      show()
+      const appearance = window.MusikoAppearance;
+      const root = document.documentElement;
+      const defaultSpeed = 1;
+
+      function bindSpeedControl(property, cssProperty, label) {
+        const range = document.getElementById(property);
+        const output = document.getElementById(property + 'Value');
+        const reset = document.getElementById(property + 'Reset');
+
+        function apply(speed) {
+          appearance.value[property] = speed;
+          root.style.setProperty(cssProperty, speed);
+          range.value = speed;
+          output.value = speed + '\u00d7';
+          reset.hidden = speed === defaultSpeed;
+        }
+
+        range.addEventListener('input', () => apply(range.valueAsNumber));
+        range.addEventListener('change', () => appearance.save());
+        reset.addEventListener('click', () => {
+          apply(defaultSpeed);
+          appearance.save();
+          range.focus();
+          toast(label + ' animation speed reset');
+        });
+        apply(appearance.value[property]);
+      }
+
+      bindSpeedControl('fullscreenFlowSpeed', '--full-flow-speed', 'Fullscreen');
+      bindSpeedControl('heroFlowSpeed', '--hero-flow-speed', 'Hero card');
     })();
   </script>
 
@@ -13045,7 +13098,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
         }
       }
     }
-    html[data-full-animation="off"] .hero-flow .ff, html[data-performance="low"] .hero-flow .ff { animation: none }
+    html[data-hero-animation="off"] .hero-flow .ff { animation: none; will-change: auto }
     html[data-performance="low"] .hero-flow { display: none }
     @media (prefers-reduced-motion: reduce) {
       .hero-flow .ff { animation: none !important; will-change: auto }
