@@ -8776,7 +8776,7 @@
         </svg></button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
         <path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13" />
       </svg><input id="volume" type="range" min="0" max="1" step=".01" value=".8"><button class="icon-btn full-toggle"
-        id="openFullscreen" title="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        id="openFullscreen" title="Full screen" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="1.8">
           <path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3" />
         </svg></button></div>
@@ -8891,7 +8891,7 @@
         <div>
           <div class="lyrics-kicker">LYRICS PREVIEW</div>
           <div class="lyrics-song" id="lyricsSong">Nothing playing</div>
-        </div><button class="lyrics-karaoke" id="karaokeBtn" type="button" title="Karaoke mode: remove the vocals" aria-label="Karaoke mode" aria-pressed="false"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"></path></svg><span>Karaoke</span></button><button class="lyrics-expand" id="expandLyrics" type="button" title="Fullscreen lyrics" aria-label="Fullscreen lyrics" aria-pressed="false"></button><button class="lyrics-close" id="closeLyrics" title="Close lyrics">×</button>
+        </div><button class="lyrics-expand" id="expandLyrics" type="button" title="Fullscreen lyrics" aria-label="Fullscreen lyrics" aria-pressed="false"></button><button class="lyrics-close" id="closeLyrics" title="Close lyrics">×</button>
       </div>
       <div class="lyrics-body" id="lyricsBody"></div>
       <div class="lyrics-hint" id="lyricsHint" hidden></div>
@@ -9946,26 +9946,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     function takeNextTrackIndex() { while (queue.length) { const item = queue.shift(), i = tracks.findIndex(x => x.id === item.trackId); if (i >= 0) return i } const shown = visibleTracks(); if (!shown.length) return -1; const at = shown.findIndex(x => x.i === current); if (shuffle && preloadedTrackIndex >= 0 && tracks[preloadedTrackIndex]) return preloadedTrackIndex; return shuffle ? shown[Math.floor(Math.random() * shown.length)].i : shown[(at + 1 + shown.length) % shown.length].i }
     function otherDeck() { return audioDecks.find(deck => deck !== audio) } function applyDeckVolume(deck, factor = 1) { deckFactors.set(deck, factor); const v = Math.max(0, Math.min(1, masterVolume * factor)), g = deckGains.get(deck); if (g) { g.gain.value = v; deck.volume = 1 } else deck.volume = v }
     const deckGains = new WeakMap();
-    /* ---- karaoke (vocal remover): centre-channel cancellation, bass kept ---- */
-    const karaokeNodes = new WeakMap(); let karaokeOn = false; try { karaokeOn = localStorage.getItem('musiko.karaoke') === '1' } catch { }
-    function buildKaraokeChain(ctx, src, out, deck) {
-      const dry = ctx.createGain(), wet = ctx.createGain(), split = ctx.createChannelSplitter(2);
-      const invR = ctx.createGain(), side = ctx.createGain(), sideHP = ctx.createBiquadFilter(), sideHP2 = ctx.createBiquadFilter(), sideLvl = ctx.createGain();
-      const bassIn = ctx.createGain(), bassLP = ctx.createBiquadFilter(), bassLvl = ctx.createGain();
-      invR.gain.value = -1; side.channelCount = 1; side.channelCountMode = 'explicit'; bassIn.channelCount = 1; bassIn.channelCountMode = 'explicit';
-      sideHP.type = sideHP2.type = 'highpass'; sideHP.frequency.value = sideHP2.frequency.value = 140; sideHP.Q.value = sideHP2.Q.value = .7;
-      bassLP.type = 'lowpass'; bassLP.frequency.value = 140; bassLP.Q.value = .7;
-      sideLvl.gain.value = .85; bassLvl.gain.value = .5;
-      dry.gain.value = karaokeOn ? 0 : 1; wet.gain.value = karaokeOn ? 1 : 0;
-      src.connect(dry); dry.connect(out);
-      src.connect(split);
-      split.connect(side, 0); split.connect(invR, 1); invR.connect(side);          /* L - R: everything panned to the centre cancels */
-      side.connect(sideHP); sideHP.connect(sideHP2); sideHP2.connect(sideLvl); sideLvl.connect(wet);
-      split.connect(bassIn, 0); split.connect(bassIn, 1); bassIn.connect(bassLP); bassLP.connect(bassLvl); bassLvl.connect(wet);   /* keep the (centre) bass and kick */
-      wet.connect(out);
-      karaokeNodes.set(deck, { dry, wet });
-    }
-    function ensureVolumeGraph() { try { const C = window.AudioContext || window.webkitAudioContext; if (!C) return false; if (!silenceAudioContext || silenceAudioContext.state === 'closed') silenceAudioContext = new C(); for (const deck of audioDecks) { if (deckGains.has(deck)) continue; const src = silenceAudioContext.createMediaElementSource(deck), gain = silenceAudioContext.createGain(); buildKaraokeChain(silenceAudioContext, src, gain, deck); gain.connect(silenceAudioContext.destination); deckGains.set(deck, gain); applyDeckVolume(deck, deckFactors.get(deck) ?? 1) } if (silenceAudioContext.state !== 'running') silenceAudioContext.resume().catch(() => { }); return true } catch { return false } }
+    function ensureVolumeGraph() { try { const C = window.AudioContext || window.webkitAudioContext; if (!C) return false; if (!silenceAudioContext || silenceAudioContext.state === 'closed') silenceAudioContext = new C(); for (const deck of audioDecks) { if (deckGains.has(deck)) continue; const src = silenceAudioContext.createMediaElementSource(deck), gain = silenceAudioContext.createGain(); src.connect(gain); gain.connect(silenceAudioContext.destination); deckGains.set(deck, gain); applyDeckVolume(deck, deckFactors.get(deck) ?? 1) } if (silenceAudioContext.state !== 'running') silenceAudioContext.resume().catch(() => { }); return true } catch { return false } }
     function applyMasterVolume() { if (isIOSDevice && masterVolume < 1) ensureVolumeGraph(); audioDecks.forEach(deck => applyDeckVolume(deck, deckFactors.get(deck) ?? 1)) }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && silenceAudioContext && silenceAudioContext.state === 'suspended' && !audio.paused) silenceAudioContext.resume().catch(() => { }) });
     function singleDeckOffline() { return isIOSDevice && !navigator.onLine; }
@@ -10064,24 +10045,6 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
         if (e.code === 'Escape' && panel.classList.contains('open') && panel.classList.contains('expanded')) { e.stopImmediatePropagation(); e.preventDefault(); setExpanded(false) }
       }, true)
     })();
-    (() => {
-      const btn = document.querySelector('#karaokeBtn');
-      function paint() { btn.classList.toggle('on', karaokeOn); btn.setAttribute('aria-pressed', String(karaokeOn)); btn.title = karaokeOn ? 'Karaoke mode on: click to bring the vocals back' : 'Karaoke mode: remove the vocals' }
-      function applyKaraoke() {
-        const ctx = silenceAudioContext; if (!ctx) return;
-        for (const deck of audioDecks) { const n = karaokeNodes.get(deck); if (!n) continue; const t = ctx.currentTime; n.dry.gain.cancelScheduledValues(t); n.wet.gain.cancelScheduledValues(t); n.dry.gain.setTargetAtTime(karaokeOn ? 0 : 1, t, .06); n.wet.gain.setTargetAtTime(karaokeOn ? 1 : 0, t, .06) }
-      }
-      function setKaraoke(on, save = true) {
-        karaokeOn = on;
-        if (on && !ensureVolumeGraph()) { karaokeOn = false; paint(); toast('Karaoke mode is not supported in this browser'); return }
-        applyKaraoke(); paint();
-        if (save) { try { localStorage.setItem('musiko.karaoke', on ? '1' : '0') } catch { } toast(on ? 'Karaoke on: vocals removed' : 'Karaoke off') }
-      }
-      btn.onclick = () => setKaraoke(!karaokeOn);
-      paint();
-      /* saved preference: the audio graph can only start after a user gesture, so build it when playback starts */
-      audioDecks.forEach(deck => deck.addEventListener('play', () => { if (karaokeOn && !karaokeNodes.has(deck)) { ensureVolumeGraph(); applyKaraoke() } }));
-    })();
     function openLyrics() { document.querySelector('#lyricsPanel').classList.add('open'); renderLyrics() } function closeLyrics() { document.querySelector('#lyricsPanel').classList.remove('open') }; document.querySelector('#openLyrics').onclick = () => document.querySelector('#lyricsPanel').classList.contains('open') ? closeLyrics() : openLyrics(); document.querySelector('#fullLyrics').onclick = () => setFullLyrics(!document.querySelector('#fullscreen').classList.contains('lyrics-on')); document.querySelector('#closeLyrics').onclick = closeLyrics; document.querySelector('#lyricsPanel').onclick = e => { if (e.target.id === 'lyricsPanel') closeLyrics() };
     document.querySelector('#next').onclick = () => playNext(false, true); document.querySelector('#prev').onclick = () => { if (audio.currentTime > 3) { audio.currentTime = 0; return } if (shuffle) { while (playHistory.length) { const id = playHistory.pop(), idx = tracks.findIndex(t => t.id === id); if (idx >= 0 && idx !== current) { skipHistoryPush = true; playTrack(idx); return } } } const shown = visibleTracks(); if (shown.length) { const at = shown.findIndex(x => x.i === current); playTrack(shown[(at - 1 + shown.length) % shown.length].i) } };
     document.querySelector('#shuffle').onclick = () => { shuffle = !shuffle; preloadedTrackIndex = -1; prepareNextTrack(); syncPlaybackModeButtons(); toast(shuffle ? 'Shuffle on' : 'Shuffle off') }; document.querySelector('#repeat').onclick = () => { repeat = !repeat; audioDecks.forEach(deck => deck.loop = repeat); syncPlaybackModeButtons(); toast(repeat ? 'Repeat on' : 'Repeat off') }; syncPlaybackModeButtons(); document.querySelector('#volume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#fullVolume').value = e.target.value }; document.querySelector('#fullVolume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#volume').value = e.target.value }; audioDecks.forEach(deck => { deck.volume = .8; deck.playbackRate = window.MusikoAppearance.value.playbackRate; deck.loop = repeat }); document.querySelector('#playbackRate').value = String(audio.playbackRate); document.querySelector('#playbackRate').onchange = e => { const rate = Number(e.target.value); audioDecks.forEach(deck => deck.playbackRate = rate); window.MusikoAppearance.value.playbackRate = rate; window.MusikoAppearance.save(); toast('Playback speed ' + rate + '×') }; document.querySelector('#crossfadeDuration').value = String(window.MusikoAppearance.value.crossfadeSeconds); document.querySelector('#crossfadeDuration').onchange = e => { window.MusikoAppearance.value.crossfadeSeconds = Number(e.target.value); window.MusikoAppearance.save(); toast(window.MusikoAppearance.value.crossfadeSeconds ? 'Crossfade set to ' + e.target.value + ' seconds' : 'Crossfade off') }; document.querySelector('#gaplessPlayback').checked = window.MusikoAppearance.value.gapless; document.querySelector('#glassEffect').checked = window.MusikoAppearance.value.glassy; document.querySelector('#searchAnimation').checked = window.MusikoAppearance.value.searchAnimation; document.querySelector('#fullBgAnimation').checked = window.MusikoAppearance.value.fullBgAnimation; document.querySelector('#heroBgAnimation').checked = window.MusikoAppearance.value.heroBgAnimation; document.querySelector('#classicHero').checked = window.MusikoAppearance.value.classicHero; document.querySelector('#adaptiveHeroAllColors').checked = window.MusikoAppearance.value.adaptiveHeroAllColors; document.querySelector('#largerMobileControls').checked = window.MusikoAppearance.value.largerMobileControls; document.querySelector('#trimSilence').checked = window.MusikoAppearance.value.trimSilence; document.querySelector('#lowEndMode').checked = window.MusikoAppearance.value.lowEnd; document.querySelector('#crossfadeDuration').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#gaplessPlayback').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#lowEndMode').onchange = e => { const settings = window.MusikoAppearance; settings.value.lowEnd = e.target.checked; document.querySelector('#crossfadeDuration').disabled = e.target.checked; document.querySelector('#gaplessPlayback').disabled = e.target.checked; if (e.target.checked) { if (isCrossfading) cancelCrossfade(); audioDecks.forEach(deck => { if (deck !== audio) { deck.pause(); deck.preload = 'none' } }); preloadedTrackIndex = -1 } else prepareNextTrack(); saveAppearance(); toast(e.target.checked ? 'Ultra low-end mode on' : 'Ultra low-end mode off') }; document.querySelector('#trimSilence').onchange = e => { window.MusikoAppearance.value.trimSilence = e.target.checked; window.MusikoAppearance.save(); silentSince = 0; if (e.target.checked) startSilenceMonitor(); else { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } toast(e.target.checked ? 'Silence skipping on' : 'Silence skipping off') }; document.querySelector('#largerMobileControls').onchange = e => { window.MusikoAppearance.value.largerMobileControls = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Larger mobile player buttons on' : 'Larger mobile player buttons off') }; document.querySelector('#fullBgAnimation').onchange = e => { window.MusikoAppearance.value.fullBgAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Fullscreen background animation on' : 'Fullscreen background animation off') }; document.querySelector('#heroBgAnimation').onchange = e => { window.MusikoAppearance.value.heroBgAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Hero card animation on' : 'Hero card animation off') }; document.querySelector('#classicHero').onchange = e => { window.MusikoAppearance.value.classicHero = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Classic hero card on' : 'Classic hero card off') }; document.querySelector('#adaptiveHeroAllColors').onchange = e => { window.MusikoAppearance.value.adaptiveHeroAllColors = e.target.checked; saveAppearance() }; document.querySelector('#searchAnimation').onchange = e => { window.MusikoAppearance.value.searchAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Search animation on' : 'Search animation off') }; document.querySelector('#glassEffect').onchange = e => { window.MusikoAppearance.value.glassy = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Glass effect on' : 'Glass effect off') }; document.querySelector('#gaplessPlayback').onchange = e => { window.MusikoAppearance.value.gapless = e.target.checked; window.MusikoAppearance.save(); preloadedTrackIndex = -1; prepareNextTrack(); toast(e.target.checked ? 'Gapless playback on' : 'Gapless playback off') }; document.querySelector('#sleepTimerSelect').onchange = e => setSleepTimer(e.target.value);
@@ -10103,8 +10066,43 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     audioDecks.forEach(bindAudioDeck); audioDecks.forEach(deck => { deck.setAttribute('playsinline', ''); deck.addEventListener('error', () => { if (deck !== audio || current < 0 || !audio.getAttribute('src')) return; if (!reloadCurrentTrack()) toast('This song could not be loaded') }) });
     document.querySelector('#seek').onclick = e => { if (audio.duration) { const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration } };
     document.querySelector('#fullSeek').onclick = e => { if (audio.duration) { const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration } };
-    function closeFull() { document.querySelector('#fullscreen').classList.remove('open'); if (document.fullscreenElement) document.exitFullscreen().catch(() => { }) }
-    document.querySelector('#openFullscreen').onclick = () => { if (current < 0) { toast('Choose a track first'); return } document.querySelector('#fullscreen').classList.add('open'); syncFull(tracks[current]); setFullLyrics(fullLyricsPref, false); document.documentElement.requestFullscreen?.().catch(() => { }) }; document.querySelector('#closeFullscreen').onclick = closeFull; document.querySelector('#fullPlay').onclick = toggle; document.querySelector('#fullShuffle').onclick = () => document.querySelector('#shuffle').click(); document.querySelector('#fullRepeat').onclick = () => document.querySelector('#repeat').click(); document.querySelector('#fullPrev').onclick = () => document.querySelector('#prev').click(); document.querySelector('#fullNext').onclick = () => document.querySelector('#next').click(); document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) document.querySelector('#fullscreen').classList.remove('open') });
+    const fullPlayer = document.querySelector('#fullscreen');
+    const fullToggle = document.querySelector('#openFullscreen');
+    const fullClose = document.querySelector('#closeFullscreen');
+    const fullTogglePath = fullToggle.querySelector('path');
+    const enterFullPath = fullTogglePath.getAttribute('d');
+    const exitFullPath = fullClose.querySelector('path').getAttribute('d');
+    function syncFullToggle() {
+      const active = document.fullscreenElement || fullPlayer.classList.contains('open');
+      fullToggle.title = active ? 'Exit full screen' : 'Full screen';
+      fullToggle.setAttribute('aria-label', fullToggle.title);
+      fullTogglePath.setAttribute('d', active ? exitFullPath : enterFullPath);
+    }
+    function closeFull() {
+      fullPlayer.classList.remove('open');
+      syncFullToggle();
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => { });
+    }
+    fullToggle.onclick = () => {
+      if (document.fullscreenElement || fullPlayer.classList.contains('open')) {
+        closeFull();
+        return;
+      }
+      if (current < 0) { toast('Choose a track first'); return }
+      if (!document.querySelector('#lyricsPanel.open.expanded')) {
+        fullPlayer.classList.add('open');
+        syncFull(tracks[current]);
+        setFullLyrics(fullLyricsPref, false);
+        syncFullToggle();
+      }
+      document.documentElement.requestFullscreen?.().catch(() => { });
+    };
+    fullClose.onclick = closeFull;
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) fullPlayer.classList.remove('open');
+      syncFullToggle();
+    });
+    document.querySelector('#fullPlay').onclick = toggle; document.querySelector('#fullShuffle').onclick = () => document.querySelector('#shuffle').click(); document.querySelector('#fullRepeat').onclick = () => document.querySelector('#repeat').click(); document.querySelector('#fullPrev').onclick = () => document.querySelector('#prev').click(); document.querySelector('#fullNext').onclick = () => document.querySelector('#next').click();
     document.querySelectorAll('.nav button[data-view]').forEach(b => b.onclick = () => selectView(b.dataset.view));
     document.addEventListener('keydown', e => { if (e.code === 'Escape' && document.querySelector('#metadataDialog').classList.contains('open')) { closeTrackMetadata(); return } if (e.code === 'Escape' && document.querySelector('#playlistDialog').classList.contains('open')) { closePlaylistDialog(); return } if (e.code === 'Escape' && document.querySelector('#playlistPicker').classList.contains('open')) { closePlaylistPicker(); return } if (e.code === 'Escape' && document.querySelector('#queuePanel').classList.contains('open')) { closeQueue(); return } if (e.code === 'Escape' && document.querySelector('#sleepQuickPanel').classList.contains('open')) { closeSleepQuickMenu(); return } if (e.code === 'Escape' && document.querySelector('#settingsPanel').classList.contains('open')) { closeSettings(); return } if (e.code === 'Escape' && document.querySelector('#lyricsPanel').classList.contains('open')) { closeLyrics(); return } if (e.code === 'Escape' && document.querySelector('#fullscreen').classList.contains('open')) { closeFull(); return } if (e.target.closest('#sleepQuickPanel,#settingsPanel,#playlistDialog,#playlistPicker,#metadataDialog')) return; if (e.target.matches('input')) { if (e.code === 'Escape') e.target.blur(); return } if (e.key === '/' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); document.querySelector('#search').focus(); return } if (e.code === 'Space') { e.preventDefault(); toggle() } if (e.code === 'ArrowRight' && audio.duration) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); if (e.code === 'ArrowLeft') audio.currentTime = Math.max(0, audio.currentTime - 5) });
     document.addEventListener('dragover', e => e.preventDefault()); document.addEventListener('drop', e => { e.preventDefault(); if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files) }); renderMobileNav();
@@ -11436,16 +11434,6 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       border-color: rgba(255, 255, 255, .4);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 6px 22px rgba(40, 30, 60, .1)
     }
-  </style>
-  <style id="lyrics-karaoke-btn">
-    .lyrics-karaoke { height: 34px; padding: 0 14px 0 11px; margin-right: 8px; border: 1px solid #ffffff1c; border-radius: 17px; background: #ffffff0b; color: inherit; font: 600 12px 'DM Sans', system-ui, sans-serif; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 7px; transition: background .2s ease, color .2s ease, border-color .2s ease }
-    .lyrics-karaoke:hover { background: #ffffff1f }
-    .lyrics-karaoke svg { display: block; flex: none }
-    .lyrics-karaoke.on, html body .lyrics-panel.expanded .lyrics-karaoke.on { background: var(--accent); color: var(--accent-ink, #111); border-color: transparent }
-    html body .lyrics-panel.expanded .lyrics-karaoke:not(.on) { background: #ffffff14; border-color: transparent; color: #fff; opacity: .9 }
-    html body .lyrics-panel.expanded .lyrics-karaoke:not(.on):hover { background: #ffffff26; opacity: 1 }
-    html[data-theme="light"] .lyrics-panel:not(.expanded) .lyrics-karaoke:not(.on) { border-color: #28202a20; background: #ffffffa8; color: #5e5762 }
-    @media (max-width: 480px) { .lyrics-karaoke span { display: none } .lyrics-karaoke { padding: 0; width: 34px; justify-content: center } }
   </style>
   <style id="musiko-sleep-glass">
     /* ===== Sleep timer panel: same glass as the mini player ===== */
