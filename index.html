@@ -11,6 +11,13 @@
   <link rel="apple-touch-icon" href="./icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Musiko By Ryo</title>
+  <script>
+    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
+        matchMedia('(hover: none) and (pointer: coarse)').matches) {
+      document.documentElement.dataset.mobileEfficient = "";
+    }
+  </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
 
@@ -9335,6 +9342,7 @@
     const audioMime = (name, type) => { if (type && /^audio\//i.test(type)) return type; const ext = String(name || '').split('.').pop().toLowerCase(); return MUSIKO_MIME[ext] || type || 'audio/mpeg' };
     const fixAudioFile = f => f.type && /^audio\//i.test(f.type) ? f : new File([f], f.name, { type: audioMime(f.name, f.type), lastModified: f.lastModified });
     const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const mobileDevice = document.documentElement.hasAttribute("data-mobile-efficient");
     let localAudioController;
     function storedAudioUrl(track) {
       const url = new URL('./__musiko_audio', document.baseURI);
@@ -9376,7 +9384,7 @@
     window.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && ['+', '=', '-', '0'].includes(e.key)) e.preventDefault();
     }, { capture: true });
-     const audioDecks = [audio, new Audio()]; audioDecks[1].preload = window.MusikoAppearance.value.lowEnd ? 'none' : 'auto'; let masterVolume = .8, crossfadeTimer = 0, isCrossfading = false, preloadedTrackIndex = -1; const deckFactors = new WeakMap(), silenceAnalyzers = new WeakMap(); let silenceAudioContext = null, silenceCheckTimer = 0, silentSince = 0, lastSilenceSeek = 0; audioDecks.forEach(deck => deckFactors.set(deck, 1)); const files = document.querySelector('#files'), list = document.querySelector('#tracklist'); let tracks = [], playlists = [], queue = [], current = -1, shuffle = false, repeat = false, activeView = 'Home', activePlaylistId = null, activeAlbumKey = null, searchTerm = '', sleepTimeoutId = 0, sleepIntervalId = 0, sleepUntil = 0, sleepAtTrackEnd = false, sleepPauseTriggered = false, sleepTimerChoice = 'off', sleepQuickOpener = null, editingPlaylistId = null, pendingPlaylistTrack = -1, editingTrackId = null; const listeningStats = (() => { try { const saved = JSON.parse(localStorage.getItem('musiko-listening-stats') || '{}'); return { totalSeconds: Number(saved.totalSeconds) || 0, tracks: saved.tracks && typeof saved.tracks === 'object' ? saved.tracks : {} } } catch { return { totalSeconds: 0, tracks: {} } } })(); let lastListenPosition = null, lastListenTrackId = null, lastStatsSavedAt = 0, lastStatsRenderedAt = 0;
+     const audioDecks = [audio, new Audio()]; audioDecks[1].preload = mobileDevice || window.MusikoAppearance.value.lowEnd ? 'none' : 'auto'; let masterVolume = .8, crossfadeTimer = 0, isCrossfading = false, preloadedTrackIndex = -1; const deckFactors = new WeakMap(), silenceAnalyzers = new WeakMap(); let silenceAudioContext = null, silenceCheckTimer = 0, silentSince = 0, lastSilenceSeek = 0; audioDecks.forEach(deck => deckFactors.set(deck, 1)); const files = document.querySelector('#files'), list = document.querySelector('#tracklist'); let tracks = [], playlists = [], queue = [], current = -1, shuffle = false, repeat = false, activeView = 'Home', activePlaylistId = null, activeAlbumKey = null, searchTerm = '', sleepTimeoutId = 0, sleepIntervalId = 0, sleepUntil = 0, sleepAtTrackEnd = false, sleepPauseTriggered = false, sleepTimerChoice = 'off', sleepQuickOpener = null, editingPlaylistId = null, pendingPlaylistTrack = -1, editingTrackId = null; const listeningStats = (() => { try { const saved = JSON.parse(localStorage.getItem('musiko-listening-stats') || '{}'); return { totalSeconds: Number(saved.totalSeconds) || 0, tracks: saved.tracks && typeof saved.tracks === 'object' ? saved.tracks : {} } } catch { return { totalSeconds: 0, tracks: {} } } })(); let lastListenPosition = null, lastListenTrackId = null, lastStatsSavedAt = 0, lastStatsRenderedAt = 0;
     const dbReady = new Promise((resolve, reject) => { const req = indexedDB.open('MusikoLibrary', 1); req.onupgradeneeded = () => { const db = req.result; if (!db.objectStoreNames.contains('tracks')) db.createObjectStore('tracks', { keyPath: 'id' }); if (!db.objectStoreNames.contains('playlists')) db.createObjectStore('playlists', { keyPath: 'id' }) }; req.onsuccess = () => resolve(req.result); req.onerror = () => reject(req.error) }); dbReady.catch(() => { });
     let lastAddedAt = 0;
     let persistAsked = false; function askPersist() { if (persistAsked) return; persistAsked = true; try { const r = navigator.storage && navigator.storage.persist && navigator.storage.persist(); if (r && r.catch) r.catch(() => { }) } catch { } }
@@ -9460,7 +9468,8 @@
     const fmt = s => { if (!Number.isFinite(s)) return '0:00'; return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') };
     const playbackClocks = [document.querySelector('#elapsed'), document.querySelector('#fullElapsed')];
     const playbackSliders = [document.querySelector('#seek'), document.querySelector('#fullSeek')];
-    let playbackJumpTimer;
+    const progressTargets = [...playbackSliders, document.querySelector('.hero')];
+    let playbackJumpTimer, renderedProgress = '';
     function setPlaybackJump(active) {
       const root = document.documentElement;
       clearTimeout(playbackJumpTimer);
@@ -9468,14 +9477,20 @@
       if (active) playbackJumpTimer = setTimeout(() => root.classList.remove('playback-jump'), 250);
     }
     function renderPlaybackProgress(position = audio.currentTime, duration = audio.duration) {
+      if (document.hidden) return;
       const total = current >= 0 && Number.isFinite(duration) && duration > 0 ? duration : 0;
       const elapsed = current >= 0 && Number.isFinite(position) ? Math.max(0, position) : 0;
       const time = total ? Math.min(elapsed, total) : elapsed;
-      document.documentElement.style.setProperty('--playback-progress', (total ? time / total * 100 : 0) + '%');
-      for (const clock of playbackClocks) clock.textContent = fmt(time);
+      const progress = (total ? (time / total * 100).toFixed(3) : '0') + '%';
+      if (progress !== renderedProgress) {
+        renderedProgress = progress;
+        for (const target of progressTargets) target.style.setProperty('--playback-progress', progress);
+      }
+      const text = fmt(time), max = String(Math.round(total)), value = String(Math.round(total ? time : 0));
+      for (const clock of playbackClocks) if (clock.textContent !== text) clock.textContent = text;
       for (const slider of playbackSliders) {
-        slider.setAttribute('aria-valuemax', String(Math.round(total)));
-        slider.setAttribute('aria-valuenow', String(Math.round(total ? time : 0)));
+        if (slider.getAttribute('aria-valuemax') !== max) slider.setAttribute('aria-valuemax', max);
+        if (slider.getAttribute('aria-valuenow') !== value) slider.setAttribute('aria-valuenow', value);
       }
     }
     function toast(s) { let t = document.querySelector('#toast'); t.textContent = s; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200) }
@@ -10135,9 +10150,35 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     function applyMasterVolume() { if (isIOSDevice && masterVolume < 1) ensureVolumeGraph(); audioDecks.forEach(deck => applyDeckVolume(deck, deckFactors.get(deck) ?? 1)) }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && silenceAudioContext && silenceAudioContext.state === 'suspended' && !audio.paused) silenceAudioContext.resume().catch(() => { }) });
     function useSingleAudioDeck() { return isIOSDevice || window.MusikoAppearance.value.lowEnd; }
-    function prepareNextTrack() { if (useSingleAudioDeck() || !window.MusikoAppearance.value.gapless || isCrossfading) return; const i = peekNextTrackIndex(), deck = otherDeck(), t = tracks[i]; if (i < 0 || !t) { preloadedTrackIndex = -1; return } const src = trackAudioUrl(t); if (deck.src !== src) { deck.pause(); setTrackSource(deck, src); deck.preload = 'auto'; deck.load() } deck.preload = 'auto'; deck.playbackRate = audio.playbackRate; deck.loop = repeat; preloadedTrackIndex = i; primeStandbyDeck(deck) }
+    function prepareNextTrack() {
+      const settings = window.MusikoAppearance.value;
+      if (useSingleAudioDeck() || !settings.gapless || isCrossfading) return;
+      if (mobileDevice && !canPreloadOnMobile()) return;
+      const i = peekNextTrackIndex(), deck = otherDeck(), track = tracks[i];
+      if (!track) { preloadedTrackIndex = -1; return }
+      const src = trackAudioUrl(track);
+      if (deck.src !== src) {
+        deck.pause();
+        setTrackSource(deck, src);
+        deck.preload = 'auto';
+        deck.load();
+      }
+      deck.preload = 'auto';
+      deck.playbackRate = audio.playbackRate;
+      deck.loop = repeat;
+      preloadedTrackIndex = i;
+      if (!mobileDevice) primeStandbyDeck(deck);
+    }
+
+    let lastMobilePreloadCheck = -Infinity;
+    function canPreloadOnMobile() {
+      if (document.hidden || audio.paused || repeat || sleepAtTrackEnd || audio.readyState < 2 || !Number.isFinite(audio.duration)) return false;
+      const remaining = (audio.duration - audio.currentTime) / audio.playbackRate;
+      return remaining <= Math.max(8, Number(window.MusikoAppearance.value.crossfadeSeconds) + 3);
+    }
+
     function cancelCrossfade() { clearInterval(crossfadeTimer); crossfadeTimer = 0; if (isCrossfading) { const old = otherDeck(); old.pause(); applyDeckVolume(old, 0); isCrossfading = false } applyDeckVolume(audio, 1) }
-    function showTrack(i, countPlay = true) { if (countPlay && !skipHistoryPush && current >= 0 && current !== i && tracks[current]) { playHistory.push(tracks[current].id); if (playHistory.length > 100) playHistory.shift() } skipHistoryPush = false; starterTrackCued = !countPlay; if (countPlay) recordPlayStart(tracks[i]); if (current >= 0 && current !== i) setPlaybackJump(true); current = i; activeLyricLine = -1; renderPlaybackProgress(); document.querySelector('#duration').textContent = fmt(tracks[i].duration); document.querySelector('#fullDuration').textContent = fmt(tracks[i].duration); if (audio.readyState >= 1 && Number.isFinite(audio.duration)) { tracks[i].duration = audio.duration; saveTrack(tracks[i]); if (countPlay) lookupLyrics(tracks[i]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration) } document.querySelector('#nowTitle').textContent = tracks[i].name; document.querySelector('#nowArtist').textContent = tracks[i].artist; document.querySelector('#nowFavorite').classList.toggle('favorite-on', tracks[i].favorite); document.querySelector('#nowFavorite').textContent = tracks[i].favorite ? '♥' : '♡'; setCover(document.querySelector('#nowCover'), tracks[i]); syncHero(tracks[i]); syncFull(tracks[i]); if (lyricsVisible()) renderLyrics(); render(); renderQueue(); document.dispatchEvent(new Event('musiko:track')) }
+    function showTrack(i, countPlay = true) { if (countPlay && !skipHistoryPush && current >= 0 && current !== i && tracks[current]) { playHistory.push(tracks[current].id); if (playHistory.length > 100) playHistory.shift() } skipHistoryPush = false; starterTrackCued = !countPlay; if (countPlay) recordPlayStart(tracks[i]); if (current >= 0 && current !== i) setPlaybackJump(true); current = i; lastMobilePreloadCheck = -Infinity; activeLyricLine = -1; renderPlaybackProgress(); document.querySelector('#duration').textContent = fmt(tracks[i].duration); document.querySelector('#fullDuration').textContent = fmt(tracks[i].duration); if (audio.readyState >= 1 && Number.isFinite(audio.duration)) { tracks[i].duration = audio.duration; saveTrack(tracks[i]); if (countPlay) lookupLyrics(tracks[i]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration) } document.querySelector('#nowTitle').textContent = tracks[i].name; document.querySelector('#nowArtist').textContent = tracks[i].artist; document.querySelector('#nowFavorite').classList.toggle('favorite-on', tracks[i].favorite); document.querySelector('#nowFavorite').textContent = tracks[i].favorite ? '♥' : '♡'; setCover(document.querySelector('#nowCover'), tracks[i]); syncHero(tracks[i]); syncFull(tracks[i]); if (lyricsVisible()) renderLyrics(); render(); renderQueue(); document.dispatchEvent(new Event('musiko:track')) }
     function playNext(manual = false) {
       if (isCrossfading) cancelCrossfade();
       const i = takeNextTrackIndex();
@@ -10171,7 +10212,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
        Unlock the standby deck on the first user gesture, and force it to buffer by briefly playing it muted. */
     const silentWavUrl = (() => { try { const n = 800, b = new Uint8Array(44 + n * 2), d = new DataView(b.buffer), w = (o, t) => { for (let k = 0; k < t.length; k++) b[o + k] = t.charCodeAt(k) }; w(0, 'RIFF'); d.setUint32(4, 36 + n * 2, true); w(8, 'WAVEfmt '); d.setUint32(16, 16, true); d.setUint16(20, 1, true); d.setUint16(22, 1, true); d.setUint32(24, 8000, true); d.setUint32(28, 16000, true); d.setUint16(32, 2, true); d.setUint16(34, 16, true); w(36, 'data'); d.setUint32(40, n * 2, true); return URL.createObjectURL(new Blob([b], { type: 'audio/wav' })) } catch { return '' } })();
     const unlockedDecks = new WeakSet();
-    function unlockDecks() { if (useSingleAudioDeck()) return; for (const deck of audioDecks) { if (deck === audio) { unlockedDecks.add(deck); continue } if (unlockedDecks.has(deck)) continue; if (deck.getAttribute('src') || !silentWavUrl) continue; unlockedDecks.add(deck); deck.muted = true; deck.src = silentWavUrl; const p = deck.play(); const done = () => { if (deck.src === silentWavUrl) { deck.pause(); deck.removeAttribute('src'); deck.load() } deck.muted = false }; if (p && p.then) p.then(done, () => { unlockedDecks.delete(deck); deck.muted = false; if (deck.src === silentWavUrl) { deck.removeAttribute('src'); deck.load() } }); else done() } }
+    function unlockDecks() { if (mobileDevice || useSingleAudioDeck()) return; for (const deck of audioDecks) { if (deck === audio) { unlockedDecks.add(deck); continue } if (unlockedDecks.has(deck)) continue; if (deck.getAttribute('src') || !silentWavUrl) continue; unlockedDecks.add(deck); deck.muted = true; deck.src = silentWavUrl; const p = deck.play(); const done = () => { if (deck.src === silentWavUrl) { deck.pause(); deck.removeAttribute('src'); deck.load() } deck.muted = false }; if (p && p.then) p.then(done, () => { unlockedDecks.delete(deck); deck.muted = false; if (deck.src === silentWavUrl) { deck.removeAttribute('src'); deck.load() } }); else done() } }
     ['touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, unlockDecks, { capture: true, passive: true }));
     function primeStandbyDeck(deck) { if (deck === audio || deck._primedSrc === deck.src || deck.readyState >= 3) { deck._primedSrc = deck.src; return } deck._primedSrc = deck.src; const src = deck.src, main = audio, wasPlaying = !main.paused; deck.muted = true; const p = deck.play(); const done = () => { if (wasPlaying && main === audio && audio.paused && !audio.ended) audio.play().catch(() => { }); if (deck !== audio && deck.src === src) { deck.pause(); try { deck.currentTime = 0 } catch { } } deck.muted = false }; if (p && p.then) p.then(done, () => { deck.muted = false }); else done() }
     function startCrossfade(i) {
@@ -10315,14 +10356,36 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     function openLyrics() { document.querySelector('#lyricsPanel').classList.add('open'); renderLyrics() } function closeLyrics() { document.querySelector('#lyricsPanel').classList.remove('open') }; document.querySelector('#openLyrics').onclick = () => document.querySelector('#lyricsPanel').classList.contains('open') ? closeLyrics() : openLyrics(); document.querySelector('#fullLyrics').onclick = () => setFullLyrics(!document.querySelector('#fullscreen').classList.contains('lyrics-on')); document.querySelector('#closeLyrics').onclick = closeLyrics; document.querySelector('#lyricsPanel').onclick = e => { if (e.target.id === 'lyricsPanel') closeLyrics() };
     document.querySelector('#next').onclick = () => playNext(true); document.querySelector('#prev').onclick = () => { if (audio.currentTime > 3) { audio.currentTime = 0; return } if (shuffle) { while (playHistory.length) { const id = playHistory.pop(), idx = tracks.findIndex(t => t.id === id); if (idx >= 0 && idx !== current) { skipHistoryPush = true; playTrack(idx); return } } } const shown = visibleTracks(); if (shown.length) { const at = shown.findIndex(x => x.i === current); playTrack(shown[(at - 1 + shown.length) % shown.length].i) } };
     document.querySelector('#shuffle').onclick = () => { shuffle = !shuffle; preloadedTrackIndex = -1; prepareNextTrack(); syncPlaybackModeButtons(); toast(shuffle ? 'Shuffle on' : 'Shuffle off') }; document.querySelector('#repeat').onclick = () => { repeat = !repeat; audioDecks.forEach(deck => deck.loop = repeat); syncPlaybackModeButtons(); toast(repeat ? 'Repeat on' : 'Repeat off') }; syncPlaybackModeButtons(); document.querySelector('#volume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#fullVolume').value = e.target.value }; document.querySelector('#fullVolume').oninput = e => { masterVolume = +e.target.value; applyMasterVolume(); document.querySelector('#volume').value = e.target.value }; audioDecks.forEach(deck => { deck.volume = .8; deck.playbackRate = window.MusikoAppearance.value.playbackRate; deck.loop = repeat }); document.querySelector('#playbackRate').value = String(audio.playbackRate); document.querySelector('#playbackRate').onchange = e => { const rate = Number(e.target.value); audioDecks.forEach(deck => deck.playbackRate = rate); window.MusikoAppearance.value.playbackRate = rate; window.MusikoAppearance.save(); toast('Playback speed ' + rate + '×') }; document.querySelector('#crossfadeDuration').value = String(window.MusikoAppearance.value.crossfadeSeconds); document.querySelector('#crossfadeDuration').onchange = e => { window.MusikoAppearance.value.crossfadeSeconds = Number(e.target.value); window.MusikoAppearance.save(); toast(window.MusikoAppearance.value.crossfadeSeconds ? 'Crossfade set to ' + e.target.value + ' seconds' : 'Crossfade off') }; document.querySelector('#gaplessPlayback').checked = window.MusikoAppearance.value.gapless; document.querySelector('#glassEffect').checked = window.MusikoAppearance.value.glassy; document.querySelector('#searchAnimation').checked = window.MusikoAppearance.value.searchAnimation; document.querySelector('#fullBgAnimation').checked = window.MusikoAppearance.value.fullBgAnimation; document.querySelector('#heroBgAnimation').checked = window.MusikoAppearance.value.heroBgAnimation; document.querySelector('#classicHero').checked = window.MusikoAppearance.value.classicHero; document.querySelector('#adaptiveHeroAllColors').checked = window.MusikoAppearance.value.adaptiveHeroAllColors; document.querySelector('#largerMobileControls').checked = window.MusikoAppearance.value.largerMobileControls; document.querySelector('#trimSilence').checked = window.MusikoAppearance.value.trimSilence; document.querySelector('#lowEndMode').checked = window.MusikoAppearance.value.lowEnd; document.querySelector('#crossfadeDuration').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#gaplessPlayback').disabled = window.MusikoAppearance.value.lowEnd; document.querySelector('#lowEndMode').onchange = e => { const settings = window.MusikoAppearance; settings.value.lowEnd = e.target.checked; document.querySelector('#crossfadeDuration').disabled = e.target.checked; document.querySelector('#gaplessPlayback').disabled = e.target.checked; if (e.target.checked) { if (isCrossfading) cancelCrossfade(); audioDecks.forEach(deck => { if (deck !== audio) { deck.pause(); deck.preload = 'none' } }); preloadedTrackIndex = -1 } else prepareNextTrack(); saveAppearance(); toast(e.target.checked ? 'Ultra low-end mode on' : 'Ultra low-end mode off') }; document.querySelector('#trimSilence').onchange = e => { window.MusikoAppearance.value.trimSilence = e.target.checked; window.MusikoAppearance.save(); silentSince = 0; if (e.target.checked) startSilenceMonitor(); else { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } toast(e.target.checked ? 'Silence skipping on' : 'Silence skipping off') }; document.querySelector('#largerMobileControls').onchange = e => { window.MusikoAppearance.value.largerMobileControls = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Larger mobile player buttons on' : 'Larger mobile player buttons off') }; document.querySelector('#fullBgAnimation').onchange = e => { window.MusikoAppearance.value.fullBgAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Fullscreen background animation on' : 'Fullscreen background animation off') }; document.querySelector('#heroBgAnimation').onchange = e => { window.MusikoAppearance.value.heroBgAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Hero card animation on' : 'Hero card animation off') }; document.querySelector('#classicHero').onchange = e => { window.MusikoAppearance.value.classicHero = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Classic hero card on' : 'Classic hero card off') }; document.querySelector('#adaptiveHeroAllColors').onchange = e => { window.MusikoAppearance.value.adaptiveHeroAllColors = e.target.checked; saveAppearance() }; document.querySelector('#searchAnimation').onchange = e => { window.MusikoAppearance.value.searchAnimation = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Search animation on' : 'Search animation off') }; document.querySelector('#glassEffect').onchange = e => { window.MusikoAppearance.value.glassy = e.target.checked; saveAppearance(); toast(e.target.checked ? 'Glass effect on' : 'Glass effect off') }; document.querySelector('#gaplessPlayback').onchange = e => { window.MusikoAppearance.value.gapless = e.target.checked; window.MusikoAppearance.save(); preloadedTrackIndex = -1; prepareNextTrack(); toast(e.target.checked ? 'Gapless playback on' : 'Gapless playback off') }; document.querySelector('#sleepTimerSelect').onchange = e => setSleepTimer(e.target.value);
-    function startSilenceMonitor() { if (!window.MusikoAppearance.value.trimSilence || silenceCheckTimer) return; if (!ensureVolumeGraph()) return; try { for (const deck of audioDecks) { if (!silenceAnalyzers.has(deck)) { const analyser = silenceAudioContext.createAnalyser(); analyser.fftSize = 1024; deckSources.get(deck).connect(analyser); silenceAnalyzers.set(deck, { analyser, data: new Uint8Array(analyser.fftSize) }) } } silenceAudioContext.resume().catch(() => { }); silenceCheckTimer = setInterval(() => { if (!window.MusikoAppearance.value.trimSilence || silenceAudioContext.state !== 'running' || audio.paused || audio.seeking || audio.readyState < 3 || !Number.isFinite(audio.duration) || audio.duration <= 0 || isCrossfading) { silentSince = 0; return } const meter = silenceAnalyzers.get(audio); if (!meter) return; meter.analyser.getByteTimeDomainData(meter.data); let sum = 0; for (const sample of meter.data) { const value = (sample - 128) / 128; sum += value * value } const rms = Math.sqrt(sum / meter.data.length); if (rms < .006 && (audio.currentTime < 10 || audio.duration - audio.currentTime < 25)) { if (!silentSince) silentSince = performance.now(); if (performance.now() - silentSince > 1100 && performance.now() - lastSilenceSeek > 500) { audio.currentTime = Math.min(audio.duration - .05, audio.currentTime + 1.25); lastSilenceSeek = performance.now() } } else silentSince = 0 }, 250) } catch { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } } function updatePlayIcons() { const path = audio.paused ? '<path d="m8 5 12 7-12 7z"/>' : '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'; document.querySelector('#playIcon').innerHTML = path; document.querySelector('#fullPlayIcon').innerHTML = path; const playLabel = audio.paused ? 'Play' : 'Pause'; for (const id of ['#play', '#fullPlay']) { const b = document.querySelector(id); if (!b) continue; b.removeAttribute('title'); b.dataset.tip = playLabel + ' · Space'; b.setAttribute('aria-label', playLabel) } }
+    function startSilenceMonitor() { if (document.hidden || audio.paused || !window.MusikoAppearance.value.trimSilence || silenceCheckTimer) return; if (!ensureVolumeGraph()) return; try { for (const deck of audioDecks) { if (!silenceAnalyzers.has(deck)) { const analyser = silenceAudioContext.createAnalyser(); analyser.fftSize = 1024; deckSources.get(deck).connect(analyser); silenceAnalyzers.set(deck, { analyser, data: new Uint8Array(analyser.fftSize) }) } } silenceAudioContext.resume().catch(() => { }); silenceCheckTimer = setInterval(() => { if (!window.MusikoAppearance.value.trimSilence || silenceAudioContext.state !== 'running' || audio.paused || audio.seeking || audio.readyState < 3 || !Number.isFinite(audio.duration) || audio.duration <= 0 || isCrossfading) { silentSince = 0; return } const meter = silenceAnalyzers.get(audio); if (!meter) return; meter.analyser.getByteTimeDomainData(meter.data); let sum = 0; for (const sample of meter.data) { const value = (sample - 128) / 128; sum += value * value } const rms = Math.sqrt(sum / meter.data.length); if (rms < .006 && (audio.currentTime < 10 || audio.duration - audio.currentTime < 25)) { if (!silentSince) silentSince = performance.now(); if (performance.now() - silentSince > 1100 && performance.now() - lastSilenceSeek > 500) { audio.currentTime = Math.min(audio.duration - .05, audio.currentTime + 1.25); lastSilenceSeek = performance.now() } } else silentSince = 0 }, 250) } catch { clearInterval(silenceCheckTimer); silenceCheckTimer = 0 } } function updatePlayIcons() { const path = audio.paused ? '<path d="m8 5 12 7-12 7z"/>' : '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'; document.querySelector('#playIcon').innerHTML = path; document.querySelector('#fullPlayIcon').innerHTML = path; const playLabel = audio.paused ? 'Play' : 'Pause'; for (const id of ['#play', '#fullPlay']) { const b = document.querySelector(id); if (!b) continue; b.removeAttribute('title'); b.dataset.tip = playLabel + ' · Space'; b.setAttribute('aria-label', playLabel) } }
     function syncPlaybackModeButtons() { [['#shuffle', '#fullShuffle', shuffle], ['#repeat', '#fullRepeat', repeat]].forEach(([main, full, active]) => [document.querySelector(main), document.querySelector(full)].forEach(button => { button.style.color = active ? 'var(--accent)' : ''; button.setAttribute('aria-pressed', String(active)) })) } function bindAudioDeck(deck) { deck.onplay = () => {
       if (deck !== audio) return;
       if (showFirstVisitWelcome && tracks[current]) {
         showFirstVisitWelcome = false;
         syncHero(tracks[current]);
       }
-      if (starterTrackCued) { starterTrackCued = false; recordPlayStart(tracks[current]); lookupLyrics(tracks[current]) } if (window.MusikoAppearance.value.trimSilence) startSilenceMonitor(); sleepPauseTriggered = false; updatePlayIcons(); render() }; deck.onpause = () => { if (deck !== audio) return; saveListeningStats(true); if (isCrossfading) cancelCrossfade(); updatePlayIcons(); render() }; deck.ontimeupdate = () => { if (deck !== audio) return; recordListenTime(deck); if (window.musikoScrubbing) return; renderPlaybackProgress(); updateLyricHighlight(); if (sleepAtTrackEnd && repeat && audio.duration && audio.currentTime >= audio.duration - .3) { stopForSleepTimer(); return } if (!isIOSDevice && !repeat && !sleepAtTrackEnd && !isCrossfading && !window.MusikoAppearance.value.lowEnd && window.MusikoAppearance.value.crossfadeSeconds > 0 && (audio.duration - audio.currentTime) / audio.playbackRate <= window.MusikoAppearance.value.crossfadeSeconds) playNext() }; deck.onloadedmetadata = () => { if (deck !== audio || current < 0) return; const prevDuration = tracks[current].duration; tracks[current].duration = audio.duration; if (!prevDuration || Math.abs(prevDuration - audio.duration) > .5) saveTrack(tracks[current]); if (!starterTrackCued) lookupLyrics(tracks[current]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration); render(); prepareNextTrack() }; deck.onended = () => { if (deck !== audio) return; if (silenceAudioContext && silenceAudioContext.state !== 'running') silenceAudioContext.resume().catch(() => { }); if (sleepPauseTriggered) { sleepPauseTriggered = false; return } if (sleepAtTrackEnd) { stopForSleepTimer(); return } if (!repeat && (queue.length || visibleTracks().length)) playNext() } }
+      if (starterTrackCued) { starterTrackCued = false; recordPlayStart(tracks[current]); lookupLyrics(tracks[current]) } if (window.MusikoAppearance.value.trimSilence) startSilenceMonitor(); sleepPauseTriggered = false; updatePlayIcons(); render() }; deck.onpause = () => { if (deck !== audio) return; stopSilenceMonitor(); saveListeningStats(true); if (isCrossfading) cancelCrossfade(); updatePlayIcons(); render() }; deck.ontimeupdate = () => { if (deck !== audio) return; recordListenTime(deck);
+      if (window.musikoScrubbing) return;
+      if (!document.hidden) { renderPlaybackProgress(); updateLyricHighlight() }
+      if (mobileDevice && !useSingleAudioDeck() && canPreloadOnMobile()) {
+        const now = performance.now();
+        if (now - lastMobilePreloadCheck >= 1000) {
+          lastMobilePreloadCheck = now;
+          prepareNextTrack();
+        }
+      }
+      if (sleepAtTrackEnd && repeat && audio.duration && audio.currentTime >= audio.duration - .3) { stopForSleepTimer(); return } if (!isIOSDevice && !repeat && !sleepAtTrackEnd && !isCrossfading && !window.MusikoAppearance.value.lowEnd && window.MusikoAppearance.value.crossfadeSeconds > 0 && (audio.duration - audio.currentTime) / audio.playbackRate <= window.MusikoAppearance.value.crossfadeSeconds) playNext() }; deck.onloadedmetadata = () => { if (deck !== audio || current < 0) return; const prevDuration = tracks[current].duration; tracks[current].duration = audio.duration; if (!prevDuration || Math.abs(prevDuration - audio.duration) > .5) saveTrack(tracks[current]); if (!starterTrackCued) lookupLyrics(tracks[current]); document.querySelector('#duration').textContent = fmt(audio.duration); document.querySelector('#fullDuration').textContent = fmt(audio.duration); render(); prepareNextTrack() }; deck.onended = () => { if (deck !== audio) return; if (silenceAudioContext && silenceAudioContext.state !== 'running') silenceAudioContext.resume().catch(() => { }); if (sleepPauseTriggered) { sleepPauseTriggered = false; return } if (sleepAtTrackEnd) { stopForSleepTimer(); return } if (!repeat && (queue.length || visibleTracks().length)) playNext() } }
+    function stopSilenceMonitor() {
+      clearInterval(silenceCheckTimer);
+      silenceCheckTimer = 0;
+      silentSince = 0;
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { stopSilenceMonitor(); return }
+      renderPlaybackProgress();
+      updateLyricHighlight(true);
+      startSilenceMonitor();
+      if (mobileDevice) prepareNextTrack();
+    });
     for (const event of ['loadedmetadata', 'durationchange', 'play', 'pause', 'seeking', 'seeked', 'ended', 'emptied']) {
       document.addEventListener(event, e => {
         if (e.target !== audio || window.musikoScrubbing) return;
@@ -10761,7 +10824,17 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       let lastSaved = '';
       const saveResume = () => { try { const t = tracks[current]; if (!t || !Number.isFinite(audio.currentTime)) return; const v = JSON.stringify({ id: t.id, t: Math.floor(audio.currentTime) }); if (v === lastSaved) return; lastSaved = v; localStorage.setItem(RESUME_KEY, v) } catch { } };
       const savedResume = () => { try { return JSON.parse(localStorage.getItem(RESUME_KEY) || 'null') } catch { return null } };
-      setInterval(() => { if (!audio.paused) saveResume() }, 4000);
+      let lastResumeSave = -Infinity;
+      for (const deck of audioDecks) {
+        deck.addEventListener('timeupdate', () => {
+          if (deck !== audio || deck.paused) return;
+          const now = performance.now();
+          if (now - lastResumeSave < 4000) return;
+          lastResumeSave = now;
+          saveResume();
+        });
+        deck.addEventListener('pause', () => { if (deck === audio) saveResume() });
+      }
       addEventListener('pagehide', saveResume);
       document.addEventListener('visibilitychange', () => { if (document.hidden) saveResume() });
 
@@ -11117,10 +11190,11 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
         const paused = audio.paused, d = audio.duration, p = audio.currentTime || 0;
         const label = paused ? '▶  Resume' : '❚❚  Pause'; if (heroPlay.innerHTML !== label) heroPlay.innerHTML = label;
         heroPlay.setAttribute('aria-label', paused ? 'Play' : 'Pause');
-        heroTime.textContent = Number.isFinite(d) && d > 0 ? `${fmt(p)} / ${fmt(d)}` : '';
+        const timeLabel = Number.isFinite(d) && d > 0 ? fmt(p) + ' / ' + fmt(d) : '';
+        if (heroTime.textContent !== timeLabel) heroTime.textContent = timeLabel;
         sec.classList.toggle('is-paused', paused)
       }
-      ['timeupdate', 'play', 'pause', 'loadedmetadata', 'seeked'].forEach(ev => document.addEventListener(ev, e => { if (e.target === audio) syncHeroPlaying() }, true));
+      ['timeupdate', 'play', 'pause', 'loadedmetadata', 'seeked'].forEach(ev => document.addEventListener(ev, e => { if (!document.hidden && activeView === 'Home' && e.target === audio) syncHeroPlaying() }, true));
 
       const origSync = window.syncHero;
       window.syncHero = function (t) { const out = origSync.apply(this, arguments); btn.dataset.sig = ''; hero.dataset.csig = ''; applyGreeting(); syncHeroPlaying(); return out };
@@ -11140,12 +11214,14 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       const hash = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h) };
       let lyricSig = '';
       function renderLyric() {
+        if (document.hidden) return;
         const t = current >= 0 ? tracks[current] : null;
         let line = '', next = '', prev = '', key = '';
         if (activeView === 'Home' && t) {
           const synced = t.lyricLines || [];
           if (synced.length) {
-            let at = -1; for (let i = 0; i < synced.length; i++) { if (synced[i].time <= audio.currentTime) at = i; else break }
+            const time = audio.currentTime;
+            let at = -1; for (let i = 0; i < synced.length; i++) { if (synced[i].time <= time) at = i; else break }
             line = at < 0 ? '♪' : (synced[at].text || '♪'); next = (synced[at + 1] && synced[at + 1].text) || ''; prev = (at > 0 && synced[at - 1] && synced[at - 1].text) || ''; key = t.id + '|s|' + at
           } else if (t.lyrics) {
             const lines = String(t.lyrics).split(/\n+/).map(x => x.trim()).filter(x => x.length >= 12 && !/^[\[(]/.test(x));
@@ -11154,17 +11230,20 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
         }
         sec.hidden = !line; hero.classList.toggle('has-lyrics', !!line); if (!line) { lyricSig = ''; return }
         if (key === lyricSig) return; lyricSig = key;
-        hlPrev.textContent = prev; hlNext.textContent = next; hlNow.textContent = line; hlNow.classList.toggle('is-note', line === '♪'); hlNow.classList.remove('swap'); void hlNow.offsetWidth; hlNow.classList.add('swap');
+        hlPrev.textContent = prev; hlNext.textContent = next; hlNow.textContent = line; hlNow.classList.toggle('is-note', line === '♪'); if (!mobileDevice) { hlNow.classList.remove('swap'); void hlNow.offsetWidth; hlNow.classList.add('swap') }
         nowEl.textContent = line; nextEl.textContent = next; prevEl.textContent = prev; nowEl.classList.toggle('is-note', line === '♪');
-        nowEl.classList.remove('swap'); void nowEl.offsetWidth; nowEl.classList.add('swap')
+        if (!mobileDevice) { nowEl.classList.remove('swap'); void nowEl.offsetWidth; nowEl.classList.add('swap') }
       }
 
       /* ---------- keep both in step with the app ---------- */
       let raf = 0; const refresh = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { applyGreeting(); syncHeroPlaying(); renderLyric() }) };
       const origRender = window.render;
       window.render = function () { const out = origRender.apply(this, arguments); refresh(); return out };
-      setInterval(() => { if (activeView === 'Home') renderLyric() }, 400);
-      setInterval(() => { if (partOf() !== (mix && mix.part)) refresh() }, 60000);
+      for (const deck of audioDecks) {
+        deck.addEventListener('timeupdate', () => { if (deck === audio && activeView === 'Home' && tracks[current]?.lyricLines?.length) renderLyric() });
+      }
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh() });
+      setInterval(() => { if (!document.hidden && partOf() !== (mix && mix.part)) refresh() }, 60000);
       refresh();
     })();
   </script>
@@ -11353,7 +11432,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       initial-value: 0%;
     }
     @media (prefers-reduced-motion: no-preference) {
-      html.playback-jump:not([data-performance="low"]) {
+      html.playback-jump:not([data-performance="low"]) :is(#seek, #fullSeek, .hero) {
         transition: --playback-progress .22s cubic-bezier(.2, .7, .2, 1)
       }
     }
@@ -12936,7 +13015,6 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     //  3) every way of starting a song (tap, auto-next, gapless, crossfade, resume) is watched: if the time does not advance,
     //     it escalates: resume audio + play -> reload fresh copy from storage -> plain reload -> message. The position is kept.
     (() => {
-      const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
       const ctxOf = () => { try { return silenceAudioContext } catch { return null } };
       const resumeCtx = () => { const c = ctxOf(); if (c && c.state !== 'running' && c.state !== 'closed') { try { c.resume().catch(() => { }) } catch { } } };
       ['touchend', 'pointerup', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, resumeCtx, { capture: true, passive: true }));
@@ -12946,7 +13024,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       let hookedCtx = null;
       const hookCtx = () => { const c = ctxOf(); if (!c || c === hookedCtx) return; hookedCtx = c; try { c.addEventListener('statechange', () => { if (c.state !== 'running' && c.state !== 'closed' && !audio.paused) resumeCtx() }) } catch { } };
 
-      let watchId = 0, monitor = 0, monitorTrack = -1, prepTimer = 0;
+      let watchId = 0, monitor = 0, monitorTrack = -1;
       const stopMonitor = () => { clearInterval(monitor); monitor = 0 };
 
       async function freshFile(t) {
@@ -13001,30 +13079,34 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
           })
         })
       } catch { }
-      // consistency net: the active deck must hold the song the player shows. If it keeps playing a different file
-      // (a stale retry / late callback), correct it. Needs two consecutive mismatches so normal track switches are never touched.
-      let mismatch = 0;
-      setInterval(() => {
-        try {
-          const t = tracks[current];
-          if (isCrossfading || current < 0 || !t || audio.paused || !audio.getAttribute('src') || (audio.src === t.url || audio.src === storedAudioUrl(t))) { mismatch = 0; return }
-          if (++mismatch < 2) return;
-          mismatch = 0;
-          setTrackSource(audio, trackAudioUrl(t)); audio.load(); applyDeckVolume(audio, 1);
-          const p = audio.play(); if (p && p.catch) p.catch(() => { })
-        } catch { }
-      }, 700);
-      // safety net: a deck that is not the active one must never keep playing audibly
-      // Allow the outgoing deck during a crossfade and the muted standby deck during pre-roll.
-      setInterval(() => {
-        try {
-          if (isCrossfading) return;
-          for (const d of audioDecks) {
-            if (d === audio || d.paused || d.muted || d.ended) continue;
-            d.pause(); try { d.currentTime = 0 } catch { }
-          }
-        } catch { }
-      }, 400);
+      // Repair stale playback after allowing the current track change to finish.
+      let repairTimer = 0;
+      function staleTrack() {
+        const track = tracks[current];
+        if (isCrossfading || !track || audio.paused || !audio.getAttribute('src')) return null;
+        return audio.src === track.url || audio.src === storedAudioUrl(track) ? null : track;
+      }
+      function checkSource() {
+        if (repairTimer || !staleTrack()) return;
+        repairTimer = setTimeout(() => {
+          repairTimer = 0;
+          const track = staleTrack();
+          if (!track) return;
+          setTrackSource(audio, trackAudioUrl(track));
+          audio.load();
+          applyDeckVolume(audio, 1);
+          audio.play().catch(() => { });
+        }, 900);
+      }
+      document.addEventListener('musiko:track', checkSource);
+      for (const deck of audioDecks) {
+        for (const event of ['playing', 'loadedmetadata']) deck.addEventListener(event, checkSource);
+        for (const event of ['play', 'volumechange']) deck.addEventListener(event, () => {
+          if (deck === audio || isCrossfading || deck.paused || deck.muted || deck.ended) return;
+          deck.pause();
+          try { deck.currentTime = 0 } catch { }
+        });
+      }
       document.addEventListener('visibilitychange', () => { if (!document.hidden) { resumeCtx(); if (current >= 0 && !audio.paused) watch(current, true) } });
 
       // any way of starting a song is watched, not only playTrack
@@ -13033,18 +13115,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       const origPlayNext = window.playNext;
       if (origPlayNext) window.playNext = function () { resumeCtx(); const out = origPlayNext.apply(this, arguments); if (current >= 0) watch(current); return out };
 
-      if (mobile) {
-        // never start the standby deck muted on phones: it can freeze the song that is playing
-        const origPrime = window.primeStandbyDeck;
-        if (origPrime) window.primeStandbyDeck = function (deck) { try { deck._primedSrc = deck.src } catch { } };
-        // only preload the next song once the current one is genuinely playing, so it gets the decoder and storage to itself
-        const origPrepare = window.prepareNextTrack;
-        if (origPrepare) window.prepareNextTrack = function () {
-          clearTimeout(prepTimer);
-          if (!audio.paused && (audio.readyState < 3 || audio.currentTime < 1.5)) { prepTimer = setTimeout(() => window.prepareNextTrack(), 1500); return }
-          return origPrepare.apply(this, arguments)
-        };
-      }
+
     })();
   </script>
     <style id="musiko-hero-desktop-tight">
@@ -13212,8 +13283,9 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     (() => {
       const els = ['#volume', '#fullVolume'].map(q => document.querySelector(q)).filter(Boolean);
       const sync = el => { const max = parseFloat(el.max) || 1, min = parseFloat(el.min) || 0; el.style.setProperty('--vol', ((el.value - min) / (max - min) * 100) + '%') };
-      els.forEach(el => { el.addEventListener('input', () => sync(el)); sync(el) });
-      setInterval(() => els.forEach(sync), 400);
+      const syncAll = () => els.forEach(sync);
+      els.forEach(el => el.addEventListener('input', syncAll));
+      syncAll();
     })();
   </script>
 
@@ -13568,7 +13640,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
 
   <script id="musiko-hero-bright-art">
     (() => {
-      if (!CSS.supports('mix-blend-mode', 'difference')) return;
+      if (mobileDevice || !CSS.supports('mix-blend-mode', 'difference')) return;
       const hero = document.querySelector('.hero');
       const fullArt = document.querySelector('#fullArtWrap');
       const canvas = document.createElement('canvas');
@@ -14043,6 +14115,52 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       html body .home-empty:not([hidden]) { grid-template-columns: minmax(0, 1fr) }
       html body .home-empty-art { display: none }
     }
+  </style>
+  <style id="musiko-mobile-efficiency">
+    html[data-mobile-efficient] { --mobile-surface: #1a1920; --mobile-now-playing: #14131a }
+    html[data-mobile-efficient][data-theme="light"] { --mobile-surface: #faf8fb; --mobile-now-playing: #f6f2f7 }
+
+    html[data-mobile-efficient] body :is(.app, .player, .mobile-tabs, main > .top, .az-rail, .track-head,
+        .queue-backdrop, .queue-drawer, .lyrics-panel, .lyrics-card, .settings-panel, .settings-card,
+        .playlist-modal, .playlist-modal-card, .sleep-quick-panel, .ctx-menu) {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+
+    html[data-mobile-efficient] body :is(.player, .mobile-tabs, main > .top,
+        .queue-drawer, .lyrics-card, .settings-card, .playlist-modal-card, .sleep-quick-panel, .ctx-menu) {
+      background: color-mix(in srgb, var(--skin-app, var(--mobile-surface)) 35%, var(--mobile-surface)) !important;
+    }
+
+    html[data-mobile-efficient] body :is(.hero-flow, .full-flow, .full-ambient, .full-bg, .hero-glow, .matrix-rain) {
+      display: none !important;
+      animation: none !important;
+      will-change: auto !important;
+    }
+
+    html[data-mobile-efficient] body .backdrop::after { display: none }
+    html[data-mobile-efficient] body :is(.hero-art, .hero-art img, .home-record, .lyric-eq u, .strawberry-float:not(.berry-clicking)) {
+      animation: none !important;
+      will-change: auto !important;
+    }
+
+    html[data-mobile-efficient] body .fullscreen {
+      background: radial-gradient(ellipse at 75% 48%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 63%),
+        var(--mobile-now-playing);
+    }
+    html[data-mobile-efficient] body .fullscreen .full-shade { background: none !important }
+
+    html[data-mobile-efficient] body .hero:is(.is-playing, .is-continue):not([hidden]) {
+      background: radial-gradient(ellipse at 78% 42%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%),
+        var(--mobile-now-playing);
+    }
+    html[data-mobile-efficient] body .hero:is(.is-playing, .is-continue)::before,
+    html[data-mobile-efficient] body .hero:is(.is-playing, .is-continue)::after { display: none }
+
+    html[data-mobile-efficient] body #fullBgAnimation,
+    html[data-mobile-efficient] body #heroBgAnimation { display: none }
+    html[data-mobile-efficient] body .setting-group:has(:is(#fullBgAnimation, #heroBgAnimation)),
+    html[data-mobile-efficient] body .animation-speed-setting { display: none }
   </style>
 </body>
 
