@@ -2438,8 +2438,6 @@
 
     @media(min-width:761px) and (max-width:1020px) {
       .app {
-        width: calc(100% - 24px);
-        margin: 12px auto;
         grid-template-columns: 190px minmax(0, 1fr)
       }
 
@@ -7337,6 +7335,7 @@
     /* --- Fixed sidebar (desktop/tablet) --- */
     @media (min-width: 761px) {
       .app {
+        border-width: 0;
         overflow: clip;              /* keeps rounded corners without breaking sticky */
       }
 
