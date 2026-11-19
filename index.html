@@ -13719,7 +13719,7 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
 
   <script id="musiko-hero-bright-art">
     (() => {
-      if (mobileDevice || !CSS.supports('mix-blend-mode', 'difference')) return;
+      if (!CSS.supports('mix-blend-mode', 'difference')) return;
       const hero = document.querySelector('.hero');
       const fullArt = document.querySelector('#fullArtWrap');
       const canvas = document.createElement('canvas');
@@ -14199,47 +14199,48 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     html[data-mobile-efficient] { --mobile-surface: #1a1920; --mobile-now-playing: #14131a }
     html[data-mobile-efficient][data-theme="light"] { --mobile-surface: #faf8fb; --mobile-now-playing: #f6f2f7 }
 
-    html[data-mobile-efficient] body :is(.app, .player, .mobile-tabs, main > .top, .az-rail, .track-head,
+    html[data-mobile-efficient]:is([data-glass="off"], [data-performance="low"])
+      body :is(.app, .player, .mobile-tabs, main > .top, .az-rail, .track-head,
         .queue-backdrop, .queue-drawer, .lyrics-panel, .lyrics-card, .settings-panel, .settings-card,
         .playlist-modal, .playlist-modal-card, .sleep-quick-panel, .ctx-menu) {
       -webkit-backdrop-filter: none !important;
       backdrop-filter: none !important;
     }
 
-    html[data-mobile-efficient] body :is(.player, .mobile-tabs, main > .top,
+    html[data-mobile-efficient]:is([data-glass="off"], [data-performance="low"])
+      body :is(.player, .mobile-tabs, main > .top,
         .queue-drawer, .lyrics-card, .settings-card, .playlist-modal-card, .sleep-quick-panel, .ctx-menu) {
       background: color-mix(in srgb, var(--skin-app, var(--mobile-surface)) 35%, var(--mobile-surface)) !important;
     }
 
-    html[data-mobile-efficient] body :is(.hero-flow, .full-flow, .full-ambient, .full-bg, .hero-glow, .matrix-rain) {
+    html[data-mobile-efficient][data-performance="low"]
+      body :is(.hero-flow, .full-flow, .full-ambient, .full-bg, .hero-glow, .matrix-rain) {
       display: none !important;
       animation: none !important;
       will-change: auto !important;
     }
 
-    html[data-mobile-efficient] body .backdrop::after { display: none }
-    html[data-mobile-efficient] body :is(.hero-art, .hero-art img, .home-record, .lyric-eq u, .strawberry-float:not(.berry-clicking)) {
+    html[data-mobile-efficient][data-performance="low"] body .backdrop::after { display: none }
+    html[data-mobile-efficient][data-performance="low"]
+      body :is(.hero-art, .hero-art img, .home-record, .lyric-eq u, .strawberry-float:not(.berry-clicking)) {
       animation: none !important;
       will-change: auto !important;
     }
 
-    html[data-mobile-efficient] body .fullscreen {
+    html[data-mobile-efficient][data-performance="low"] body .fullscreen {
       background: radial-gradient(ellipse at 75% 48%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 63%),
         var(--mobile-now-playing);
     }
-    html[data-mobile-efficient] body .fullscreen .full-shade { background: none !important }
+    html[data-mobile-efficient][data-performance="low"] body .fullscreen .full-shade { background: none !important }
 
-    html[data-mobile-efficient] body .hero:is(.is-playing, .is-continue):not([hidden]) {
+    html[data-mobile-efficient][data-performance="low"] body .hero:is(.is-playing, .is-continue):not([hidden]) {
       background: radial-gradient(ellipse at 78% 42%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%),
         var(--mobile-now-playing);
     }
-    html[data-mobile-efficient] body .hero:is(.is-playing, .is-continue)::before,
-    html[data-mobile-efficient] body .hero:is(.is-playing, .is-continue)::after { display: none }
-
-    html[data-mobile-efficient] body #fullBgAnimation,
-    html[data-mobile-efficient] body #heroBgAnimation { display: none }
-    html[data-mobile-efficient] body .setting-group:has(:is(#fullBgAnimation, #heroBgAnimation)),
-    html[data-mobile-efficient] body .animation-speed-setting { display: none }
+    html[data-mobile-efficient][data-performance="low"]
+      body .hero:is(.is-playing, .is-continue)::before,
+    html[data-mobile-efficient][data-performance="low"]
+      body .hero:is(.is-playing, .is-continue)::after { display: none }
   </style>
 </body>
 
