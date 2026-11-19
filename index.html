@@ -9671,6 +9671,22 @@
     let fullLyricsPref = true; try { fullLyricsPref = localStorage.getItem('musiko.fullLyrics') !== '0' } catch { }
     let fullLyricsLayoutTimer = 0, fullLyricsControlsAnimation;
 
+    function animateMobileLyricsEntrance() {
+      const body = document.querySelector('#fullLyricsBody');
+      const viewport = body.getBoundingClientRect();
+      let delay = 0;
+      for (const line of body.children) {
+        const bounds = line.getBoundingClientRect();
+        if (bounds.bottom <= viewport.top) continue;
+        if (bounds.top >= viewport.bottom) break;
+        line.animate(
+          [{ opacity: 0, translate: '0 16px' }, { opacity: getComputedStyle(line).opacity, translate: '0 0' }],
+          { duration: 360, delay, easing: 'cubic-bezier(.2, .75, .2, 1)', fill: 'backwards' }
+        );
+        delay = Math.min(delay + 36, 224);
+      }
+    }
+
     function syncMobileLyricsLayout(full, on, animate) {
       clearTimeout(fullLyricsLayoutTimer);
       const controls = full.querySelector('.full-meta');
@@ -9686,11 +9702,14 @@
             { duration: 260, easing: 'cubic-bezier(.2, .75, .2, 1)' }
           );
         }
-        if (on) updateLyricHighlight(true);
+        if (on && fullLyricsOn()) {
+          updateLyricHighlight(true);
+          animateMobileLyricsEntrance();
+        }
       };
 
       if (!animate) applyLayout();
-      else if (full.classList.contains('lyrics-layout') !== on) {
+      else if (on || full.classList.contains('lyrics-layout') !== on) {
         // Swap the layout as the outgoing panel finishes fading.
         fullLyricsLayoutTimer = setTimeout(applyLayout, 140);
       }
