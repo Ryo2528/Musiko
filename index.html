@@ -9669,6 +9669,33 @@
     function centerLyricLine(body, el, force) { if (!force && body._userScrollUntil && Date.now() < body._userScrollUntil) return; const top = body.scrollTop + (el.getBoundingClientRect().top - body.getBoundingClientRect().top) - body.clientHeight / 2 + el.offsetHeight / 2; body.scrollTo({ top: Math.max(0, top), behavior: force ? 'auto' : 'smooth' }) }
     let activeLyricLine = -1; function updateLyricHighlight(force = false) { const targets = lyricsTargets(); if (!targets.length) return; const t = tracks[current], lines = t?.lyricLines || []; if (!lines.length) return; let at = -1; for (let i = 0; i < lines.length; i++) { if (lines[i].time <= audio.currentTime) at = i; else break } if (at === activeLyricLine && !force) return; activeLyricLine = at; targets.forEach(({ body }) => body.querySelectorAll('.lyric-line').forEach((el, i) => { el.classList.toggle('active', i === at); if (i === at) centerLyricLine(body, el, force) })) }
     let fullLyricsPref = true; try { fullLyricsPref = localStorage.getItem('musiko.fullLyrics') !== '0' } catch { }
+    let fullLyricsLayoutTimer = 0, fullLyricsControlsAnimation;
+
+    function syncMobileLyricsLayout(full, on, animate) {
+      clearTimeout(fullLyricsLayoutTimer);
+      const controls = full.querySelector('.full-meta');
+      const applyLayout = () => {
+        const previousTop = animate ? controls.getBoundingClientRect().top : 0;
+        fullLyricsControlsAnimation?.cancel();
+        full.classList.toggle('lyrics-layout', on);
+        if (!animate) return;
+        const offset = previousTop - controls.getBoundingClientRect().top;
+        if (offset) {
+          fullLyricsControlsAnimation = controls.animate(
+            [{ transform: `translateY(${offset}px)` }, { transform: 'none' }],
+            { duration: 260, easing: 'cubic-bezier(.2, .75, .2, 1)' }
+          );
+        }
+        if (on) updateLyricHighlight(true);
+      };
+
+      if (!animate) applyLayout();
+      else if (full.classList.contains('lyrics-layout') !== on) {
+        // Swap the layout as the outgoing panel finishes fading.
+        fullLyricsLayoutTimer = setTimeout(applyLayout, 140);
+      }
+    }
+
     function setFullLyrics(on, save = true) {
       const full = document.querySelector('#fullscreen');
       const button = document.querySelector('#fullLyrics');
@@ -9676,6 +9703,11 @@
       full.classList.toggle('lyr-anim', save);
       if (save) full._animT = setTimeout(() => full.classList.remove('lyr-anim'), 1000);
       full.classList.toggle('lyrics-on', on);
+      if (mobileDevice) {
+        const animate = save && typeof full.animate === 'function' && !window.MusikoAppearance.value.lowEnd &&
+          !matchMedia('(prefers-reduced-motion: reduce)').matches;
+        syncMobileLyricsLayout(full, on, animate);
+      }
       document.querySelector('#fullLyricsBody').inert = !on;
       button.textContent = on ? 'Hide lyrics' : 'Show lyrics';
       button.setAttribute('aria-expanded', String(on));
@@ -14387,6 +14419,45 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
         font-size: clamp(17px, 5dvh, 24px);
         padding: 6px 0;
       }
+    }
+
+    html[data-mobile-efficient] body .fullscreen.open.lyrics-layout {
+      align-items: stretch;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-content {
+      grid-template-rows: minmax(112px, 1fr) auto;
+      gap: 12px;
+    }
+
+    html[data-mobile-efficient] body .fullscreen.lyr-anim .full-content { overflow: visible }
+
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-lyrics {
+      width: 100%;
+      height: 100%;
+    }
+
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-lyrics :is(.lyric-line, .lyrics-plain) {
+      font-size: clamp(21px, 5.4vw, 36px);
+    }
+
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-eyebrow { margin-bottom: 4px; font-size: 10px }
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-title { font-size: clamp(22px, 5.8vw, 28px) }
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout :is(.full-artist, .full-album) { margin-top: 4px }
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-artist { font-size: 14px }
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-album { font-size: 12px }
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout :is(.full-lyrics-btn, .full-sleep-shortcut) { margin-top: 10px; height: 32px }
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-controls { margin-top: 12px }
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout :is(.full-buttons, .full-volume) { margin-top: 8px }
+    html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-buttons .play { width: 52px; height: 52px }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-lyrics :is(.lyric-line, .lyrics-plain) {
+        font-size: clamp(20px, 5.4dvh, 28px);
+      }
+      html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-controls { margin-top: 0 }
+      html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-buttons .play { width: 48px; height: 48px }
     }
   </style>
   <style id="musiko-mobile-efficiency">
