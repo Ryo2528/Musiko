@@ -7868,7 +7868,7 @@
     .full-lyrics .lyrics-empty { text-align: left; place-content: center start }
     html[data-theme="light"] .full-lyrics .lyrics-empty strong { color: #211d23 }
     html[data-theme="light"] .full-lyrics .lyrics-empty { color: #5a525c }
-    .full-lyrics-btn[aria-pressed="true"] { color: var(--accent) }
+    .full-lyrics-btn[aria-expanded="true"] { color: var(--accent) }
 
     /* desktop: the layout glides from two columns to three */
     @media (min-width: 761px) {
@@ -8928,12 +8928,14 @@
         <div class="no-art">♫</div>
       </div>
       <div class="full-meta">
-        <div class="full-eyebrow">NOW PLAYING</div>
-        <h2 class="full-title" id="fullTitle">Nothing playing</h2>
-        <div class="full-artist" id="fullArtist"></div>
-        <div class="full-album" id="fullAlbum"></div><button class="lyrics-toggle full-lyrics-btn" id="fullLyrics">Show
-          lyrics</button><button class="lyrics-toggle full-sleep-shortcut sleep-shortcut" id="fullSleepShortcut">Sleep
-          timer</button>
+        <div class="full-track-info">
+          <div class="full-eyebrow">NOW PLAYING</div>
+          <h2 class="full-title" id="fullTitle">Nothing playing</h2>
+          <div class="full-artist" id="fullArtist"></div>
+          <div class="full-album" id="fullAlbum"></div>
+          <button class="lyrics-toggle full-lyrics-btn" id="fullLyrics" aria-expanded="false" aria-controls="fullLyricsBody">Show lyrics</button>
+          <button class="lyrics-toggle full-sleep-shortcut sleep-shortcut" id="fullSleepShortcut">Sleep timer</button>
+        </div>
         <div class="full-controls">
           <div class="full-timeline"><span id="fullElapsed">0:00</span>
             <div class="bar" id="fullSeek">
@@ -8964,7 +8966,7 @@
             </svg><input id="fullVolume" type="range" min="0" max="1" step=".01" value=".8"></div>
         </div>
       </div>
-      <div class="full-lyrics" id="fullLyricsBody" aria-label="Synced lyrics"></div>
+      <div class="full-lyrics" id="fullLyricsBody" role="region" aria-label="Synced lyrics" inert></div>
     </div>
   </section>
   <style id="lyrics-expanded">
@@ -9667,7 +9669,28 @@
     function centerLyricLine(body, el, force) { if (!force && body._userScrollUntil && Date.now() < body._userScrollUntil) return; const top = body.scrollTop + (el.getBoundingClientRect().top - body.getBoundingClientRect().top) - body.clientHeight / 2 + el.offsetHeight / 2; body.scrollTo({ top: Math.max(0, top), behavior: force ? 'auto' : 'smooth' }) }
     let activeLyricLine = -1; function updateLyricHighlight(force = false) { const targets = lyricsTargets(); if (!targets.length) return; const t = tracks[current], lines = t?.lyricLines || []; if (!lines.length) return; let at = -1; for (let i = 0; i < lines.length; i++) { if (lines[i].time <= audio.currentTime) at = i; else break } if (at === activeLyricLine && !force) return; activeLyricLine = at; targets.forEach(({ body }) => body.querySelectorAll('.lyric-line').forEach((el, i) => { el.classList.toggle('active', i === at); if (i === at) centerLyricLine(body, el, force) })) }
     let fullLyricsPref = true; try { fullLyricsPref = localStorage.getItem('musiko.fullLyrics') !== '0' } catch { }
-    function setFullLyrics(on, save = true) { const f = document.querySelector('#fullscreen'); if (save) { clearTimeout(f._animT); f.classList.add('lyr-anim'); f._animT = setTimeout(() => f.classList.remove('lyr-anim'), 1000) } f.classList.toggle('lyrics-on', on); const b = document.querySelector('#fullLyrics'); b.textContent = on ? 'Hide lyrics' : 'Show lyrics'; b.setAttribute('aria-pressed', String(on)); if (save) { fullLyricsPref = on; try { localStorage.setItem('musiko.fullLyrics', on ? '1' : '0') } catch { } } if (on) { activeLyricLine = -1; renderLyrics(); const t = tracks[current]; if (t) lookupLyrics(t); setTimeout(() => { if (fullLyricsOn()) updateLyricHighlight(true) }, 720) } }
+    function setFullLyrics(on, save = true) {
+      const full = document.querySelector('#fullscreen');
+      const button = document.querySelector('#fullLyrics');
+      clearTimeout(full._animT);
+      full.classList.toggle('lyr-anim', save);
+      if (save) full._animT = setTimeout(() => full.classList.remove('lyr-anim'), 1000);
+      full.classList.toggle('lyrics-on', on);
+      document.querySelector('#fullLyricsBody').inert = !on;
+      button.textContent = on ? 'Hide lyrics' : 'Show lyrics';
+      button.setAttribute('aria-expanded', String(on));
+      if (save) {
+        fullLyricsPref = on;
+        try { localStorage.setItem('musiko.fullLyrics', on ? '1' : '0') } catch { }
+      }
+      if (!on) return;
+      activeLyricLine = -1;
+      renderLyrics();
+      const track = tracks[current];
+      if (track) lookupLyrics(track);
+      // Desktop lyrics move as the columns resize, so recenter once that layout settles.
+      if (!mobileDevice) setTimeout(() => { if (fullLyricsOn()) updateLyricHighlight(true) }, 720);
+    }
     window.addEventListener('resize', () => { clearTimeout(window._lyrResize); window._lyrResize = setTimeout(() => { if (lyricsVisible()) updateLyricHighlight(true) }, 160) });
     const RANKED_SMART = ['top', 'played', 'recent', 'rediscover'];
 function smartLimit(v) { if (v === undefined || v === null || v === '') return 25; const n = Number(v); return !Number.isFinite(n) ? 25 : n > 0 ? n : Infinity }
@@ -14193,6 +14216,177 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     @media (orientation: landscape) and (max-height: 500px) and (max-width: 520px) and (pointer: coarse) {
       html body .home-empty:not([hidden]) { grid-template-columns: minmax(0, 1fr) }
       html body .home-empty-art { display: none }
+    }
+  </style>
+  <style id="musiko-mobile-fullscreen-lyrics">
+    html[data-mobile-efficient] body .fullscreen.open {
+      align-items: center;
+      padding: calc(52px + env(safe-area-inset-top, 0px))
+        max(24px, env(safe-area-inset-right, 0px))
+        calc(68px + env(safe-area-inset-bottom, 0px))
+        max(24px, env(safe-area-inset-left, 0px));
+      overflow: hidden;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-close {
+      position: fixed;
+      top: calc(14px + env(safe-area-inset-top, 0px));
+      right: max(16px, env(safe-area-inset-right, 0px));
+      width: 44px;
+      height: 44px;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-content {
+      --full-cover-size: min(72vw, clamp(330px, 44vw, 420px), calc(100dvh - 472px));
+      width: min(100%, 520px);
+      max-height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      grid-template: var(--full-cover-size) auto / minmax(0, 1fr);
+      gap: 24px;
+      transition: none;
+    }
+
+    html[data-mobile-efficient] body .fullscreen :is(.full-art-wrap, .full-lyrics) {
+      grid-area: 1 / 1;
+      display: block;
+      place-self: center;
+      width: var(--full-cover-size);
+      height: var(--full-cover-size);
+      max-height: none;
+      margin: 0;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-art-wrap {
+      border-radius: 16px;
+    }
+
+    html[data-mobile-efficient] body .fullscreen.lyrics-on .full-art-wrap {
+      opacity: 0;
+      transform: scale(.96);
+      visibility: hidden;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-lyrics {
+      min-height: 0;
+      padding: 0 12px;
+      scrollbar-width: none;
+      touch-action: pan-y;
+      -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
+      mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
+    }
+
+    html[data-mobile-efficient] body .fullscreen:not(.lyrics-on) .full-lyrics {
+      transform: translateY(8px);
+    }
+
+    html[data-mobile-efficient] body .fullscreen.lyr-anim :is(.full-art-wrap, .full-lyrics) {
+      transition: opacity .14s var(--lyr-ease), transform .14s var(--lyr-ease), visibility 0s linear .14s;
+    }
+
+    html[data-mobile-efficient] body :is(.fullscreen.lyr-anim.lyrics-on .full-lyrics,
+        .fullscreen.lyr-anim:not(.lyrics-on) .full-art-wrap) {
+      transition: opacity .22s var(--lyr-ease) .14s, transform .22s var(--lyr-ease) .14s, visibility 0s;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-lyrics:has(.lyric-line, .lyrics-plain)::before,
+    html[data-mobile-efficient] body .fullscreen .full-lyrics:has(.lyric-line, .lyrics-plain)::after {
+      content: "";
+      display: block;
+      height: 46%;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-lyrics:has(.lyric-line, .lyrics-plain)::before {
+      height: 24%;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-lyrics:has(.lyrics-empty) {
+      display: grid;
+      place-items: center;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-lyrics :is(.lyric-line, .lyrics-empty, .lyrics-plain) {
+      text-align: center;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-lyrics .lyric-line {
+      font-size: clamp(18px, 3.8vw, 32px);
+      padding: 8px 0;
+      transform-origin: center;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-meta {
+      grid-area: 2 / 1;
+      text-align: center;
+    }
+
+    html[data-mobile-efficient] body .fullscreen .full-eyebrow { margin-bottom: 12px; font-size: 11px }
+    html[data-mobile-efficient] body .fullscreen .full-title {
+      font-size: clamp(28px, 7.6vw, 34px);
+      line-height: 1.12;
+      transition: none;
+    }
+    html[data-mobile-efficient] body .fullscreen :is(.full-title, .full-artist, .full-album) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    html[data-mobile-efficient] body .fullscreen :is(.full-artist, .full-album) { margin-top: 6px }
+    html[data-mobile-efficient] body .fullscreen .full-artist { font-size: 16px }
+    html[data-mobile-efficient] body .fullscreen .full-album { font-size: 13px }
+    html[data-mobile-efficient] body .fullscreen :is(.full-lyrics-btn, .full-sleep-shortcut) {
+      margin-top: 20px;
+      height: 36px;
+      padding-inline: 14px;
+      font-size: 13px;
+    }
+    html[data-mobile-efficient] body .fullscreen .full-controls { margin-top: 24px }
+    html[data-mobile-efficient] body .fullscreen .full-buttons {
+      justify-content: center;
+      gap: clamp(4px, 2vw, 12px);
+      max-width: none;
+      margin-top: 16px;
+    }
+    html[data-mobile-efficient] body .fullscreen .full-buttons .icon-btn { min-width: 44px; min-height: 44px }
+    html[data-mobile-efficient] body .fullscreen .full-buttons .play { width: 60px; height: 60px }
+    html[data-mobile-efficient] body .fullscreen .full-volume { justify-content: center; margin-top: 16px }
+    html[data-mobile-efficient] body .fullscreen .full-volume input { width: min(132px, 45vw) }
+
+    @media (max-height: 720px) {
+      html[data-mobile-efficient] body .fullscreen.open { padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) }
+      html[data-mobile-efficient] body .fullscreen .full-content {
+        --full-cover-size: min(72vw, 330px, max(120px, calc(100dvh - 344px)));
+        gap: 14px;
+      }
+      html[data-mobile-efficient] body .fullscreen .full-eyebrow { margin-bottom: 6px }
+      html[data-mobile-efficient] body .fullscreen .full-title { font-size: clamp(24px, 5.8vw, 28px) }
+      html[data-mobile-efficient] body .fullscreen :is(.full-lyrics-btn, .full-sleep-shortcut) { margin-top: 12px; height: 32px }
+      html[data-mobile-efficient] body .fullscreen .full-controls { margin-top: 12px }
+      html[data-mobile-efficient] body .fullscreen :is(.full-buttons, .full-volume) { margin-top: 8px }
+      html[data-mobile-efficient] body .fullscreen .full-buttons .play { width: 48px; height: 48px }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      html[data-mobile-efficient] body .fullscreen .full-content {
+        --full-cover-size: min(42dvh, 240px);
+        width: min(100%, 640px);
+      }
+      html[data-mobile-efficient] body .fullscreen .full-meta {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+      }
+      html[data-mobile-efficient] body .fullscreen .full-controls { align-self: end; margin-top: 0 }
+      html[data-mobile-efficient] body .fullscreen .full-lyrics .lyric-line {
+        font-size: clamp(17px, 5dvh, 24px);
+        padding: 6px 0;
+      }
     }
   </style>
   <style id="musiko-mobile-efficiency">
