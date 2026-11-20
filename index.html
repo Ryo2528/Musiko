@@ -4603,7 +4603,7 @@
       }
     }
   </style>
-  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .179 ? '#000000' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff', '#f5f5f5', '#4f7cff', '#6fd3a4', '#ff8a3d', '#f2c230', '#2ec4c4', '#e86ae0'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 10, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, fullBgAnimation: true, heroBgAnimation: true, fullscreenFlowSpeed: 1, classicHero: false, adaptiveHeroAllColors: false, heroFlowSpeed: 1, customBackground: '', customDim: 60, customBlur: 0 }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent) || /^#[0-9a-f]{6}$/i.test(saved.accent || '')) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.fullBgAnimation === 'boolean') value.fullBgAnimation = saved.fullBgAnimation; value.heroBgAnimation = typeof saved.heroBgAnimation === 'boolean' ? saved.heroBgAnimation : value.fullBgAnimation; if (Number.isFinite(saved.fullscreenFlowSpeed)) value.fullscreenFlowSpeed = Math.min(3, Math.max(.25, Math.round(saved.fullscreenFlowSpeed * 4) / 4)); else if (Number.isFinite(saved.fullFlowSpeed) && saved.fullFlowSpeed !== 1) value.fullscreenFlowSpeed = Math.min(3, Math.max(.25, Math.round(saved.fullFlowSpeed * 16) / 4)); if (typeof saved.classicHero === 'boolean') value.classicHero = saved.classicHero; if (typeof saved.adaptiveHeroAllColors === 'boolean') value.adaptiveHeroAllColors = saved.adaptiveHeroAllColors; if (Number.isFinite(saved.heroFlowSpeed)) value.heroFlowSpeed = Math.min(3, Math.max(.25, saved.heroFlowSpeed)); if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground; if (Number.isFinite(saved.customDim)) value.customDim = Math.min(90, Math.max(0, saved.customDim)); if (Number.isFinite(saved.customBlur)) value.customBlur = Math.min(24, Math.max(0, saved.customBlur)) } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.dataset.fullAnimation = value.fullBgAnimation ? 'on' : 'off'; root.dataset.heroAnimation = value.heroBgAnimation ? 'on' : 'off'; root.dataset.classicHero = value.classicHero ? 'on' : 'off'; root.dataset.heroContrast = value.adaptiveHeroAllColors ? 'all' : 'bright'; root.style.setProperty('--hero-flow-speed', value.heroFlowSpeed); root.style.setProperty('--full-flow-speed', value.fullscreenFlowSpeed); root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); root.style.setProperty('--custom-dim', value.customDim / 100); root.style.setProperty('--custom-blur', value.customBlur + 'px'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
+  <script>(() => { const inkFor = c => { const n = parseInt(c.slice(1), 16), f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) }, L = .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); return L > .179 ? '#000000' : '#ffffff' }; const root = document.documentElement, allowed = ['#ff5368', '#ff365e', '#e53939', '#ff7198', '#45ed82', '#8b70ff', '#328fe8', '#20a77a', '#91caff', '#f5f5f5', '#4f7cff', '#6fd3a4', '#ff8a3d', '#f2c230', '#2ec4c4', '#e86ae0'], skins = ['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom', 'cloud'], rates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]; let value = { mode: 'dark', skin: 'black', darkSkin: 'black', accent: '#ff5368', playbackRate: 1, crossfadeSeconds: 10, gapless: true, glassy: true, lowEnd: false, searchAnimation: true, largerMobileControls: false, trimSilence: false, fullBgAnimation: true, fullLayout: 'standard', heroBgAnimation: true, fullscreenFlowSpeed: 1, classicHero: false, adaptiveHeroAllColors: false, heroFlowSpeed: 1, customBackground: '', customDim: 60, customBlur: 0 }; try { const saved = JSON.parse(localStorage.getItem('musiko-appearance') || '{}'); if (saved.mode === 'light' || saved.mode === 'dark') value.mode = saved.mode; if (skins.includes(saved.skin)) value.skin = saved.skin; if (['midnight', 'rose', 'strawberry', 'strawberry-dark', 'ocean', 'forest', 'glass', 'prism-dark', 'black', 'mono', 'terminal', 'custom'].includes(saved.darkSkin)) value.darkSkin = saved.darkSkin; if (allowed.includes(saved.accent) || /^#[0-9a-f]{6}$/i.test(saved.accent || '')) value.accent = saved.accent; if (rates.includes(saved.playbackRate)) value.playbackRate = saved.playbackRate; if ([0, 2, 4, 6, 8, 10, 12].includes(saved.crossfadeSeconds)) value.crossfadeSeconds = saved.crossfadeSeconds; if (typeof saved.gapless === 'boolean') value.gapless = saved.gapless; if (typeof saved.glassy === 'boolean') value.glassy = saved.glassy; if (typeof saved.lowEnd === 'boolean') value.lowEnd = saved.lowEnd; if (typeof saved.searchAnimation === 'boolean') value.searchAnimation = saved.searchAnimation; if (typeof saved.largerMobileControls === 'boolean') value.largerMobileControls = saved.largerMobileControls; if (typeof saved.trimSilence === 'boolean') value.trimSilence = saved.trimSilence; if (typeof saved.fullBgAnimation === 'boolean') value.fullBgAnimation = saved.fullBgAnimation; if (saved.fullLayout === 'split') value.fullLayout = 'split'; value.heroBgAnimation = typeof saved.heroBgAnimation === 'boolean' ? saved.heroBgAnimation : value.fullBgAnimation; if (Number.isFinite(saved.fullscreenFlowSpeed)) value.fullscreenFlowSpeed = Math.min(3, Math.max(.25, Math.round(saved.fullscreenFlowSpeed * 4) / 4)); else if (Number.isFinite(saved.fullFlowSpeed) && saved.fullFlowSpeed !== 1) value.fullscreenFlowSpeed = Math.min(3, Math.max(.25, Math.round(saved.fullFlowSpeed * 16) / 4)); if (typeof saved.classicHero === 'boolean') value.classicHero = saved.classicHero; if (typeof saved.adaptiveHeroAllColors === 'boolean') value.adaptiveHeroAllColors = saved.adaptiveHeroAllColors; if (Number.isFinite(saved.heroFlowSpeed)) value.heroFlowSpeed = Math.min(3, Math.max(.25, saved.heroFlowSpeed)); if (typeof saved.customBackground === 'string' && saved.customBackground.startsWith('data:image/') && saved.customBackground.length < 1000000) value.customBackground = saved.customBackground; if (Number.isFinite(saved.customDim)) value.customDim = Math.min(90, Math.max(0, saved.customDim)); if (Number.isFinite(saved.customBlur)) value.customBlur = Math.min(24, Math.max(0, saved.customBlur)) } catch { } if (value.mode === 'light' && value.skin !== 'strawberry') value.skin = 'cloud'; else if (value.mode === 'dark' && value.skin === 'cloud') value.skin = value.darkSkin; else if (value.mode === 'dark') value.darkSkin = value.skin; root.dataset.theme = value.mode; root.dataset.skin = value.skin; root.dataset.glass = value.glassy ? 'on' : 'off'; root.dataset.performance = value.lowEnd ? 'low' : 'normal'; root.dataset.searchAnimation = value.searchAnimation ? 'on' : 'off'; root.dataset.largeMobileControls = value.largerMobileControls ? 'on' : 'off'; root.dataset.fullAnimation = value.fullBgAnimation ? 'on' : 'off'; root.dataset.heroAnimation = value.heroBgAnimation ? 'on' : 'off'; root.dataset.classicHero = value.classicHero ? 'on' : 'off'; root.dataset.heroContrast = value.adaptiveHeroAllColors ? 'all' : 'bright'; root.style.setProperty('--hero-flow-speed', value.heroFlowSpeed); root.style.setProperty('--full-flow-speed', value.fullscreenFlowSpeed); root.style.setProperty('--accent', value.accent); root.style.setProperty('--accent-ink', inkFor(value.accent)); root.style.setProperty('--custom-background-image', value.customBackground ? 'url(' + value.customBackground + ')' : 'none'); root.style.setProperty('--custom-dim', value.customDim / 100); root.style.setProperty('--custom-blur', value.customBlur + 'px'); window.MusikoInkFor = inkFor; window.MusikoAppearance = { value, allowed, skins, save() { try { localStorage.setItem('musiko-appearance', JSON.stringify(value)) } catch { } } } })();</script>
   <style>
     .queue-panel {
       position: fixed;
@@ -8911,7 +8911,8 @@
           <circle cx="12" cy="12" r="9" />
           <path d="M12 7v5l3 2" />
         </svg></button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13" />
+        <path d="M11 5 6 9H3v6h3l5 4z" />
+        <path class="volume-wave" d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13" />
       </svg><input id="volume" aria-label="Volume" type="range" min="0" max="1" step=".01" value=".8"><button class="icon-btn full-toggle"
         id="openFullscreen" title="Full screen" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="1.8">
@@ -8962,7 +8963,8 @@
                 <path d="m17 2 4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-3v2a3 3 0 0 1-3 3H3" />
               </svg></button></div>
           <div class="full-volume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7" />
+              <path d="M11 5 6 9H3v6h3l5 4z" />
+              <path class="volume-wave" d="M15.5 8.5a5 5 0 0 1 0 7" />
             </svg><input id="fullVolume" type="range" min="0" max="1" step=".01" value=".8"></div>
         </div>
       </div>
@@ -9125,6 +9127,16 @@
             <h3>Search animation</h3>
           </div><label class="setting-switch"><input type="checkbox" id="searchAnimation"
               aria-label="Mobile search animation"><span></span></label>
+        </section>
+        <section class="setting-group">
+          <div>
+            <h3 id="fullscreenLayoutLabel">Fullscreen layout</h3>
+            <p id="fullscreenLayoutHint">On wide screens, place lyrics beside the cover and controls.</p>
+          </div>
+          <select class="setting-select" id="fullscreenLayout" aria-labelledby="fullscreenLayoutLabel" aria-describedby="fullscreenLayoutHint">
+            <option value="standard">Default</option>
+            <option value="split">Side by side</option>
+          </select>
         </section>
         <section class="setting-group">
           <div>
@@ -9671,7 +9683,7 @@
     let fullLyricsPref = true; try { fullLyricsPref = localStorage.getItem('musiko.fullLyrics') !== '0' } catch { }
     let fullLyricsLayoutTimer = 0, fullLyricsControlsAnimation;
 
-    function animateMobileLyricsEntrance() {
+    function animateFullscreenLyricsEntrance(startDelay = 0) {
       const body = document.querySelector('#fullLyricsBody');
       const viewport = body.getBoundingClientRect();
       let delay = 0;
@@ -9681,7 +9693,7 @@
         if (bounds.top >= viewport.bottom) break;
         line.animate(
           [{ opacity: 0, translate: '0 16px' }, { opacity: getComputedStyle(line).opacity, translate: '0 0' }],
-          { duration: 360, delay, easing: 'cubic-bezier(.2, .75, .2, 1)', fill: 'backwards' }
+          { duration: 360, delay: startDelay + delay, easing: 'cubic-bezier(.2, .75, .2, 1)', fill: 'backwards' }
         );
         delay = Math.min(delay + 36, 224);
       }
@@ -9704,7 +9716,7 @@
         }
         if (on && fullLyricsOn()) {
           updateLyricHighlight(true);
-          animateMobileLyricsEntrance();
+          animateFullscreenLyricsEntrance();
         }
       };
 
@@ -9718,15 +9730,14 @@
     function setFullLyrics(on, save = true) {
       const full = document.querySelector('#fullscreen');
       const button = document.querySelector('#fullLyrics');
+      const split = document.documentElement.dataset.fullLayout === 'split';
+      const animate = save && typeof full.animate === 'function' && !window.MusikoAppearance.value.lowEnd &&
+        !matchMedia('(prefers-reduced-motion: reduce)').matches;
       clearTimeout(full._animT);
       full.classList.toggle('lyr-anim', save);
       if (save) full._animT = setTimeout(() => full.classList.remove('lyr-anim'), 1000);
       full.classList.toggle('lyrics-on', on);
-      if (mobileDevice) {
-        const animate = save && typeof full.animate === 'function' && !window.MusikoAppearance.value.lowEnd &&
-          !matchMedia('(prefers-reduced-motion: reduce)').matches;
-        syncMobileLyricsLayout(full, on, animate);
-      }
+      if (mobileDevice && !split) syncMobileLyricsLayout(full, on, animate);
       document.querySelector('#fullLyricsBody').inert = !on;
       button.textContent = on ? 'Hide lyrics' : 'Show lyrics';
       button.setAttribute('aria-expanded', String(on));
@@ -9739,9 +9750,34 @@
       renderLyrics();
       const track = tracks[current];
       if (track) lookupLyrics(track);
-      // Desktop lyrics move as the columns resize, so recenter once that layout settles.
-      if (!mobileDevice) setTimeout(() => { if (fullLyricsOn()) updateLyricHighlight(true) }, 720);
+      if (split && animate && fullLyricsOn()) animateFullscreenLyricsEntrance(160);
+      // The default desktop layout resizes its columns when lyrics appear.
+      if (!split && !mobileDevice) setTimeout(() => { if (fullLyricsOn()) updateLyricHighlight(true) }, 720);
     }
+
+    const fullscreenLayoutSelect = document.querySelector('#fullscreenLayout');
+    const splitLayoutViewport = matchMedia('(min-width: 680px), (min-width: 540px) and (orientation: landscape)');
+
+    function syncFullscreenLayout() {
+      const root = document.documentElement;
+      const split = window.MusikoAppearance.value.fullLayout === 'split' && splitLayoutViewport.matches;
+      const layout = split ? 'split' : 'standard';
+      if (root.dataset.fullLayout === layout) return;
+      root.dataset.fullLayout = layout;
+      if (mobileDevice) syncMobileLyricsLayout(document.querySelector('#fullscreen'), !split && fullLyricsOn(), false);
+      if (fullLyricsOn()) updateLyricHighlight(true);
+    }
+
+    fullscreenLayoutSelect.value = window.MusikoAppearance.value.fullLayout;
+    fullscreenLayoutSelect.addEventListener('change', () => {
+      const settings = window.MusikoAppearance;
+      settings.value.fullLayout = fullscreenLayoutSelect.value;
+      settings.save();
+      syncFullscreenLayout();
+    });
+    splitLayoutViewport.addEventListener('change', syncFullscreenLayout);
+    syncFullscreenLayout();
+
     window.addEventListener('resize', () => { clearTimeout(window._lyrResize); window._lyrResize = setTimeout(() => { if (lyricsVisible()) updateLyricHighlight(true) }, 160) });
     const RANKED_SMART = ['top', 'played', 'recent', 'rediscover'];
 function smartLimit(v) { if (v === undefined || v === null || v === '') return 25; const n = Number(v); return !Number.isFinite(n) ? 25 : n > 0 ? n : Infinity }
@@ -11589,14 +11625,47 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
     }
     #seek, #fullSeek { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; outline: none }
     #seek::before, #fullSeek::before { content: ""; position: absolute; left: -6px; right: -6px; top: -14px; bottom: -14px }   /* bigger touch target */
-    #fullSeek { height: 6px; transition: height .14s ease }
+    html body :is(.player #seek, .full-timeline #fullSeek) {
+      --seek-rail-scale: .375;
+      --seek-track-color: #ffffff2c;
+      height: 8px;
+      background: transparent;
+    }
+    html[data-theme="light"] body :is(.player #seek, .full-timeline #fullSeek) { --seek-track-color: #28212b20 }
+
+    /* Scale the paint layers and leave the hit target and thumb in place. */
+    :is(#seek, #fullSeek)::after,
+    :is(#progress, #fullProgress)::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      transform: scaleY(var(--seek-rail-scale));
+      pointer-events: none;
+    }
+    :is(#seek, #fullSeek)::after { background: var(--seek-track-color); z-index: 0 }
+    :is(#progress, #fullProgress) { background: transparent; z-index: 2 }
+    :is(#progress, #fullProgress)::before { background: var(--accent) }
+    :is(#seek, #fullSeek) .seek-hover { transform: scaleY(var(--seek-rail-scale)); z-index: 1 }
+
+    @media (hover: hover) and (pointer: fine) {
+      html body :is(#seek, #fullSeek):hover { --seek-rail-scale: 1 }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      html:not([data-performance="low"]) :is(#seek, #fullSeek)::after,
+      html:not([data-performance="low"]) :is(#progress, #fullProgress)::before {
+        transition: transform .2s cubic-bezier(.22, 1, .36, 1);
+      }
+      html:not([data-performance="low"]) :is(#seek, #fullSeek) .seek-hover {
+        transition: opacity .12s ease, transform .2s cubic-bezier(.22, 1, .36, 1);
+      }
+    }
     #fullProgress, #progress, .hero.is-playing .hero-progress i {
       width: var(--playback-progress, 0%);
       transition: none
     }
     #fullSeek .fill:after, #seek .fill:after { transition: transform .14s ease, box-shadow .14s ease }
     #fullSeek .fill:after { width: 12px; height: 12px; right: -6px; top: -3px }
-    #fullSeek.scrubbing { height: 10px }
     #fullSeek.scrubbing .fill:after { transform: scale(1.35); box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent, #ff5368) 28%, transparent) }
     #seek.scrubbing .fill:after { transform: scale(1.5); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent, #ff5368) 28%, transparent) }
     /* knob always vertically centred on the bar, whatever the bar height is on this screen size */
@@ -11626,7 +11695,6 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       html body #volume:focus, html body #fullVolume:focus { outline: none }
     }
     @media (max-width: 760px) {
-      html body .player #seek { height: 7px }
       html body .player #seek::before { inset: -14px 0 }
     }
     #seek:focus-visible, #fullSeek:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #ff5368) 45%, transparent) }
@@ -13431,14 +13499,52 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       })
     })();
   </script>
-<script>
-    // keeps the filled part of the volume sliders in sync (used by the PC styling that hides the knob until hover)
+  <style id="musiko-volume-feedback">
+    .volume-wave {
+      opacity: clamp(0, calc(3 * var(--volume-level, .8)), 1);
+      transform: scale(calc(.5 + .625 * var(--volume-level, .8)));
+      transform-box: fill-box;
+      transform-origin: left center;
+    }
+
+    svg.volume-adjusting { color: var(--accent) }
+
+    @media (prefers-reduced-motion: no-preference) {
+      html:not([data-performance="low"]) .volume-wave {
+        transition: transform .24s cubic-bezier(.22, 1, .36, 1), opacity .24s cubic-bezier(.22, 1, .36, 1);
+      }
+    }
+  </style>
+  <script>
     (() => {
-      const els = ['#volume', '#fullVolume'].map(q => document.querySelector(q)).filter(Boolean);
-      const sync = el => { const max = parseFloat(el.max) || 1, min = parseFloat(el.min) || 0; el.style.setProperty('--vol', ((el.value - min) / (max - min) * 100) + '%') };
-      const syncAll = () => els.forEach(sync);
-      els.forEach(el => el.addEventListener('input', syncAll));
-      syncAll();
+      const sliders = [document.querySelector('#volume'), document.querySelector('#fullVolume')];
+      const pulses = new WeakMap();
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+      function syncVolumeDisplay() {
+        for (const slider of sliders) {
+          const level = (slider.valueAsNumber - Number(slider.min)) / (Number(slider.max) - Number(slider.min));
+          slider.style.setProperty('--vol', (level * 100) + '%');
+          slider.previousElementSibling.style.setProperty('--volume-level', level);
+        }
+      }
+
+      for (const slider of sliders) {
+        slider.addEventListener('input', () => {
+          syncVolumeDisplay();
+          if (reducedMotion.matches || window.MusikoAppearance.value.lowEnd) return;
+          const icon = slider.previousElementSibling;
+          if (typeof icon.animate !== 'function' || !icon.getClientRects().length || pulses.get(icon)?.playState === 'running') return;
+          icon.classList.add('volume-adjusting');
+          const pulse = icon.animate(
+            [{ transform: 'scale(1)' }, { transform: 'scale(1.38)', offset: .32 }, { transform: 'scale(1)' }],
+            { duration: 440, easing: 'cubic-bezier(.22, 1, .36, 1)' }
+          );
+          pulses.set(icon, pulse);
+          pulse.onfinish = pulse.oncancel = () => icon.classList.remove('volume-adjusting');
+        });
+      }
+      syncVolumeDisplay();
     })();
   </script>
 
@@ -14477,6 +14583,160 @@ function smartTrackIds(p) { if (!p?.rule || p.rule === 'manual') return p?.track
       }
       html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-controls { margin-top: 0 }
       html[data-mobile-efficient] body .fullscreen.lyrics-layout .full-buttons .play { width: 48px; height: 48px }
+    }
+  </style>
+  <style id="musiko-split-fullscreen">
+    html[data-full-layout="split"] body #fullscreen.open {
+      --split-inset-left: max(28px, env(safe-area-inset-left, 0px));
+      --split-inset-right: max(28px, env(safe-area-inset-right, 0px));
+      align-items: center;
+      padding: max(28px, env(safe-area-inset-top, 0px)) var(--split-inset-right)
+        max(28px, env(safe-area-inset-bottom, 0px)) var(--split-inset-left);
+      overflow: hidden;
+    }
+
+    html[data-full-layout="split"] body #fullscreen .full-content {
+      --split-cover-size: clamp(170px, min(37vw, calc(100dvh - 300px)), 410px);
+      --split-content-width: min(1060px, calc(100vw - var(--split-inset-left) - var(--split-inset-right)));
+      width: min(100%, var(--split-content-width));
+      max-height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden auto;
+      overscroll-behavior: contain;
+      grid-template-columns: var(--split-cover-size) minmax(0, 1fr);
+      grid-template-rows: auto auto;
+      gap: 16px clamp(24px, 5vw, 72px);
+      align-items: start;
+      transition: none;
+    }
+
+    html[data-full-layout="split"] body #fullscreen .full-art-wrap {
+      grid-area: 1 / 1;
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: none;
+      margin: 0;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+
+    html[data-full-layout="split"] body #fullscreen .full-meta {
+      grid-area: 2 / 1;
+      display: block;
+      width: 100%;
+      text-align: left;
+    }
+
+    html[data-full-layout="split"] body #fullscreen :is(.full-art-wrap, .full-meta) { z-index: 1 }
+    html[data-full-layout="split"] body #fullscreen:not(.lyrics-on) :is(.full-art-wrap, .full-meta) {
+      transform: translateX(calc((var(--split-content-width) - var(--split-cover-size)) / 2));
+    }
+
+    html[data-full-layout="split"] body #fullscreen .full-eyebrow { display: none }
+    html[data-full-layout="split"] body #fullscreen .full-title {
+      font-size: clamp(20px, 3vw, 32px);
+      line-height: 1.12;
+      transition: none;
+    }
+    html[data-full-layout="split"] body #fullscreen :is(.full-title, .full-artist, .full-album) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    html[data-full-layout="split"] body #fullscreen :is(.full-artist, .full-album) { margin-top: 4px }
+    html[data-full-layout="split"] body #fullscreen :is(.full-lyrics-btn, .full-sleep-shortcut) { margin-top: 12px }
+    html[data-full-layout="split"] body #fullscreen .full-controls { margin-top: 12px }
+    html[data-full-layout="split"] body #fullscreen .full-buttons { justify-content: space-between; gap: 2px; margin-top: 9px }
+    html[data-full-layout="split"] body #fullscreen .full-volume { justify-content: flex-start; margin-top: 10px }
+
+    html[data-full-layout="split"] body #fullscreen .full-lyrics {
+      grid-area: 1 / 2 / span 2;
+      align-self: stretch;
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 0;
+      contain: size;
+      margin: 0;
+      padding: 0 12px;
+      transform: translateX(24px);
+    }
+
+    html[data-full-layout="split"] body #fullscreen.lyrics-on .full-lyrics { transform: none }
+
+    html[data-full-layout="split"] body #fullscreen.lyrics-on .full-lyrics:has(.lyrics-empty) {
+      display: grid;
+      align-content: center;
+    }
+
+    html[data-full-layout="split"] body #fullscreen .full-lyrics:has(.lyric-line, .lyrics-plain)::before,
+    html[data-full-layout="split"] body #fullscreen .full-lyrics:has(.lyric-line, .lyrics-plain)::after {
+      content: "";
+      display: block;
+      height: 44%;
+    }
+
+    html[data-full-layout="split"] body #fullscreen .full-lyrics :is(.lyric-line, .lyrics-empty, .lyrics-plain) {
+      text-align: left;
+    }
+    html[data-full-layout="split"] body #fullscreen .full-lyrics .lyric-line {
+      font-size: clamp(18px, 2.6vw, 38px);
+      transform-origin: left center;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      html[data-full-layout="split"]:not([data-performance="low"]) body #fullscreen.lyr-anim :is(.full-art-wrap, .full-meta) {
+        transition: transform .48s var(--lyr-ease);
+      }
+      html[data-full-layout="split"]:not([data-performance="low"]) body #fullscreen.lyr-anim:not(.lyrics-on) :is(.full-art-wrap, .full-meta) {
+        transition-delay: .10s;
+      }
+      html[data-full-layout="split"]:not([data-performance="low"]) body #fullscreen.lyr-anim .full-lyrics {
+        transition: opacity .22s var(--lyr-ease), transform .36s var(--lyr-ease), visibility 0s linear .36s;
+      }
+      html[data-full-layout="split"]:not([data-performance="low"]) body #fullscreen.lyr-anim.lyrics-on .full-lyrics {
+        transition: opacity .30s var(--lyr-ease) .14s, transform .42s var(--lyr-ease) .12s, visibility 0s;
+      }
+    }
+
+    @media (max-height: 580px) {
+      html[data-full-layout="split"] body #fullscreen.open {
+        --split-inset-left: max(20px, env(safe-area-inset-left, 0px));
+        --split-inset-right: max(20px, env(safe-area-inset-right, 0px));
+        padding-block: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-bottom, 0px));
+      }
+      html[data-full-layout="split"] body #fullscreen .full-content {
+        --split-cover-size: clamp(148px, min(38vw, calc(100dvh - 192px)), 340px);
+        row-gap: 8px;
+      }
+      html[data-full-layout="split"] body #fullscreen .full-track-info {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 3px 6px;
+        align-items: center;
+      }
+      html[data-full-layout="split"] body #fullscreen .full-title { grid-column: 1 / -1; font-size: clamp(16px, 3vw, 24px) }
+      html[data-full-layout="split"] body #fullscreen :is(.full-artist, .full-album) { margin: 0; font-size: 11px }
+      html[data-full-layout="split"] body #fullscreen :is(.full-lyrics-btn, .full-sleep-shortcut) {
+        justify-self: start;
+        height: 26px;
+        min-height: 26px;
+        margin: 0;
+        padding-inline: 5px;
+        font-size: 10px;
+      }
+      html[data-full-layout="split"] body #fullscreen :is(.full-controls, .full-buttons, .full-volume) { margin-top: 6px }
+      html[data-full-layout="split"] body #fullscreen .full-buttons .icon-btn {
+        width: 26px;
+        height: 34px;
+        min-width: 26px;
+        min-height: 34px;
+      }
+      html[data-full-layout="split"] body #fullscreen .full-buttons .play { width: 34px }
+      html[data-full-layout="split"] body #fullscreen .full-lyrics .lyric-line { padding-block: 5px }
     }
   </style>
   <style id="musiko-mobile-efficiency">
